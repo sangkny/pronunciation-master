@@ -1,0 +1,19 @@
+🚀 다음 단계를 수행하세요:
+
+1️⃣  제공된 파일들을 복사합니다:
+   - docker-compose.yml → 프로젝트 루트
+   - backend-server-complete.js → backend/src/server.js
+   - pronunciation-master-enhanced-app.jsx → frontend/src/App.jsx
+   - 기타 파일들을 해당 위치에 배치
+
+2️⃣  문서 파일들을 복사합니다:
+   - *.md 파일들 → docs/ 폴더
+
+3️⃣ Docker 빌드:
+   docker compose build
+
+4️⃣ Docker 실행:
+   docker compose up
+
+5️⃣ 브라우저 접속:
+   http://localhost:3000

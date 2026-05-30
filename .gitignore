@@ -1,0 +1,55 @@
+# 환경 변수
+.env
+.env.local
+.env.*.local
+
+# 의존성
+node_modules/
+dist/
+build/
+package-lock.json
+yarn.lock
+
+# 로그
+*.log
+logs/
+npm-debug.log*
+lerna-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# 오디오 파일
+recordings/
+*.wav
+*.mp3
+*.m4a
+
+# 임시 파일
+*.tmp
+*.temp
+.cache/
+
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# 민감한 정보
+.env.production
+config/secrets.json
+
+# 데이터베이스
+*.db
+*.sqlite
+
+# 기타
+.DS_Store
+.AppleDouble
+.LSOverride
