@@ -1,0 +1,788 @@
+import React, { useState, useRef, useEffect } from 'react';
+import { 
+  Mic, Volume2, CheckCircle, SkipForward, Home, Settings, BarChart3, 
+  AlertCircle, Repeat2, Zap, BookOpen, Target, Edit2, Sparkles,
+  Play, Pause, Download, Upload, X
+} from 'lucide-react';
+
+const CATEGORIES = [
+  { id: 'medical', name: '의료기기 (Medical Devices)', emoji: '🏥' },
+  { id: 'telecom', name: '통신기술 (Telecommunications)', emoji: '📡' },
+  { id: 'finance', name: '금융 (Finance)', emoji: '💰' },
+  { id: 'tech', name: '기술 (Technology)', emoji: '💻' },
+  { id: 'automotive', name: '자동차 (Automotive)', emoji: '🚗' },
+];
+
+const SAMPLE_MISSIONS = {
+  medical: [
+    { id: 1, sentence: "This advanced imaging system provides real-time diagnostic capabilities.", focusPoints: ['imaging', 'diagnostic', 'capabilities'], difficulty: 'medium' },
+    { id: 2, sentence: "The patient monitoring device transmits vital signs continuously.", focusPoints: ['monitoring', 'transmits', 'vital'], difficulty: 'medium' },
+  ],
+  telecom: [
+    { id: 1, sentence: "The 5G network infrastructure enables faster data transmission.", focusPoints: ['infrastructure', 'enables', 'transmission'], difficulty: 'medium' },
+  ],
+  finance: [
+    { id: 1, sentence: "Portfolio diversification is essential for risk management.", focusPoints: ['diversification', 'essential', 'management'], difficulty: 'hard' },
+  ],
+  tech: [
+    { id: 1, sentence: "Cloud computing revolutionized our infrastructure architecture.", focusPoints: ['computing', 'revolutionized', 'architecture'], difficulty: 'hard' },
+  ],
+  automotive: [
+    { id: 1, sentence: "Advanced safety systems minimize collision risks.", focusPoints: ['advanced', 'minimize', 'collision'], difficulty: 'medium' },
+  ],
+};
+
+export default function EnhancedPronunciationMasterApp() {
+  // ==================== 상태 관리 ====================
+  const [appState, setAppState] = useState('home'); // home, scenario-input, mission, results, stats
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [currentMission, setCurrentMission] = useState(null);
+  const [userScenario, setUserScenario] = useState('');
+  const [generatedMissions, setGeneratedMissions] = useState([]);
+  const [scenarioMessages, setScenarioMessages] = useState([]);
+  const [isGeneratingScenario, setIsGeneratingScenario] = useState(false);
+  
+  // 음성 관련 상태
+  const [recordingState, setRecordingState] = useState('idle'); // idle, recording, processing, complete
+  const [recordedAudio, setRecordedAudio] = useState(null);
+  const [userTranscript, setUserTranscript] = useState('');
+  const [feedback, setFeedback] = useState(null);
+  const [isPlayingAI, setIsPlayingAI] = useState(false);
+  const [isPlayingUser, setIsPlayingUser] = useState(false);
+  
+  // 미션 진행 상태
+  const [missionProgress, setMissionProgress] = useState({
+    attempts: 0,
+    maxAttempts: 5,
+    focusPointsCompleted: [],
+    status: 'in-progress',
+  });
+  
+  const [completedMissions, setCompletedMissions] = useState([]);
+  const [skippedMissions, setSkippedMissions] = useState([]);
+  const [dailyStats, setDailyStats] = useState({
+    completedToday: 0,
+    totalTime: 0,
+    accuracyScore: 0,
+  });
+  
+  // TTS & 음성 재생
+  const [ttsEnabled, setTtsEnabled] = useState(true);
+  const audioContextRef = useRef(null);
+  const mediaRecorderRef = useRef(null);
+  const audioChunksRef = useRef([]);
+
+  // ==================== TTS 함수 ====================
+  
+  /**
+   * 텍스트를 음성으로 변환 및 재생
+   */
+  const speakText = async (text, language = 'en-US', rate = 1.0) => {
+    if (!ttsEnabled) return;
+
+    try {
+      setIsPlayingAI(true);
+      
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = language;
+      utterance.rate = rate; // 0.5-2.0
+      utterance.pitch = 1.0;
+      utterance.volume = 1.0;
+
+      utterance.onend = () => {
+        setIsPlayingAI(false);
+      };
+
+      utterance.onerror = (event) => {
+        console.error('TTS 오류:', event.error);
+        setIsPlayingAI(false);
+      };
+
+      window.speechSynthesis.cancel(); // 이전 재생 취소
+      window.speechSynthesis.speak(utterance);
+    } catch (error) {
+      console.error('TTS 실패:', error);
+      setIsPlayingAI(false);
+    }
+  };
+
+  /**
+   * 녹음된 사용자 음성 재생
+   */
+  const playUserRecording = () => {
+    if (recordedAudio) {
+      setIsPlayingUser(true);
+      const url = URL.createObjectURL(recordedAudio);
+      const audio = new Audio(url);
+      
+      audio.onended = () => {
+        setIsPlayingUser(false);
+      };
+      
+      audio.play().catch(err => {
+        console.error('재생 실패:', err);
+        setIsPlayingUser(false);
+      });
+    }
+  };
+
+  /**
+   * TTS 속도 제어
+   */
+  const speakTextWithSpeed = (text, speed = 'normal') => {
+    const rateMap = {
+      slow: 0.7,
+      normal: 1.0,
+      fast: 1.3
+    };
+    speakText(text, 'en-US', rateMap[speed] || 1.0);
+  };
+
+  // ==================== 상황 기반 콘텐츠 생성 ====================
+
+  /**
+   * 사용자 상황에 맞는 미션 생성 (AI)
+   */
+  const generateScenarioBasedMissions = async () => {
+    if (!userScenario.trim()) {
+      alert('상황을 입력해주세요.');
+      return;
+    }
+
+    setIsGeneratingScenario(true);
+    setScenarioMessages(prev => [...prev, {
+      type: 'user',
+      text: userScenario
+    }]);
+
+    try {
+      // 1단계: 상황 분석 및 미션 생성 요청
+      const analysisMessage = {
+        type: 'assistant',
+        text: '상황을 분석하고 있습니다...'
+      };
+      setScenarioMessages(prev => [...prev, analysisMessage]);
+
+      // API 호출 (백엔드에서 구현)
+      const response = await fetch('http://localhost:5000/api/mission/generate-by-scenario', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          scenario: userScenario,
+          category: selectedCategory,
+          count: 5
+        })
+      });
+
+      const data = await response.json();
+
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
+      // 생성된 미션 저장
+      setGeneratedMissions(data.missions || []);
+      
+      // 응답 메시지 업데이트
+      setScenarioMessages(prev => {
+        const updated = [...prev];
+        updated[updated.length - 1] = {
+          type: 'assistant',
+          text: `✅ "${userScenario}"에 관련된 ${data.missions.length}개의 연습을 생성했습니다!\n\n생성된 콘텐츠:\n${data.missions.map((m, i) => `${i + 1}. ${m.sentence}`).join('\n')}`
+        };
+        return updated;
+      });
+
+      // 첫 번째 미션 자동 로드
+      if (data.missions.length > 0) {
+        loadGeneratedMission(data.missions[0]);
+      }
+
+      setUserScenario('');
+    } catch (error) {
+      console.error('미션 생성 실패:', error);
+      setScenarioMessages(prev => [...prev, {
+        type: 'error',
+        text: `❌ 오류: ${error.message}`
+      }]);
+    } finally {
+      setIsGeneratingScenario(false);
+    }
+  };
+
+  /**
+   * 생성된 미션 로드
+   */
+  const loadGeneratedMission = (mission) => {
+    setCurrentMission(mission);
+    setMissionProgress({
+      attempts: 0,
+      maxAttempts: 5,
+      focusPointsCompleted: [],
+      status: 'in-progress',
+    });
+    setRecordedAudio(null);
+    setUserTranscript('');
+    setFeedback(null);
+    setAppState('mission');
+  };
+
+  // ==================== 음성 녹음 ====================
+
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mediaRecorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = mediaRecorder;
+      audioChunksRef.current = [];
+
+      mediaRecorder.ondataavailable = (event) => {
+        audioChunksRef.current.push(event.data);
+      };
+
+      mediaRecorder.onstop = async () => {
+        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/wav' });
+        setRecordedAudio(audioBlob);
+        simulateAIPronunciationCheck();
+      };
+
+      mediaRecorder.start();
+      setRecordingState('recording');
+    } catch (error) {
+      alert('마이크 접근이 필요합니다.');
+    }
+  };
+
+  const stopRecording = () => {
+    if (mediaRecorderRef.current) {
+      mediaRecorderRef.current.stop();
+      mediaRecorderRef.current.stream.getTracks().forEach(track => track.stop());
+      setRecordingState('processing');
+    }
+  };
+
+  // ==================== AI 발음 분석 ====================
+
+  const simulateAIPronunciationCheck = () => {
+    setTimeout(() => {
+      const focusWords = currentMission.focusPoints;
+      const completedPoints = focusWords.slice(0, Math.floor(Math.random() * 3) + 1);
+      const remainingPoints = focusWords.filter(w => !completedPoints.includes(w));
+      const newProgress = missionProgress.attempts + 1;
+      const isCompleted = newProgress >= 2 || completedPoints.length === focusWords.length;
+
+      setFeedback({
+        overallScore: Math.floor(Math.random() * 40) + 60,
+        completedPoints,
+        remainingPoints,
+        suggestions: [
+          `"${remainingPoints[0]}" 발음을 더 명확하게`,
+          '단어 간의 연음이 자연스럽습니다',
+          '문장의 강세를 조금 더 명확히',
+        ],
+        isPerfect: isCompleted,
+      });
+
+      setMissionProgress(prev => ({
+        ...prev,
+        attempts: newProgress,
+        focusPointsCompleted: completedPoints,
+        status: isCompleted ? 'completed' : 'in-progress',
+      }));
+
+      setRecordingState('complete');
+    }, 2000);
+  };
+
+  // ==================== 미션 완료 및 스킵 ====================
+
+  const completeMission = () => {
+    const missionData = {
+      categoryId: selectedCategory,
+      sentence: currentMission.sentence,
+      completedAt: new Date().toISOString(),
+      attempts: missionProgress.attempts,
+      score: feedback?.overallScore || 0,
+      focusAreas: missionProgress.focusPointsCompleted,
+      isGeneratedFromScenario: currentMission.isGenerated || false,
+    };
+
+    setCompletedMissions([...completedMissions, missionData]);
+    setDailyStats(prev => ({
+      ...prev,
+      completedToday: prev.completedToday + 1,
+      totalTime: prev.totalTime + (missionProgress.attempts * 2),
+      accuracyScore: Math.floor((prev.accuracyScore + (feedback?.overallScore || 0)) / 2),
+    }));
+
+    // 다음 미션 로드
+    if (generatedMissions.length > 0) {
+      const currentIndex = generatedMissions.findIndex(m => m.id === currentMission.id);
+      if (currentIndex < generatedMissions.length - 1) {
+        loadGeneratedMission(generatedMissions[currentIndex + 1]);
+      } else {
+        setAppState('home');
+      }
+    } else {
+      setAppState('home');
+    }
+  };
+
+  const skipMission = () => {
+    const missionData = {
+      categoryId: selectedCategory,
+      sentence: currentMission.sentence,
+      skippedAt: new Date().toISOString(),
+      attempts: missionProgress.attempts,
+      focusAreas: currentMission.focusPoints,
+      isGeneratedFromScenario: currentMission.isGenerated || false,
+    };
+
+    setSkippedMissions([...skippedMissions, missionData]);
+    
+    // 다음 미션으로
+    if (generatedMissions.length > 0) {
+      const currentIndex = generatedMissions.findIndex(m => m.id === currentMission.id);
+      if (currentIndex < generatedMissions.length - 1) {
+        loadGeneratedMission(generatedMissions[currentIndex + 1]);
+      } else {
+        setAppState('home');
+      }
+    } else {
+      setAppState('home');
+    }
+  };
+
+  // ==================== UI 렌더링 ====================
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white font-['Segoe UI']">
+      {/* 상단 바 */}
+      <div className="sticky top-0 z-50 backdrop-blur-md bg-black/30 border-b border-purple-500/30">
+        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+          <button
+            onClick={() => setAppState('home')}
+            className="flex items-center gap-2 hover:text-purple-400 transition-colors"
+          >
+            <Zap className="w-6 h-6 text-purple-400" />
+            <span className="text-xl font-bold">Pronunciation Master</span>
+          </button>
+
+          <div className="flex items-center gap-4">
+            <div className="hidden sm:flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full">
+              <Volume2 className="w-4 h-4" />
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={ttsEnabled}
+                  onChange={(e) => setTtsEnabled(e.target.checked)}
+                  className="w-4 h-4"
+                />
+                <span className="text-sm">TTS</span>
+              </label>
+            </div>
+            <button
+              onClick={() => setAppState('stats')}
+              className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+            >
+              <BarChart3 className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-6xl mx-auto px-4 py-8">
+        {/* ==================== HOME 화면 ==================== */}
+        {appState === 'home' && (
+          <div className="space-y-8">
+            <div className="text-center space-y-4">
+              <h1 className="text-5xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                오늘의 발음 수련
+              </h1>
+              <p className="text-gray-300 text-lg">분야를 선택하거나 상황을 입력해서 맞춤 연습을 시작하세요</p>
+            </div>
+
+            {/* 분야 선택 */}
+            <div className="space-y-4">
+              <h2 className="text-2xl font-bold">분야 선택</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {CATEGORIES.map(category => (
+                  <div key={category.id} className="space-y-2">
+                    <button
+                      onClick={() => {
+                        setSelectedCategory(category.id);
+                        setAppState('scenario-input');
+                      }}
+                      className="w-full group relative overflow-hidden rounded-xl p-6 bg-gradient-to-br from-white/10 to-white/5 border border-white/20 hover:border-purple-400/50 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-purple-500/20"
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-br from-purple-500/0 to-pink-500/0 group-hover:from-purple-500/10 group-hover:to-pink-500/10 transition-all duration-300" />
+                      <div className="relative z-10">
+                        <div className="text-4xl mb-3">{category.emoji}</div>
+                        <h3 className="text-lg font-bold group-hover:text-purple-300 transition-colors">
+                          {category.name}
+                        </h3>
+                        <p className="text-sm text-gray-400 mt-2">상황 기반 맞춤 연습</p>
+                      </div>
+                    </button>
+
+                    {/* 빠른 시작 버튼 */}
+                    <button
+                      onClick={() => {
+                        setSelectedCategory(category.id);
+                        const mission = SAMPLE_MISSIONS[category.id]?.[0];
+                        if (mission) {
+                          loadGeneratedMission(mission);
+                        }
+                      }}
+                      className="w-full py-2 bg-white/10 hover:bg-white/20 rounded-lg text-sm transition-colors"
+                    >
+                      빠른 시작
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* 통계 요약 */}
+            {(completedMissions.length > 0 || skippedMissions.length > 0) && (
+              <div className="grid grid-cols-3 gap-4 bg-white/5 border border-white/10 rounded-lg p-6">
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-green-400">{completedMissions.length}</div>
+                  <p className="text-sm text-gray-400 mt-2">완료한 미션</p>
+                </div>
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-orange-400">{skippedMissions.length}</div>
+                  <p className="text-sm text-gray-400 mt-2">스킵한 미션</p>
+                </div>
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-purple-400">{dailyStats.accuracyScore}%</div>
+                  <p className="text-sm text-gray-400 mt-2">평균 정확도</p>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ==================== 상황 입력 화면 ==================== */}
+        {appState === 'scenario-input' && (
+          <div className="max-w-2xl mx-auto space-y-6">
+            <div className="bg-gradient-to-br from-white/10 to-white/5 border border-purple-400/30 rounded-lg p-8 space-y-6">
+              <div className="space-y-2">
+                <h2 className="text-2xl font-bold flex items-center gap-2">
+                  <Sparkles className="w-6 h-6 text-yellow-400" />
+                  상황 기반 연습 만들기
+                </h2>
+                <p className="text-gray-400">
+                  당신이 경험하고 싶은 상황을 설명하면, AI가 맞춤형 연습을 생성합니다.
+                </p>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-300 mb-2">
+                    상황 입력 (예: "의사와의 첫 진료 상담")
+                  </label>
+                  <textarea
+                    value={userScenario}
+                    onChange={(e) => setUserScenario(e.target.value)}
+                    placeholder="예: 기술 컨퍼런스에서 제품을 영어로 소개하는 상황&#10;예: 해외 은행과의 금융 계약 협상&#10;예: 자동차 판매원과의 상담..."
+                    rows={5}
+                    className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg focus:border-purple-400/50 focus:outline-none text-white placeholder-gray-500"
+                  />
+                </div>
+
+                <button
+                  onClick={generateScenarioBasedMissions}
+                  disabled={isGeneratingScenario || !userScenario.trim()}
+                  className="w-full py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 disabled:from-gray-600 disabled:to-gray-600 disabled:cursor-not-allowed rounded-lg font-semibold flex items-center justify-center gap-2 transition-all"
+                >
+                  <Sparkles className="w-5 h-5" />
+                  {isGeneratingScenario ? '생성 중...' : '맞춤 연습 생성'}
+                </button>
+              </div>
+
+              {/* 상황 기반 대화 */}
+              {scenarioMessages.length > 0 && (
+                <div className="space-y-3 bg-black/30 rounded-lg p-4 max-h-96 overflow-y-auto">
+                  {scenarioMessages.map((msg, idx) => (
+                    <div
+                      key={idx}
+                      className={`text-sm whitespace-pre-wrap ${
+                        msg.type === 'user'
+                          ? 'text-right text-purple-300'
+                          : msg.type === 'error'
+                          ? 'text-red-300'
+                          : 'text-green-300'
+                      }`}
+                    >
+                      {msg.text}
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* 생성된 미션 미리보기 */}
+              {generatedMissions.length > 0 && (
+                <div className="space-y-3 bg-white/5 rounded-lg p-4 border border-white/10">
+                  <h3 className="font-semibold text-purple-300">생성된 연습</h3>
+                  <div className="space-y-2">
+                    {generatedMissions.map((mission, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => loadGeneratedMission(mission)}
+                        className="w-full text-left px-3 py-2 bg-white/10 hover:bg-white/20 rounded text-sm transition-colors line-clamp-2"
+                      >
+                        {idx + 1}. {mission.sentence}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <button
+              onClick={() => setAppState('home')}
+              className="w-full py-2 bg-gray-700/50 hover:bg-gray-700 rounded-lg transition-colors"
+            >
+              홈으로 돌아가기
+            </button>
+          </div>
+        )}
+
+        {/* ==================== MISSION 화면 ==================== */}
+        {appState === 'mission' && currentMission && (
+          <div className="max-w-2xl mx-auto space-y-6">
+            {/* 진행도 */}
+            <div className="space-y-2">
+              <div className="flex justify-between items-center">
+                <span className="text-sm font-semibold text-purple-300">
+                  시도: {missionProgress.attempts} / {missionProgress.maxAttempts}
+                </span>
+                <span className="text-sm text-gray-400">
+                  {missionProgress.status === 'completed' ? '✅ 완료!' : '진행 중'}
+                </span>
+              </div>
+              <div className="w-full bg-white/10 rounded-full h-2">
+                <div
+                  className="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full transition-all duration-500"
+                  style={{
+                    width: `${(missionProgress.attempts / missionProgress.maxAttempts) * 100}%`
+                  }}
+                />
+              </div>
+            </div>
+
+            {/* 원문 문장 */}
+            <div className="bg-gradient-to-br from-white/10 to-white/5 border border-purple-400/30 rounded-lg p-6 space-y-4">
+              <h2 className="text-lg font-bold">읽어야 할 문장</h2>
+              <p className="text-2xl font-semibold text-purple-200 leading-relaxed">
+                {currentMission.sentence}
+              </p>
+
+              {/* 음성 제어 버튼 */}
+              <div className="flex gap-2 flex-wrap">
+                <button
+                  onClick={() => speakText(currentMission.sentence, 'en-US', 1.0)}
+                  disabled={isPlayingAI}
+                  className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 px-4 py-2 rounded-lg transition-colors text-sm"
+                >
+                  <Volume2 className="w-4 h-4" />
+                  {isPlayingAI ? '재생 중...' : '정상 속도'}
+                </button>
+
+                <button
+                  onClick={() => speakTextWithSpeed(currentMission.sentence, 'slow')}
+                  disabled={isPlayingAI}
+                  className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 px-4 py-2 rounded-lg transition-colors text-sm"
+                >
+                  <Volume2 className="w-4 h-4" />
+                  느리게
+                </button>
+
+                <button
+                  onClick={() => speakTextWithSpeed(currentMission.sentence, 'fast')}
+                  disabled={isPlayingAI}
+                  className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 px-4 py-2 rounded-lg transition-colors text-sm"
+                >
+                  <Volume2 className="w-4 h-4" />
+                  빠르게
+                </button>
+              </div>
+
+              {/* 포커스 영역 */}
+              <div className="space-y-2">
+                <p className="text-sm font-semibold text-gray-300">집중할 단어들:</p>
+                <div className="flex flex-wrap gap-2">
+                  {currentMission.focusPoints.map((point, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => speakText(point)}
+                      className={`px-3 py-1 rounded-full text-sm font-medium transition-colors cursor-pointer ${
+                        missionProgress.focusPointsCompleted.includes(point)
+                          ? 'bg-green-500/30 border border-green-500/50 text-green-200 hover:bg-green-500/40'
+                          : 'bg-orange-500/20 border border-orange-500/30 text-orange-200 hover:bg-orange-500/30'
+                      }`}
+                      title="클릭해서 발음 듣기"
+                    >
+                      {point}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* 음성 녹음 섹션 */}
+            <div className="bg-gradient-to-br from-white/10 to-white/5 border border-purple-400/30 rounded-lg p-6 space-y-4">
+              <h2 className="text-lg font-bold">당신의 발음 녹음</h2>
+
+              {!recordedAudio ? (
+                <button
+                  onClick={recordingState === 'recording' ? stopRecording : startRecording}
+                  disabled={recordingState === 'processing'}
+                  className={`w-full py-4 rounded-lg font-semibold flex items-center justify-center gap-3 transition-all duration-300 ${
+                    recordingState === 'recording'
+                      ? 'bg-red-500 hover:bg-red-600 animate-pulse'
+                      : recordingState === 'processing'
+                      ? 'bg-gray-600 opacity-50 cursor-not-allowed'
+                      : 'bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700'
+                  }`}
+                >
+                  <Mic className="w-5 h-5" />
+                  {recordingState === 'recording'
+                    ? '녹음 중지'
+                    : recordingState === 'processing'
+                    ? 'AI가 분석 중...'
+                    : '음성 녹음 시작'}
+                </button>
+              ) : (
+                <button
+                  onClick={playUserRecording}
+                  disabled={isPlayingUser}
+                  className="w-full py-3 bg-white/10 hover:bg-white/20 rounded-lg flex items-center justify-center gap-2 transition-colors"
+                >
+                  {isPlayingUser ? (
+                    <>
+                      <Pause className="w-4 h-4" />
+                      재생 중...
+                    </>
+                  ) : (
+                    <>
+                      <Play className="w-4 h-4" />
+                      녹음된 음성 재생
+                    </>
+                  )}
+                </button>
+              )}
+
+              {/* AI 피드백 */}
+              {feedback && (
+                <div className="space-y-4 bg-black/30 rounded-lg p-4 border border-white/10">
+                  <div className="flex items-center justify-between">
+                    <span className="font-semibold">발음 정확도</span>
+                    <span className="text-2xl font-bold text-green-400">{feedback.overallScore}%</span>
+                  </div>
+
+                  {feedback.completedPoints.length > 0 && (
+                    <div className="space-y-2">
+                      <p className="text-sm font-semibold text-green-300">✅ 잘한 부분:</p>
+                      <div className="space-y-1">
+                        {feedback.completedPoints.map((point, idx) => (
+                          <p key={idx} className="text-sm text-green-200 ml-2">• {point}</p>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {feedback.remainingPoints.length > 0 && (
+                    <div className="space-y-2">
+                      <p className="text-sm font-semibold text-orange-300">⚠️ 개선할 부분:</p>
+                      {feedback.suggestions.map((suggestion, idx) => (
+                        <p key={idx} className="text-sm text-orange-200 ml-2">• {suggestion}</p>
+                      ))}
+                    </div>
+                  )}
+
+                  {feedback.isPerfect && (
+                    <div className="bg-green-500/20 border border-green-500/50 rounded p-3">
+                      <p className="text-green-200 font-semibold">🎉 완벽합니다! 다음 미션으로 진행하세요.</p>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* 액션 버튼 */}
+            <div className="flex gap-3">
+              {missionProgress.status === 'completed' ? (
+                <button
+                  onClick={completeMission}
+                  className="flex-1 py-3 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 rounded-lg font-semibold flex items-center justify-center gap-2 transition-all"
+                >
+                  <CheckCircle className="w-5 h-5" />
+                  완료 후 다음 미션
+                </button>
+              ) : (
+                <>
+                  <button
+                    onClick={() => {
+                      setRecordedAudio(null);
+                      setFeedback(null);
+                    }}
+                    disabled={!recordedAudio || recordingState !== 'idle'}
+                    className="flex-1 py-3 bg-purple-600 hover:bg-purple-700 disabled:bg-gray-600 disabled:cursor-not-allowed rounded-lg font-semibold flex items-center justify-center gap-2 transition-colors"
+                  >
+                    <Repeat2 className="w-4 h-4" />
+                    다시 시도
+                  </button>
+
+                  <button
+                    onClick={skipMission}
+                    className="flex-1 py-3 bg-orange-600/50 hover:bg-orange-600/70 rounded-lg font-semibold flex items-center justify-center gap-2 transition-colors"
+                  >
+                    <SkipForward className="w-4 h-4" />
+                    스킵
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* ==================== STATS 화면 ==================== */}
+        {appState === 'stats' && (
+          <div className="max-w-2xl mx-auto space-y-6">
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+              학습 통계
+            </h1>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="bg-gradient-to-br from-white/10 to-white/5 border border-white/10 rounded-lg p-6 text-center">
+                <div className="text-3xl font-bold text-green-400">{completedMissions.length}</div>
+                <p className="text-sm text-gray-400 mt-2">완료한 미션</p>
+              </div>
+              <div className="bg-gradient-to-br from-white/10 to-white/5 border border-white/10 rounded-lg p-6 text-center">
+                <div className="text-3xl font-bold text-orange-400">{skippedMissions.length}</div>
+                <p className="text-sm text-gray-400 mt-2">스킵한 미션</p>
+              </div>
+              <div className="bg-gradient-to-br from-white/10 to-white/5 border border-white/10 rounded-lg p-6 text-center">
+                <div className="text-3xl font-bold text-purple-400">{dailyStats.accuracyScore}%</div>
+                <p className="text-sm text-gray-400 mt-2">평균 정확도</p>
+              </div>
+              <div className="bg-gradient-to-br from-white/10 to-white/5 border border-white/10 rounded-lg p-6 text-center">
+                <div className="text-3xl font-bold text-blue-400">{dailyStats.totalTime}</div>
+                <p className="text-sm text-gray-400 mt-2">총 학습 시간 (분)</p>
+              </div>
+            </div>
+
+            <button
+              onClick={() => setAppState('home')}
+              className="w-full py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 rounded-lg font-semibold transition-all"
+            >
+              홈으로 돌아가기
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
