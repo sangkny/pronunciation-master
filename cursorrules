@@ -1,0 +1,230 @@
+# Cursor Rules for Pronunciation Master
+
+## 프로젝트 개요
+- **이름**: Pronunciation Master
+- **설명**: AI 기반 영어 발음 교정 및 상황별 동적 학습 앱
+- **구조**: 
+  - Backend: Node.js/Express (port 5000)
+  - Frontend: React (port 3000)
+  - LLM: Ollama (port 11434)
+  - Docker Compose로 관리
+
+## 현재 프로젝트 구조
+
+```
+Learning-Languages/pronunciation-master/
+├── backend/
+│   ├── src/
+│   │   ├── server.js                    # Express 메인 서버
+│   │   ├── services/
+│   │   │   ├── llmManager.js            # LLM 통합 매니저
+│   │   │   ├── llmManager-extension.js  # LLM 확장 기능
+│   │   │   └── providers/               # LLM 프로바이더들
+│   │   ├── routes/
+│   │   │   └── mission.js               # 미션 라우트
+│   │   └── utils/
+│   ├── package.json
+│   └── Dockerfile
+├── frontend/
+│   ├── src/
+│   │   ├── App.jsx                      # 메인 React 컴포넌트
+│   │   ├── services/
+│   │   │   └── apiClient.js             # API 통신
+│   │   ├── components/
+│   │   ├── styles/
+│   │   └── utils/
+│   ├── public/
+│   ├── package.json
+│   └── Dockerfile.dev
+├── data/
+│   ├── missions/
+│   ├── user-progress/
+│   └── statistics/
+├── docs/
+│   ├── API_ERROR_FIX_GUIDE.md
+│   ├── SCENARIO_BASED_MISSIONS_GUIDE.md
+│   ├── TTS_AND_AUDIO_GUIDE.md
+│   └── ...
+├── docker-compose.yml
+├── .env.example
+├── .env.local
+└── README.md
+```
+
+## 개발 규칙
+
+### 1. 파일 생성 시
+- **백엔드**: `backend/src/` 하위에 생성
+- **프론트엔드**: `frontend/src/` 하위에 생성
+- **문서**: `docs/` 폴더에 저장
+- **새 라우트**: `backend/src/routes/` 에 파일 생성 후 `server.js`에 등록
+
+### 2. API 엔드포인트
+- 기본 경로: `/api/`
+- 발음 분석: `POST /api/pronunciation/analyze`
+- 번역: `POST /api/translation/korean-to-english`
+- 미션 생성: `POST /api/mission/generate-by-scenario`
+- 상태 확인: `GET /health`
+
+### 3. 환경 변수
+- `.env.local`에서 관리
+- `LLM_PROVIDER=ollama` (기본값)
+- `OLLAMA_API_URL=http://ollama:11434`
+- `PORT=5000`
+- `REACT_APP_API_URL=http://localhost:5000`
+
+### 4. LLM 통합
+- `llmManager.js`에서 모든 LLM 요청 처리
+- 지원: Ollama, Claude, Gemini, Cohere, HuggingFace
+- 런타임 전환 가능: `POST /api/config/switch-provider`
+
+### 5. React 컴포넌트
+- 함수형 컴포넌트 사용
+- Hooks 활용 (useState, useEffect 등)
+- `apiClient` 사용하여 백엔드 통신
+- 상태 관리: appState로 화면 전환 관리
+
+### 6. Git 워크플로우
+```bash
+# 변경사항 확인
+git status
+
+# 파일 추가
+git add .
+
+# 커밋
+git commit -m "feat/fix/chore: 설명"
+
+# 푸시
+git push origin main
+```
+
+## Docker 명령어
+
+```bash
+# 빌드
+docker compose build
+
+# 실행
+docker compose up
+
+# 백그라운드 실행
+docker compose up -d
+
+# 중지
+docker compose down
+
+# 로그 확인
+docker compose logs -f backend
+docker compose logs -f frontend
+```
+
+## 개발 서버 접속
+
+- 프론트엔드: http://localhost:3000
+- 백엔드 API: http://localhost:5000
+- Ollama: http://localhost:11434
+- 헬스 체크: http://localhost:5000/health
+
+## 코드 스타일
+
+### JavaScript/Node.js
+- ES6+ 문법 사용
+- `const`, `let` 사용 (var 금지)
+- async/await 사용
+- 에러 처리: try-catch 필수
+
+### React/JSX
+- 컴포넌트명: PascalCase
+- 함수명: camelCase
+- 파일명: 컴포넌트는 PascalCase, 유틸은 camelCase
+- Props 해체(Destructuring) 권장
+
+## 주요 기능
+
+### 1. 발음 분석
+- 사용자 음성 입력 받기
+- 정확도 계산
+- 피드백 제공
+
+### 2. 상황 기반 미션 생성
+- 사용자 상황 입력
+- 맞춤 영어 표현 생성
+- 발음 연습 문장 제공
+
+### 3. TTS (Text-to-Speech)
+- Web Speech API 사용 (기본)
+- Google Cloud TTS (선택)
+- 속도 조절 가능
+
+### 4. 학습 분야
+- 의료기기 (Medical)
+- 통신기술 (Telecom)
+- 금융 (Finance)
+- 기술 (Technology)
+- 자동차 (Automotive)
+
+## 문제 해결
+
+### Docker 빌드 실패
+```bash
+docker compose down
+docker system prune -a
+docker compose build --no-cache
+```
+
+### 포트 충돌
+```bash
+lsof -i :3000
+lsof -i :5000
+# docker-compose.yml에서 포트 변경
+```
+
+### API 요청 실패
+- `docker compose logs -f backend` 확인
+- `.env.local` 설정 확인
+- Ollama 상태 확인: `curl http://localhost:11434/api/tags`
+
+## 다음 개발 우선순위
+
+1. **STT (Speech-to-Text) 구현**
+   - 현재는 시뮬레이션
+   - 실제 음성 인식 필요
+
+2. **학습 데이터 저장**
+   - MongoDB 또는 PostgreSQL 연동
+   - 사용자 진행상황 저장
+
+3. **프론트엔드 스타일링**
+   - Tailwind CSS 또는 Material-UI
+   - 반응형 디자인
+
+4. **성능 최적화**
+   - 번들 크기 감소
+   - 캐싱 전략
+
+5. **배포 준비**
+   - 프로덕션 빌드
+   - 환경별 설정
+
+## 참고 문서
+
+- `docs/QUICK_START.md` - 빠른 시작
+- `docs/TTS_AND_AUDIO_GUIDE.md` - 음성 기능
+- `docs/SCENARIO_BASED_MISSIONS_GUIDE.md` - 미션 생성
+- `docs/API_ERROR_FIX_GUIDE.md` - 오류 해결
+
+## 협업 가이드
+
+### Cursor와 협업할 때
+1. 현재 폴더 구조 이해
+2. 파일 경로 정확히 확인
+3. API 스펙 준수
+4. 기존 코드 스타일 유지
+5. 변경사항 Git으로 관리
+
+### 질문할 때
+- 구체적인 오류 메시지 제시
+- 현재 코드 스니펫 포함
+- 원하는 결과 명확히 설명
+- 이전 시도한 방법 공유

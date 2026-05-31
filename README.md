@@ -13,7 +13,7 @@ AI 기반 영어 발음 교정 및 상황별 동적 학습 앱
 
 ```bash
 # 저장소 클론
-git clone https://github.com/YOUR_USERNAME/pronunciation-master.git
+git clone https://github.com/sangkny/pronunciation-master.git
 cd pronunciation-master
 
 # 환경 변수 설정
