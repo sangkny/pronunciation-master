@@ -4,25 +4,29 @@
 
 **프로젝트명:** Pronunciation Master  
 **목적:** AI 기반 영어 발음 교정 및 상황별 동적 학습 앱  
-**현재 상태:** Phase 1 완료 (100% ✅) + **Phase 2 완료 (100% ✅)**  
-**Phase 2:** Ontology + AOMD + Scoring + Frontend (100% ✅ 완료)  
-**다음 단계:** Phase 3 — 구독 서비스, 진도 추적 DB, 사용자 인증  
+**현재 상태:** Phase 1 완료 (100% ✅) + Phase 2 완료 (100% ✅) + **Phase 3 완료 (100% ✅)**  
+**Phase 3:** PostgreSQL + JWT 인증 + 구독 서비스 + AOMD Frontend (100% ✅ 완료)  
+**다음 단계:** Phase 4 — 음성 인식(STT), 실시간 발음 분석, 팀 대시보드  
 
 ---
 
-## 최종 상태 (2026-07-11)
+## 최종 상태 (2026-07-12)
 
-- **커밋:** `2717f63` (Phase 2 완료: AOMD + 점수 + Frontend)
-- **이전 커밋:** `5d7569f` (Ontology), `35bf094` (AOMD)
-- **브랜치:** `main` (GitHub 푸시 완료)
-- **모든 테스트 통과**
-  - Ontology API 5개 엔드포인트 ✅
-  - AOMD API `POST /api/aomd/feedback` ✅
-  - Scoring API `POST /api/scoring/calculate` ✅
-- **Docker build 성공** ✅
-- **Frontend build 성공** (`npm run build`) ✅
-- **브라우저** `http://localhost:5173` 정상 작동 ✅
-  - 분야 선택 → 난이도 → 학습 경로 → 개념 상세 → 미션 흐름 확인
+- **Phase 3:** PostgreSQL + 인증 + 구독 + AOMD Frontend (100% ✅)
+- **이전 커밋:** `2717f63` (Phase 2 완료)
+- **브랜치:** `main`
+- **Docker:** postgres:5432, backend:5000, frontend:5173
+- **API 테스트**
+  - PostgreSQL 5개 테이블 자동 생성 ✅
+  - `POST /api/auth/register` / `login` ✅
+  - JWT 인증 미들웨어 (`/api/*`) ✅
+  - `GET /api/subscription/tier` / `status` ✅
+  - AOMD 티어별 필터링 (Free: Advocate만) ✅
+- **Frontend**
+  - 로그인/회원가입 폼 ✅
+  - 구독 모달 (Free/Pro/Enterprise) ✅
+  - AOMDFeedbackPanel 4역할 카드 ✅
+  - PronunciationMission AOMD API 연동 ✅
 
 ---
 

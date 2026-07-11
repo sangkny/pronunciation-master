@@ -1,21 +1,57 @@
 class APIClient {
   constructor() {
     this.baseURL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+    this.token = null;
+  }
+
+  setToken(token) {
+    this.token = token;
+  }
+
+  getHeaders(includeAuth = true) {
+    const headers = { 'Content-Type': 'application/json' };
+    if (includeAuth && this.token) {
+      headers['Authorization'] = `Bearer ${this.token}`;
+    }
+    return headers;
   }
 
   async get(endpoint) {
-    const response = await fetch(`${this.baseURL}${endpoint}`);
-    if (!response.ok) throw new Error(`API error: ${response.status}`);
+    const response = await fetch(`${this.baseURL}${endpoint}`, {
+      headers: this.getHeaders(),
+    });
+    if (!response.ok) {
+      const err = new Error(`API error: ${response.status}`);
+      err.status = response.status;
+      throw err;
+    }
     return response.json();
   }
 
   async post(endpoint, data) {
     const response = await fetch(`${this.baseURL}${endpoint}`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: this.getHeaders(),
       body: JSON.stringify(data),
     });
-    if (!response.ok) throw new Error(`API error: ${response.status}`);
+    if (!response.ok) {
+      const err = new Error(`API error: ${response.status}`);
+      err.status = response.status;
+      throw err;
+    }
+    return response.json();
+  }
+
+  async postPublic(endpoint, data) {
+    const response = await fetch(`${this.baseURL}${endpoint}`, {
+      method: 'POST',
+      headers: this.getHeaders(false),
+      body: JSON.stringify(data),
+    });
+    if (!response.ok) {
+      const body = await response.json().catch(() => ({}));
+      throw new Error(body.error || `API error: ${response.status}`);
+    }
     return response.json();
   }
 
@@ -37,6 +73,14 @@ class APIClient {
 
   async calculateScore(params) {
     return this.post('/api/scoring/calculate', params);
+  }
+
+  async getSubscriptionTier() {
+    return this.get('/api/subscription/tier');
+  }
+
+  async getSubscriptionStatus() {
+    return this.get('/api/subscription/status');
   }
 }
 

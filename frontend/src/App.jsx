@@ -3,9 +3,12 @@ import {
   Mic, Volume2, CheckCircle, SkipForward, Home, Settings, BarChart3, 
   AlertCircle, Repeat2, Zap, BookOpen, Target, Edit2, Sparkles,
   Play, Pause, Download, Upload, X, ArrowLeft, ChevronRight,
-  Lock, Unlock, GraduationCap, ListOrdered
+  Lock, Unlock, GraduationCap, ListOrdered, LogOut, Crown, User
 } from 'lucide-react';
 import apiClient from './services/apiClient.js';
+import authService from './services/authService.js';
+import PronunciationMission from './components/PronunciationMission.jsx';
+import SubscriptionModal from './components/SubscriptionModal.jsx';
 
 const DIFFICULTY_OPTIONS = [
   { id: 'beginner', label: 'Beginner', labelKo: '초급', desc: '기초 개념부터 차근차근', emoji: '🌱' },
@@ -100,7 +103,13 @@ const SAMPLE_MISSIONS = {
 
 export default function EnhancedPronunciationMasterApp() {
   // ==================== 상태 관리 ====================
-  const [appState, setAppState] = useState('home'); // home, difficulty-select, learning-path, concept-detail, scenario-input, mission, stats
+  const [appState, setAppState] = useState('home');
+  const [user, setUser] = useState(null);
+  const [authMode, setAuthMode] = useState('login');
+  const [authForm, setAuthForm] = useState({ email: '', name: '', password: '' });
+  const [authError, setAuthError] = useState('');
+  const [authLoading, setAuthLoading] = useState(false);
+  const [showSubscription, setShowSubscription] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [userLevel, setUserLevel] = useState('beginner');
   const [learningPath, setLearningPath] = useState(null);
@@ -143,6 +152,38 @@ export default function EnhancedPronunciationMasterApp() {
   const audioContextRef = useRef(null);
   const mediaRecorderRef = useRef(null);
   const audioChunksRef = useRef([]);
+
+  useEffect(() => {
+    const restored = authService.restoreSession();
+    if (restored) setUser(restored);
+  }, []);
+
+  const handleAuth = async (e) => {
+    e.preventDefault();
+    setAuthError('');
+    setAuthLoading(true);
+    try {
+      const data = authMode === 'login'
+        ? await authService.login(authForm.email, authForm.password)
+        : await authService.register(authForm.email, authForm.name, authForm.password);
+      setUser(data.user || authService.getUser());
+    } catch (error) {
+      setAuthError(error.message);
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
+  const handleLogout = async () => {
+    await authService.logout();
+    setUser(null);
+    setAppState('home');
+  };
+
+  const handleTierUpgrade = (newTier) => {
+    setUser(prev => ({ ...prev, tier: newTier }));
+    authService.setUser({ ...user, tier: newTier });
+  };
 
   // ==================== TTS 함수 ====================
   
@@ -236,17 +277,7 @@ export default function EnhancedPronunciationMasterApp() {
       setScenarioMessages(prev => [...prev, analysisMessage]);
 
       // API 호출 (백엔드에서 구현)
-      const response = await fetch('http://localhost:5000/api/mission/generate-by-scenario', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          scenario: userScenario,
-          category: selectedCategory,
-          count: 5
-        })
-      });
-
-      const data = await response.json();
+      const data = await apiClient.generateScenarioMissions(userScenario, selectedCategory, 5);
 
       if (data.error) {
         throw new Error(data.error);
@@ -495,8 +526,82 @@ export default function EnhancedPronunciationMasterApp() {
     setConceptDetail(null);
   };
 
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white flex items-center justify-center p-4">
+        <div className="w-full max-w-md bg-white/5 border border-purple-500/30 rounded-2xl p-8 space-y-6">
+          <div className="text-center space-y-2">
+            <Zap className="w-10 h-10 text-purple-400 mx-auto" />
+            <h1 className="text-2xl font-bold">Pronunciation Master</h1>
+            <p className="text-gray-400 text-sm">로그인하여 발음 연습을 시작하세요</p>
+          </div>
+
+          <div className="flex gap-2">
+            <button
+              onClick={() => setAuthMode('login')}
+              className={`flex-1 py-2 rounded-lg text-sm font-semibold ${authMode === 'login' ? 'bg-purple-600' : 'bg-white/10'}`}
+            >
+              로그인
+            </button>
+            <button
+              onClick={() => setAuthMode('register')}
+              className={`flex-1 py-2 rounded-lg text-sm font-semibold ${authMode === 'register' ? 'bg-purple-600' : 'bg-white/10'}`}
+            >
+              회원가입
+            </button>
+          </div>
+
+          <form onSubmit={handleAuth} className="space-y-4">
+            {authMode === 'register' && (
+              <input
+                type="text"
+                placeholder="이름"
+                value={authForm.name}
+                onChange={(e) => setAuthForm(prev => ({ ...prev, name: e.target.value }))}
+                className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
+                required
+              />
+            )}
+            <input
+              type="email"
+              placeholder="이메일"
+              value={authForm.email}
+              onChange={(e) => setAuthForm(prev => ({ ...prev, email: e.target.value }))}
+              className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
+              required
+            />
+            <input
+              type="password"
+              placeholder="비밀번호 (6자 이상)"
+              value={authForm.password}
+              onChange={(e) => setAuthForm(prev => ({ ...prev, password: e.target.value }))}
+              className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
+              required
+              minLength={6}
+            />
+            {authError && <p className="text-red-400 text-sm">{authError}</p>}
+            <button
+              type="submit"
+              disabled={authLoading}
+              className="w-full py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 rounded-lg font-semibold disabled:opacity-50"
+            >
+              {authLoading ? '처리 중...' : authMode === 'login' ? '로그인' : '회원가입'}
+            </button>
+          </form>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white font-['Segoe UI']">
+      <SubscriptionModal
+        isOpen={showSubscription}
+        onClose={() => setShowSubscription(false)}
+        currentTier={user?.tier || 'Free'}
+        onUpgrade={handleTierUpgrade}
+      />
+
       {/* 상단 바 */}
       <div className="sticky top-0 z-50 backdrop-blur-md bg-black/30 border-b border-purple-500/30">
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
@@ -508,8 +613,24 @@ export default function EnhancedPronunciationMasterApp() {
             <span className="text-xl font-bold">Pronunciation Master</span>
           </button>
 
-          <div className="flex items-center gap-4">
-            <div className="hidden sm:flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full">
+          <div className="flex items-center gap-2 sm:gap-4">
+            <span className="hidden sm:flex items-center gap-1 text-sm bg-white/10 px-3 py-1.5 rounded-full">
+              <User className="w-3.5 h-3.5" />
+              {user.name}
+            </span>
+            <button
+              onClick={() => setShowSubscription(true)}
+              className={`flex items-center gap-1 text-xs sm:text-sm px-3 py-1.5 rounded-full font-semibold ${
+                user.tier === 'Pro' ? 'bg-purple-600/40 text-purple-200' :
+                user.tier === 'Enterprise' ? 'bg-yellow-600/40 text-yellow-200' :
+                'bg-white/10 hover:bg-purple-600/30'
+              }`}
+            >
+              <Crown className="w-3.5 h-3.5" />
+              {user.tier || 'Free'}
+              {user.tier === 'Free' && <span className="hidden sm:inline ml-1">· Pro 업그레이드</span>}
+            </button>
+            <div className="hidden sm:flex items-center gap-2 bg-white/10 px-3 py-1.5 rounded-full">
               <Volume2 className="w-4 h-4" />
               <label className="flex items-center gap-2 cursor-pointer">
                 <input
@@ -526,6 +647,13 @@ export default function EnhancedPronunciationMasterApp() {
               className="p-2 hover:bg-white/10 rounded-lg transition-colors"
             >
               <BarChart3 className="w-5 h-5" />
+            </button>
+            <button
+              onClick={handleLogout}
+              className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+              title="로그아웃"
+            >
+              <LogOut className="w-5 h-5" />
             </button>
           </div>
         </div>
@@ -861,201 +989,21 @@ export default function EnhancedPronunciationMasterApp() {
 
         {/* ==================== MISSION 화면 ==================== */}
         {appState === 'mission' && currentMission && (
-          <div className="max-w-2xl mx-auto space-y-6">
-            {/* 진행도 */}
-            <div className="space-y-2">
-              <div className="flex justify-between items-center">
-                <span className="text-sm font-semibold text-purple-300">
-                  시도: {missionProgress.attempts} / {missionProgress.maxAttempts}
-                </span>
-                <span className="text-sm text-gray-400">
-                  {missionProgress.status === 'completed' ? '✅ 완료!' : '진행 중'}
-                </span>
-              </div>
-              <div className="w-full bg-white/10 rounded-full h-2">
-                <div
-                  className="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full transition-all duration-500"
-                  style={{
-                    width: `${(missionProgress.attempts / missionProgress.maxAttempts) * 100}%`
-                  }}
-                />
-              </div>
-            </div>
-
-            {/* 원문 문장 */}
-            <div className="bg-gradient-to-br from-white/10 to-white/5 border border-purple-400/30 rounded-lg p-6 space-y-4">
-              <h2 className="text-lg font-bold">읽어야 할 문장</h2>
-              <p className="text-2xl font-semibold text-purple-200 leading-relaxed">
-                {currentMission.sentence}
-              </p>
-
-              {/* 음성 제어 버튼 */}
-              <div className="flex gap-2 flex-wrap">
-                <button
-                  onClick={() => speakText(currentMission.sentence, 'en-US', 1.0)}
-                  disabled={isPlayingAI}
-                  className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 px-4 py-2 rounded-lg transition-colors text-sm"
-                >
-                  <Volume2 className="w-4 h-4" />
-                  {isPlayingAI ? '재생 중...' : '정상 속도'}
-                </button>
-
-                <button
-                  onClick={() => speakTextWithSpeed(currentMission.sentence, 'slow')}
-                  disabled={isPlayingAI}
-                  className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 px-4 py-2 rounded-lg transition-colors text-sm"
-                >
-                  <Volume2 className="w-4 h-4" />
-                  느리게
-                </button>
-
-                <button
-                  onClick={() => speakTextWithSpeed(currentMission.sentence, 'fast')}
-                  disabled={isPlayingAI}
-                  className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 px-4 py-2 rounded-lg transition-colors text-sm"
-                >
-                  <Volume2 className="w-4 h-4" />
-                  빠르게
-                </button>
-              </div>
-
-              {/* 포커스 영역 */}
-              <div className="space-y-2">
-                <p className="text-sm font-semibold text-gray-300">집중할 단어들:</p>
-                <div className="flex flex-wrap gap-2">
-                  {currentMission.focusPoints.map((point, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => speakText(point)}
-                      className={`px-3 py-1 rounded-full text-sm font-medium transition-colors cursor-pointer ${
-                        missionProgress.focusPointsCompleted.includes(point)
-                          ? 'bg-green-500/30 border border-green-500/50 text-green-200 hover:bg-green-500/40'
-                          : 'bg-orange-500/20 border border-orange-500/30 text-orange-200 hover:bg-orange-500/30'
-                      }`}
-                      title="클릭해서 발음 듣기"
-                    >
-                      {point}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* 음성 녹음 섹션 */}
-            <div className="bg-gradient-to-br from-white/10 to-white/5 border border-purple-400/30 rounded-lg p-6 space-y-4">
-              <h2 className="text-lg font-bold">당신의 발음 녹음</h2>
-
-              {!recordedAudio ? (
-                <button
-                  onClick={recordingState === 'recording' ? stopRecording : startRecording}
-                  disabled={recordingState === 'processing'}
-                  className={`w-full py-4 rounded-lg font-semibold flex items-center justify-center gap-3 transition-all duration-300 ${
-                    recordingState === 'recording'
-                      ? 'bg-red-500 hover:bg-red-600 animate-pulse'
-                      : recordingState === 'processing'
-                      ? 'bg-gray-600 opacity-50 cursor-not-allowed'
-                      : 'bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700'
-                  }`}
-                >
-                  <Mic className="w-5 h-5" />
-                  {recordingState === 'recording'
-                    ? '녹음 중지'
-                    : recordingState === 'processing'
-                    ? 'AI가 분석 중...'
-                    : '음성 녹음 시작'}
-                </button>
-              ) : (
-                <button
-                  onClick={playUserRecording}
-                  disabled={isPlayingUser}
-                  className="w-full py-3 bg-white/10 hover:bg-white/20 rounded-lg flex items-center justify-center gap-2 transition-colors"
-                >
-                  {isPlayingUser ? (
-                    <>
-                      <Pause className="w-4 h-4" />
-                      재생 중...
-                    </>
-                  ) : (
-                    <>
-                      <Play className="w-4 h-4" />
-                      녹음된 음성 재생
-                    </>
-                  )}
-                </button>
-              )}
-
-              {/* AI 피드백 */}
-              {feedback && (
-                <div className="space-y-4 bg-black/30 rounded-lg p-4 border border-white/10">
-                  <div className="flex items-center justify-between">
-                    <span className="font-semibold">발음 정확도</span>
-                    <span className="text-2xl font-bold text-green-400">{feedback.overallScore}%</span>
-                  </div>
-
-                  {feedback.completedPoints.length > 0 && (
-                    <div className="space-y-2">
-                      <p className="text-sm font-semibold text-green-300">✅ 잘한 부분:</p>
-                      <div className="space-y-1">
-                        {feedback.completedPoints.map((point, idx) => (
-                          <p key={idx} className="text-sm text-green-200 ml-2">• {point}</p>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {feedback.remainingPoints.length > 0 && (
-                    <div className="space-y-2">
-                      <p className="text-sm font-semibold text-orange-300">⚠️ 개선할 부분:</p>
-                      {feedback.suggestions.map((suggestion, idx) => (
-                        <p key={idx} className="text-sm text-orange-200 ml-2">• {suggestion}</p>
-                      ))}
-                    </div>
-                  )}
-
-                  {feedback.isPerfect && (
-                    <div className="bg-green-500/20 border border-green-500/50 rounded p-3">
-                      <p className="text-green-200 font-semibold">🎉 완벽합니다! 다음 미션으로 진행하세요.</p>
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-
-            {/* 액션 버튼 */}
-            <div className="flex gap-3">
-              {missionProgress.status === 'completed' ? (
-                <button
-                  onClick={completeMission}
-                  className="flex-1 py-3 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 rounded-lg font-semibold flex items-center justify-center gap-2 transition-all"
-                >
-                  <CheckCircle className="w-5 h-5" />
-                  완료 후 다음 미션
-                </button>
-              ) : (
-                <>
-                  <button
-                    onClick={() => {
-                      setRecordedAudio(null);
-                      setFeedback(null);
-                    }}
-                    disabled={!recordedAudio || recordingState !== 'idle'}
-                    className="flex-1 py-3 bg-purple-600 hover:bg-purple-700 disabled:bg-gray-600 disabled:cursor-not-allowed rounded-lg font-semibold flex items-center justify-center gap-2 transition-colors"
-                  >
-                    <Repeat2 className="w-4 h-4" />
-                    다시 시도
-                  </button>
-
-                  <button
-                    onClick={skipMission}
-                    className="flex-1 py-3 bg-orange-600/50 hover:bg-orange-600/70 rounded-lg font-semibold flex items-center justify-center gap-2 transition-colors"
-                  >
-                    <SkipForward className="w-4 h-4" />
-                    스킵
-                  </button>
-                </>
-              )}
-            </div>
-          </div>
+          <PronunciationMission
+            mission={currentMission}
+            conceptDetail={conceptDetail}
+            selectedCategory={selectedCategory}
+            userLevel={userLevel}
+            userTier={user?.tier || 'Free'}
+            speakText={speakText}
+            speakTextWithSpeed={speakTextWithSpeed}
+            onUpgrade={() => setShowSubscription(true)}
+            onComplete={(fb) => {
+              setFeedback(fb);
+              completeMission();
+            }}
+            onSkip={skipMission}
+          />
         )}
 
         {/* ==================== STATS 화면 ==================== */}

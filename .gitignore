@@ -48,6 +48,7 @@ config/secrets.json
 # 데이터베이스
 *.db
 *.sqlite
+data/postgres/
 
 # 기타
 .DS_Store
