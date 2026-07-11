@@ -2,8 +2,16 @@ import React, { useState, useRef, useEffect } from 'react';
 import { 
   Mic, Volume2, CheckCircle, SkipForward, Home, Settings, BarChart3, 
   AlertCircle, Repeat2, Zap, BookOpen, Target, Edit2, Sparkles,
-  Play, Pause, Download, Upload, X, ArrowLeft, ChevronRight
+  Play, Pause, Download, Upload, X, ArrowLeft, ChevronRight,
+  Lock, Unlock, GraduationCap, ListOrdered
 } from 'lucide-react';
+import apiClient from './services/apiClient.js';
+
+const DIFFICULTY_OPTIONS = [
+  { id: 'beginner', label: 'Beginner', labelKo: '초급', desc: '기초 개념부터 차근차근', emoji: '🌱' },
+  { id: 'intermediate', label: 'Intermediate', labelKo: '중급', desc: '실무 수준의 개념 학습', emoji: '📈' },
+  { id: 'advanced', label: 'Advanced', labelKo: '고급', desc: '전문가 수준의 심화 학습', emoji: '🎯' },
+];
 
 const CATEGORIES = [
   { id: 'medical', name: '의료기기 (Medical Devices)', emoji: '🏥', shortName: 'Medical' },
@@ -92,8 +100,14 @@ const SAMPLE_MISSIONS = {
 
 export default function EnhancedPronunciationMasterApp() {
   // ==================== 상태 관리 ====================
-  const [appState, setAppState] = useState('home'); // home, scenario-input, mission, results, stats
+  const [appState, setAppState] = useState('home'); // home, difficulty-select, learning-path, concept-detail, scenario-input, mission, stats
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const [userLevel, setUserLevel] = useState('beginner');
+  const [learningPath, setLearningPath] = useState(null);
+  const [selectedConcept, setSelectedConcept] = useState(null);
+  const [conceptDetail, setConceptDetail] = useState(null);
+  const [completedConcepts, setCompletedConcepts] = useState([]);
+  const [isLoadingPath, setIsLoadingPath] = useState(false);
   const [currentMission, setCurrentMission] = useState(null);
   const [userScenario, setUserScenario] = useState('');
   const [generatedMissions, setGeneratedMissions] = useState([]);
@@ -366,6 +380,9 @@ export default function EnhancedPronunciationMasterApp() {
     };
 
     setCompletedMissions([...completedMissions, missionData]);
+    if (currentMission?.id && !completedConcepts.includes(currentMission.id)) {
+      setCompletedConcepts(prev => [...prev, currentMission.id]);
+    }
     setDailyStats(prev => ({
       ...prev,
       completedToday: prev.completedToday + 1,
@@ -418,11 +435,64 @@ export default function EnhancedPronunciationMasterApp() {
 
   const handleCategorySelect = (categoryId) => {
     setSelectedCategory(categoryId);
-    setAppState('scenario-input');
+    setAppState('difficulty-select');
+  };
+
+  const handleDifficultySelect = async (level) => {
+    setUserLevel(level);
+    setIsLoadingPath(true);
+    try {
+      const data = await apiClient.getLearningPath(selectedCategory, level);
+      setLearningPath(data);
+      setAppState('learning-path');
+    } catch (error) {
+      console.error('학습 경로 로드 실패:', error);
+      alert('학습 경로를 불러올 수 없습니다. 서버를 확인해주세요.');
+    } finally {
+      setIsLoadingPath(false);
+    }
+  };
+
+  const handleConceptSelect = async (conceptId) => {
+    try {
+      const data = await apiClient.getConcept(conceptId);
+      setSelectedConcept(conceptId);
+      setConceptDetail(data.concept);
+      setAppState('concept-detail');
+    } catch (error) {
+      console.error('개념 로드 실패:', error);
+      alert('개념 정보를 불러올 수 없습니다.');
+    }
+  };
+
+  const startConceptMission = () => {
+    if (!conceptDetail?.vocabulary?.length) return;
+    const vocab = conceptDetail.vocabulary[0];
+    const mission = {
+      id: conceptDetail.id,
+      sentence: vocab.examples?.[0] || `Practice the word: ${vocab.word}`,
+      focusPoints: conceptDetail.vocabulary.slice(0, 3).map(v => v.word),
+      difficulty: conceptDetail.difficulty,
+      isGenerated: true,
+      conceptName: conceptDetail.name,
+    };
+    loadGeneratedMission(mission);
   };
 
   const handleBackToCategories = () => {
     setAppState('home');
+    setLearningPath(null);
+    setConceptDetail(null);
+  };
+
+  const handleBackToDifficulty = () => {
+    setAppState('difficulty-select');
+    setLearningPath(null);
+  };
+
+  const handleBackToLearningPath = () => {
+    setAppState('learning-path');
+    setConceptDetail(null);
   };
 
   return (
@@ -536,6 +606,166 @@ export default function EnhancedPronunciationMasterApp() {
           </div>
         )}
 
+        {/* ==================== 난이도 선택 화면 ==================== */}
+        {appState === 'difficulty-select' && selectedCategoryData && selectedStyle && (
+          <div className="max-w-2xl mx-auto space-y-6">
+            <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-medium ${selectedStyle.badge}`}>
+              <span className="text-lg">{selectedCategoryData.emoji}</span>
+              <span>{selectedCategoryData.name}</span>
+            </div>
+
+            <div className="space-y-2">
+              <h2 className="text-xl sm:text-2xl font-bold flex items-center gap-2">
+                <GraduationCap className={`w-6 h-6 ${selectedStyle.accent}`} />
+                난이도 선택
+              </h2>
+              <p className="text-gray-400 text-sm">수준에 맞는 학습 경로가 자동으로 생성됩니다</p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {DIFFICULTY_OPTIONS.map(opt => (
+                <button
+                  key={opt.id}
+                  onClick={() => handleDifficultySelect(opt.id)}
+                  disabled={isLoadingPath}
+                  className={`p-5 rounded-xl border transition-all duration-300 hover:scale-[1.03] active:scale-[0.98] disabled:opacity-50 ${selectedStyle.card}`}
+                >
+                  <div className="text-3xl mb-2">{opt.emoji}</div>
+                  <h3 className="font-bold">{opt.labelKo}</h3>
+                  <p className="text-xs text-gray-400 mt-1">{opt.label}</p>
+                  <p className="text-xs text-gray-500 mt-2">{opt.desc}</p>
+                </button>
+              ))}
+            </div>
+
+            <button
+              onClick={() => { setAppState('scenario-input'); }}
+              className={`w-full py-2 text-sm rounded-lg transition-colors ${selectedStyle.quickStart}`}
+            >
+              또는 상황 직접 입력하기 →
+            </button>
+
+            <button onClick={handleBackToCategories} className="w-full py-3 bg-white/10 hover:bg-white/20 rounded-lg flex items-center justify-center gap-2">
+              <ArrowLeft className="w-4 h-4" /> 이전 (분야 선택)
+            </button>
+          </div>
+        )}
+
+        {/* ==================== 학습 경로 화면 ==================== */}
+        {appState === 'learning-path' && learningPath && selectedStyle && (
+          <div className="max-w-2xl mx-auto space-y-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-xl sm:text-2xl font-bold flex items-center gap-2">
+                  <ListOrdered className={`w-6 h-6 ${selectedStyle.accent}`} />
+                  학습 경로
+                </h2>
+                <p className="text-sm text-gray-400 mt-1">
+                  {learningPath.domainName} · {userLevel} · {learningPath.totalConcepts}개 개념
+                </p>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              {learningPath.path.map((item, idx) => {
+                const isCompleted = completedConcepts.includes(item.conceptId);
+                const isLocked = item.status === 'locked';
+                const isAvailable = item.status === 'available' && !isCompleted;
+
+                return (
+                  <button
+                    key={item.conceptId}
+                    onClick={() => !isLocked && handleConceptSelect(item.conceptId)}
+                    disabled={isLocked}
+                    className={`w-full text-left p-4 rounded-xl border transition-all duration-200 flex items-center gap-4 ${
+                      isCompleted ? 'bg-green-500/10 border-green-400/40' :
+                      isAvailable ? `${selectedStyle.panel} hover:bg-white/10 cursor-pointer` :
+                      'bg-white/5 border-white/10 opacity-50 cursor-not-allowed'
+                    }`}
+                  >
+                    <div className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold ${
+                      isCompleted ? 'bg-green-500/30 text-green-300' :
+                      isAvailable ? 'bg-white/20 text-white' : 'bg-white/10 text-gray-500'
+                    }`}>
+                      {isCompleted ? <CheckCircle className="w-5 h-5" /> :
+                       isLocked ? <Lock className="w-4 h-4" /> : idx + 1}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-semibold truncate">{item.name}</h3>
+                      <p className="text-xs text-gray-400 mt-0.5">
+                        {item.difficulty} · {item.vocabularyCount}개 어휘
+                        {isCompleted && ' · ✅ 완료'}
+                        {isLocked && ' · 🔒 선행 개념 필요'}
+                      </p>
+                    </div>
+                    {isAvailable && <ChevronRight className="w-5 h-5 text-gray-400 flex-shrink-0" />}
+                  </button>
+                );
+              })}
+            </div>
+
+            <button onClick={handleBackToDifficulty} className="w-full py-3 bg-white/10 hover:bg-white/20 rounded-lg flex items-center justify-center gap-2">
+              <ArrowLeft className="w-4 h-4" /> 이전 (난이도 선택)
+            </button>
+          </div>
+        )}
+
+        {/* ==================== 개념 상세 화면 ==================== */}
+        {appState === 'concept-detail' && conceptDetail && selectedStyle && (
+          <div className="max-w-2xl mx-auto space-y-6">
+            <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full border text-xs font-medium ${selectedStyle.badge}`}>
+              {conceptDetail.difficulty}
+            </div>
+
+            <div>
+              <h2 className="text-2xl font-bold">{conceptDetail.name}</h2>
+              <p className="text-gray-400 text-sm mt-1">{conceptDetail.domainName}</p>
+            </div>
+
+            <div className="space-y-3">
+              <h3 className="font-semibold flex items-center gap-2">
+                <BookOpen className={`w-5 h-5 ${selectedStyle.accent}`} />
+                핵심 어휘 ({conceptDetail.vocabulary?.length || 0})
+              </h3>
+              {conceptDetail.vocabulary?.map((vocab, idx) => (
+                <div key={idx} className={`p-4 rounded-xl border bg-white/5 ${selectedStyle.panel}`}>
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <span className="font-bold text-lg">{vocab.word}</span>
+                      <span className="text-sm text-gray-400 ml-2">{vocab.pronunciation}</span>
+                    </div>
+                    <button
+                      onClick={() => speakText(vocab.word)}
+                      className="p-1.5 bg-white/10 hover:bg-white/20 rounded-lg"
+                      title="발음 듣기"
+                    >
+                      <Volume2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                  <p className="text-sm text-gray-300 mt-2">{vocab.definition}</p>
+                  {vocab.examples?.map((ex, i) => (
+                    <p key={i} className="text-xs text-gray-400 mt-1 pl-2 border-l-2 border-white/20">
+                      {ex}
+                    </p>
+                  ))}
+                </div>
+              ))}
+            </div>
+
+            <button
+              onClick={startConceptMission}
+              className={`w-full py-3 bg-gradient-to-r rounded-lg font-semibold flex items-center justify-center gap-2 transition-all active:scale-[0.98] ${selectedStyle.button}`}
+            >
+              <Target className="w-5 h-5" />
+              이 개념으로 발음 연습 시작
+            </button>
+
+            <button onClick={handleBackToLearningPath} className="w-full py-3 bg-white/10 hover:bg-white/20 rounded-lg flex items-center justify-center gap-2">
+              <ArrowLeft className="w-4 h-4" /> 학습 경로로 돌아가기
+            </button>
+          </div>
+        )}
+
         {/* ==================== 상황 입력 화면 ==================== */}
         {appState === 'scenario-input' && selectedCategoryData && selectedStyle && (
           <div className="max-w-2xl mx-auto space-y-6">
@@ -620,11 +850,11 @@ export default function EnhancedPronunciationMasterApp() {
             </div>
 
             <button
-              onClick={handleBackToCategories}
+              onClick={handleBackToDifficulty}
               className="w-full py-3 bg-white/10 hover:bg-white/20 rounded-lg transition-colors flex items-center justify-center gap-2 font-medium"
             >
               <ArrowLeft className="w-4 h-4" />
-              이전 (분야 선택)
+              이전 (난이도 선택)
             </button>
           </div>
         )}

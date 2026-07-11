@@ -4,9 +4,9 @@
 
 **프로젝트명:** Pronunciation Master  
 **목적:** AI 기반 영어 발음 교정 및 상황별 동적 학습 앱  
-**현재 상태:** Phase 1 완료 (100%) + Phase 2 Ontology 완료 + **AOMD 피드백 엔진 완료**  
-**진행률:** Phase 2 AOMD 완료, 다음: 점수 시스템  
-**다음 단계:** Phase 2 점수 시스템, Frontend 연동  
+**현재 상태:** Phase 2 완료 (100%) — Ontology + AOMD + Scoring + Frontend 연동  
+**진행률:** Phase 2 전체 완료, 다음: Phase 3 구독 서비스  
+**다음 단계:** Phase 3 구독/결제, 진도 추적 DB  
 
 ---
 
@@ -35,11 +35,16 @@
   - Advocate/Opposite/Meditator/Decisioner 4역할 피드백
   - LLM 연동 + 템플릿 폴백, Promise.all 병렬 처리
 - ✅ **AOMD API** `POST /api/aomd/feedback`
+- ✅ **Scoring Engine** (`scoringEngine.js`)
+  - 0-100 채점 (음절 40 + 유창성 30 + 문맥 20 + 회화 10)
+  - 난이도/레벨별 보정
+- ✅ **Scoring API** `POST /api/scoring/calculate`
 
 ### 프론트엔드
 - ✅ React 앱 구축 (Vite + Tailwind CSS)
 - ✅ 5가지 분야 선택 UI (분야별 색상 테마)
-- ✅ 분야 선택 → 상황 입력 화면 전환
+- ✅ **Ontology 학습 흐름** (분야 → 난이도 → 학습 경로 → 개념 상세 → 미션)
+- ✅ 난이도 선택, 학습 경로 시각화, 개념 상세 (IPA/예문)
 - ✅ TTS 기본 구현 (Web Speech API)
 - ✅ 미션 연습 화면 (녹음, 피드백 시뮬레이션)
 
@@ -48,6 +53,7 @@
 - ✅ 협업 가이드 (Cursor, Claude Code)
 - ✅ **ONTOLOGY_DESIGN.md** (Phase 2 설계 문서)
 - ✅ **AOMD_FRAMEWORK.md** (AOMD 4역할 설계 문서)
+- ✅ **SCORING_SYSTEM.md** (0-100 채점 체계)
 - ✅ 개발 환경 문서화
 
 ---
@@ -401,6 +407,15 @@ curl -X POST http://localhost:5000/api/aomd/feedback \
 # 응답: { "success": true, "advocate": "...", "opposite": "...", "meditator": "...", "decisioner": "..." }
 ```
 
+#### POST /api/scoring/calculate
+```bash
+curl -X POST http://localhost:5000/api/scoring/calculate \
+  -H "Content-Type: application/json" \
+  -d '{"userPronunciation":"ih-MAJ-ing","correctPronunciation":"IM-ij-ing","userLevel":"intermediate","difficulty":"intermediate"}'
+
+# 응답: { "success": true, "totalScore": 48, "breakdown": {...}, "grade": "developing" }
+```
+
 ---
 
 ## 📦 주요 의존성
@@ -460,16 +475,16 @@ curl -X POST http://localhost:5000/api/aomd/feedback \
 
 ## 🎯 다음 우선순위 (Phase 2 후반)
 
-### 즉시 시작 가능
-- [ ] **점수 시스템** (`backend/src/services/scoringEngine.js`)
-  - 0-100 발음 정확도 채점
-  - 음절(40) + 유창성(30) + 문맥(20) + 회화성(10)
-- [ ] **Frontend Ontology/AOMD 연동**
-  - 학습 경로 표시, AOMD 피드백 렌더링
+### Phase 3 (다음)
+- [ ] 구독 서비스 (Free/Pro/Enterprise)
+- [ ] PostgreSQL 진도 추적 DB
+- [ ] AOMD 피드백 Frontend 렌더링
 
 ### Phase 2 완료 항목
 - [x] Ontology 설계 및 API
-- [x] AOMD 피드백 엔진 (4역할, POST /api/aomd/feedback)
+- [x] AOMD 피드백 엔진
+- [x] 점수 시스템 (scoringEngine + API)
+- [x] Frontend Ontology 학습 경로 연동
 
 ---
 
@@ -514,4 +529,4 @@ curl -X POST http://localhost:5000/api/aomd/feedback \
 **Cursor와 함께 효율적으로 개발하세요! 🚀**
 
 이 문서는 지속적으로 업데이트됩니다.
-마지막 업데이트: 2026-07-11 (Phase 2 AOMD 피드백 엔진 완료)
+마지막 업데이트: 2026-07-12 (Phase 2 완료 100%)
