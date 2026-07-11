@@ -4,16 +4,61 @@
 
 **프로젝트명:** Pronunciation Master  
 **목적:** AI 기반 영어 발음 교정 및 상황별 동적 학습 앱  
-**현재 상태:** Phase 1 완료 (100% ✅) + Phase 2 완료 (100% ✅) + **Phase 3 완료 (100% ✅)**  
-**Phase 3:** PostgreSQL + JWT 인증 + 구독 서비스 + AOMD Frontend (100% ✅ 완료)  
-**다음 단계:** Phase 4 — 음성 인식(STT), 실시간 발음 분석, 팀 대시보드  
+**현재 상태:** Phase 1–3 전체 완료 (100% ✅)  
+**최종 커밋:** `cacba9d` (Phase 3: PostgreSQL + 인증 + 구독 + AOMD Frontend)  
+**다음 단계:** Phase 4 — Stripe 실결제, STT 개선, 모바일 앱, 국제화  
+**장기 전략:** `LONG_TERM_STRATEGY_ONTOLOGY_AOMD_SAAS.md` 참고
+
+---
+
+## 프로젝트 완료 현황
+
+### Phase 1: Web MVP (100% ✅)
+- Frontend: React + Tailwind CSS, 5개 분야 UI
+- Backend: Express + LMStudio Gemma 4
+- Docker: backend + frontend 컨테이너
+- TTS 기본 구현 (Web Speech API)
+- 최종 커밋: `5d7569f`
+
+### Phase 2: Ontology + AOMD + Scoring + Frontend (100% ✅)
+- Ontology: 5개 도메인, 50개 개념, 250개 어휘
+- AOMD: Advocate/Opposite/Meditator/Decisioner 4역할 피드백 엔진
+- Scoring: 0-100 발음 정확도 채점 시스템
+- Frontend: 분야 → 난이도 → 학습 경로 → 개념 상세 → 미션 흐름
+- 최종 커밋: `2717f63`
+
+### Phase 3: PostgreSQL + 인증 + 구독 + AOMD Frontend (100% ✅)
+- Part 1: PostgreSQL (users, user_progress, user_scores, subscriptions, daily_usage)
+- Part 2: JWT 인증 (회원가입/로그인, Bearer 토큰)
+- Part 3: 구독 서비스 (Free/Pro/Enterprise, Stripe mock)
+- Part 4: AOMD 피드백 UI (4역할 카드, 티어별 조건부 렌더링)
+- 최종 커밋: `cacba9d`
+
+---
+
+## Phase 4 계획 (향후)
+- Stripe 실제 결제 통합 (현재 테스트/mock 키)
+- 음성 인식(STT) 개선 — 더 정확한 IPA 인식
+- 모바일 앱 (React Native)
+- 국제화 (다국어 지원)
+- 고급 분석 (사용자 진도 리포트, Leaderboard)
+
+---
+
+## 마지막 업데이트
+- **날짜:** 2026-07-12
+- **상태:** 전체 기능 100% 완료 (Phase 1–3)
+- **브랜치:** `main`
+- **Docker:** postgres:5432, backend:5000, frontend:5173 (LMStudio는 호스트:1234)
+- **테스트:** docker compose 정상 작동, API/DB/Frontend 검증 완료
 
 ---
 
 ## 최종 상태 (2026-07-12)
 
 - **Phase 3:** PostgreSQL + 인증 + 구독 + AOMD Frontend (100% ✅)
-- **이전 커밋:** `2717f63` (Phase 2 완료)
+- **최종 커밋:** `cacba9d`
+- **이전 커밋:** `2717f63` (Phase 2), `5d7569f` (Phase 1 Ontology)
 - **브랜치:** `main`
 - **Docker:** postgres:5432, backend:5000, frontend:5173
 - **API 테스트**
@@ -33,170 +78,80 @@
 ## ✅ 완료된 작업
 
 ### 인프라 & 환경
-- ✅ Docker Compose 전체 환경 구성
-  - Ollama (LLM 서버)
-  - Express.js Backend
-  - React Frontend (Vite)
-- ✅ 포트 설정 완료
-  - Backend: 5000
-  - Frontend: 5173
-  - Ollama: 11434
+- ✅ Docker Compose: postgres + backend + frontend (3서비스)
+- ✅ PostgreSQL 16 (pronunciation_master DB)
+- ✅ 포트: Backend 5000, Frontend 5173, PostgreSQL 5432
+- ✅ LMStudio Gemma 4 (호스트:1234, Docker 외부)
 
-### 백엔드
-- ✅ Express.js 서버 구축
-- ✅ `/api/mission/generate-by-scenario` 엔드포인트
-- ✅ LLM Manager (LMStudio Gemma 4 통합)
-- ✅ 에러 처리 및 샘플 데이터 폴백
-- ✅ **Ontology Engine** (`ontologyEngine.js`)
-  - 5개 도메인, 50개 개념, 250개 어휘
-  - 학습 경로 생성, 다음 개념 추천
-- ✅ **Ontology API** 5개 엔드포인트
-- ✅ **AOMD Engine** (`aomdEngine.js`)
-  - Advocate/Opposite/Meditator/Decisioner 4역할 피드백
-  - LLM 연동 + 템플릿 폴백, Promise.all 병렬 처리
-- ✅ **AOMD API** `POST /api/aomd/feedback`
-- ✅ **Scoring Engine** (`scoringEngine.js`)
-  - 0-100 채점 (음절 40 + 유창성 30 + 문맥 20 + 회화 10)
-  - 난이도/레벨별 보정
-- ✅ **Scoring API** `POST /api/scoring/calculate`
+### 백엔드 (Phase 1–3)
+- ✅ Express.js 서버 + JWT 인증 미들웨어
+- ✅ LLM Manager (LMStudio) + 샘플 폴백
+- ✅ Ontology Engine — 5도메인, 50개념, 250어휘
+- ✅ AOMD Engine — 4역할 피드백, 티어별 필터링
+- ✅ Scoring Engine — 0-100 채점
+- ✅ DB Manager — PostgreSQL 5테이블 CRUD
+- ✅ Auth Manager — bcrypt + JWT (24h)
+- ✅ Subscription Manager — Free/Pro/Enterprise
+- ✅ Stripe Manager — mock 결제 (테스트 키)
 
-### 프론트엔드
-- ✅ React 앱 구축 (Vite + Tailwind CSS)
-- ✅ 5가지 분야 선택 UI (분야별 색상 테마)
-- ✅ **Ontology 학습 흐름** (분야 → 난이도 → 학습 경로 → 개념 상세 → 미션)
-- ✅ 난이도 선택, 학습 경로 시각화, 개념 상세 (IPA/예문)
-- ✅ TTS 기본 구현 (Web Speech API)
-- ✅ 미션 연습 화면 (녹음, 피드백 시뮬레이션)
+### 프론트엔드 (Phase 1–3)
+- ✅ React + Tailwind CSS, 반응형 디자인
+- ✅ 로그인/회원가입 + localStorage 토큰 복구
+- ✅ Ontology 학습 흐름 (분야→난이도→경로→개념→미션)
+- ✅ PronunciationMission — 녹음→점수→AOMD API
+- ✅ AOMDFeedbackPanel — 4역할 카드 (Free: Advocate만)
+- ✅ SubscriptionModal — 3티어 업그레이드 UI
+- ✅ TTS (Web Speech API)
 
 ### DevOps & 문서
-- ✅ Git 저장소 (main 브랜치)
-- ✅ 협업 가이드 (Cursor, Claude Code)
-- ✅ **ONTOLOGY_DESIGN.md** (Phase 2 설계 문서)
-- ✅ **AOMD_FRAMEWORK.md** (AOMD 4역할 설계 문서)
-- ✅ **SCORING_SYSTEM.md** (0-100 채점 체계)
-- ✅ 개발 환경 문서화
+- ✅ Git 저장소 (main, auto-push hook)
+- ✅ ONTOLOGY_DESIGN.md, AOMD_FRAMEWORK.md, SCORING_SYSTEM.md
+- ✅ DATABASE_SCHEMA.md, AUTHENTICATION_FLOW.md, SUBSCRIPTION_TIERS.md
+- ✅ AOMD_FEEDBACK_UI.md, LONG_TERM_STRATEGY_ONTOLOGY_AOMD_SAAS.md
 
 ---
 
 ## 🏗️ 현재 프로젝트 구조
 
 ```
-Learning-Languages/pronunciation-master/
-├── ONTOLOGY_DESIGN.md               # Phase 2 Ontology 설계 문서
-├── AOMD_FRAMEWORK.md                # AOMD 4역할 피드백 설계
-├── SCORING_SYSTEM.md                # 0-100 점수 채점 체계
+pronunciation-master/
 ├── CURSOR_HANDOVER.md               # 협업 가이드 (본 문서)
+├── LONG_TERM_STRATEGY_ONTOLOGY_AOMD_SAAS.md  # 장기 전략
+├── DATABASE_SCHEMA.md               # PostgreSQL 5테이블
+├── AUTHENTICATION_FLOW.md           # JWT 인증 플로우
+├── SUBSCRIPTION_TIERS.md            # Free/Pro/Enterprise
+├── AOMD_FEEDBACK_UI.md              # AOMD Frontend UI 설계
+├── ONTOLOGY_DESIGN.md / AOMD_FRAMEWORK.md / SCORING_SYSTEM.md
 ├── backend/
-│   ├── data/
-│   │   └── ontology.json            # 5 도메인, 50 개념, 250 어휘
-│   ├── scripts/
-│   │   └── generate-ontology.js     # Ontology JSON 생성 스크립트
+│   ├── data/ontology.json
 │   ├── src/
-│   │   ├── server.js                # Express 메인 서버
-│   │   ├── services/
-│   │   │   ├── llmManager.js        # LLM 통합 (LMStudio)
-│   │   │   ├── ontologyEngine.js    # Ontology 엔진
-│   │   │   ├── aomdEngine.js        # AOMD 피드백 엔진
-│   │   │   └── scoringEngine.js     # 점수 채점 엔진
-│   │   └── routes/
-│   │       ├── mission.js           # 미션 관련 라우트
-│   │       ├── ontology.js          # Ontology API 라우트
-│   │       ├── aomd.js              # AOMD API 라우트
-│   │       └── scoring.js           # Scoring API 라우트
-│   ├── package.json
+│   │   ├── server.js
+│   │   ├── services/  (llm, ontology, aomd, scoring, db, auth, subscription, stripe)
+│   │   ├── middleware/ (authMiddleware, tierMiddleware)
+│   │   └── routes/    (ontology, aomd, scoring, auth, subscription, mission)
 │   └── Dockerfile
 ├── frontend/
 │   ├── src/
-│   │   ├── App.jsx                  # 메인 컴포넌트 (Tailwind CSS)
-│   │   ├── main.jsx
-│   │   ├── index.css                # Tailwind CSS
-│   │   └── services/apiClient.js
-│   ├── tailwind.config.js
-│   ├── package.json
+│   │   ├── App.jsx
+│   │   ├── components/ (AOMDFeedbackPanel, PronunciationMission, SubscriptionModal)
+│   │   └── services/  (apiClient, authService, aomdService)
 │   └── Dockerfile.dev
-├── docker-compose.yml
-└── docs/
+└── docker-compose.yml               # postgres + backend + frontend
 ```
 
 ---
 
-## 🎯 즉시 구현 가능한 작업 (우선순위순)
+## 🎯 SaaS & Ontology 현황 (장기 전략 정렬)
 
-### 1️⃣ UI/UX 개선 (현재 필요)
-```
-파일: frontend/src/App.jsx
+| 티어 | 가격 | 일일 연습 | AOMD | 점수 보관 | 상태 |
+|------|------|-----------|------|-----------|------|
+| Free | $0 | 5회 | Advocate만 | 7일 | ✅ 구현 |
+| Pro | $9.99/월 | 무제한 | 4역할 전체 | 무제한 | ✅ 구현 (mock 결제) |
+| Enterprise | $299/월 | 무제한 | 4역할 + API | 무제한 | ✅ 구현 (mock 결제) |
 
-요청:
-1. Tailwind CSS로 스타일링
-   - 분야별 다른 색상
-   - 호버 효과
-   - 반응형 디자인
-
-2. 상태 관리 개선
-   - 분야 선택 → 상황 입력 화면 전환
-   - 입력 검증
-
-3. 레이아웃 구조
-   - 헤더 추가
-   - 메인 컨텐츠 영역
-   - 풋터 (선택사항)
-
-우선: 분야 선택 화면 → 상황 입력 화면 전환 기능
-```
-
-### 2️⃣ 백엔드 API 완성
-```
-파일: backend/src/server.js
-
-요청:
-1. POST /api/mission/generate-by-scenario
-   - 현재: 빈 배열 반환
-   - 필요: LLM을 실제로 호출해서 미션 생성
-
-2. POST /api/pronunciation/analyze
-   - 음성 입력 처리
-   - 발음 정확도 계산
-   - 피드백 생성
-
-3. 에러 처리 강화
-   - 유효성 검사
-   - 타임아웃 처리
-   - 명확한 에러 메시지
-
-우선: generate-by-scenario에서 실제 데이터 반환
-```
-
-### 3️⃣ API 통신 연결
-```
-파일: frontend/src/App.jsx
-
-요청:
-1. 분야 선택 후 상황 입력
-2. "맞춤 연습 생성" 버튼 클릭
-3. Backend API 호출
-4. 결과를 화면에 표시
-
-테스트:
-curl -X POST http://localhost:5000/api/mission/generate-by-scenario \
-  -H "Content-Type: application/json" \
-  -d '{"scenario":"의료기기 발표","category":"medical","count":5}'
-```
-
-### 4️⃣ 음성 기능 (TTS/STT)
-```
-파일: frontend/src/App.jsx
-
-요청:
-1. TTS (Text-to-Speech)
-   - 발음 예시 음성 재생
-   - Web Speech API 사용
-
-2. STT (Speech-to-Text)
-   - 사용자 음성 녹음
-   - 발음 분석
-
-우선: TTS부터 (더 간단)
-```
+**Ontology:** v1.0 — 5도메인, 50개념, 250어휘, 학습 경로 API  
+**AOMD:** 4역할 LLM+템플릿, 티어별 Frontend 렌더링  
+**진도 추적:** PostgreSQL user_progress, user_scores 영구 저장
 
 ---
 
@@ -346,7 +301,32 @@ curl http://localhost:11434/api/tags (Ollama 확인)
 
 ## 🔗 API 명세
 
-### GET /health
+### Auth API (JWT 필요: `/api/auth/*` 제외)
+
+#### POST /api/auth/register
+```bash
+curl -X POST http://localhost:5000/api/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"email":"user@example.com","name":"John","password":"password123"}'
+```
+
+#### POST /api/auth/login
+```bash
+curl -X POST http://localhost:5000/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"user@example.com","password":"password123"}'
+# 응답: { "success": true, "token": "...", "user": {...} }
+```
+
+> **참고:** `/api/*` 엔드포인트는 `Authorization: Bearer <token>` 헤더 필요
+
+### Subscription API
+
+#### GET /api/subscription/tier
+#### GET /api/subscription/status
+#### POST /api/subscription/upgrade — `{ "tier": "Pro" }`
+
+### GET /api/health
 ```bash
 curl http://localhost:5000/health
 # 응답: {"status":"healthy"}
@@ -496,70 +476,34 @@ curl -X POST http://localhost:5000/api/scoring/calculate \
 
 ---
 
-## 🎯 Phase 2 완료 요약
+## 🎯 Phase별 완료 요약
 
-| 모듈 | 파일 | API | 상태 |
-|------|------|-----|------|
-| Ontology | `ontologyEngine.js` | `GET /api/ontology/*` | ✅ 100% |
-| AOMD | `aomdEngine.js` | `POST /api/aomd/feedback` | ✅ 100% |
-| Scoring | `scoringEngine.js` | `POST /api/scoring/calculate` | ✅ 100% |
-| Frontend | `App.jsx` | Ontology 학습 경로 UI | ✅ 100% |
-
----
-
-## Phase 3 준비 (다음 작업)
-
-1. **PostgreSQL 사용자 진도 추적**
-   - 학습 이력, 완료 개념, 점수 히스토리 영구 저장
-   - `recommendNextConcept` in-memory → DB 전환
-
-2. **구독 서비스 (Free/Pro/Enterprise)**
-   - Free: 일일 5개 미션, Advocate 피드백만
-   - Pro ($9.99/월): 무제한, 전체 AOMD, 상세 분석
-   - Enterprise ($299/월): API 접근, 팀 관리
-
-3. **AOMD 피드백 Frontend 렌더링**
-   - 미션 완료 후 4역할 피드백 카드 UI
-   - Scoring API 연동으로 실시간 점수 표시
-
-4. **사용자 인증 (JWT/OAuth)**
-   - 로그인/회원가입, 개인화 학습 경로
-   - 진도 데이터 사용자별 분리
-
----
-
-## 📞 연락처 & 지속적 업데이트
-
-### 이 문서는 주기적으로 업데이트됩니다:
-- 매주 월요일: 주간 목표 업데이트
-- 기능 완료 시: 즉시 "✅" 표시
-- 새로운 문제 발견 시: "알려진 문제" 섹션 업데이트
-
-### Cursor와 협업할 때:
-```
-"이전 handover 문서를 참고해서 현재 상태를 이해하고 다음을 구현해줄래:
-[구체적인 요청]"
-```
+| Phase | 모듈 | 커밋 | 상태 |
+|-------|------|------|------|
+| Phase 1 | Web MVP (React, Express, Docker, TTS) | `5d7569f` | ✅ 100% |
+| Phase 2 | Ontology + AOMD + Scoring + Frontend | `2717f63` | ✅ 100% |
+| Phase 3 | PostgreSQL + Auth + Subscription + AOMD UI | `cacba9d` | ✅ 100% |
 
 ---
 
 ## ✨ 최종 체크리스트
 
 ```
-Phase 2 완료 확인:
-☑ Ontology API 테스트 통과
-☑ AOMD API 테스트 통과
-☑ Scoring API 테스트 통과
-☑ Frontend 빌드 성공
-☑ 브라우저 학습 경로 UI 확인
-☑ Git 커밋 2717f63 푸시 완료
-☑ CURSOR_HANDOVER.md 업데이트
+Phase 1–3 완료 확인:
+☑ Ontology/AOMD/Scoring API 테스트 통과
+☑ PostgreSQL 5테이블 생성 및 데이터 저장
+☑ JWT 회원가입/로그인/인증 미들웨어
+☑ 구독 티어 (Free/Pro/Enterprise) + mock 업그레이드
+☑ AOMDFeedbackPanel 4역할 UI (티어별 조건부)
+☑ Frontend 로그인 → 학습 경로 → 미션 → AOMD 피드백
+☑ Docker compose (postgres + backend + frontend) 정상
+☑ Git 커밋 cacba9d 푸시 완료
+☑ CURSOR_HANDOVER.md 최종 업데이트
 
-Phase 3 시작 전:
-☐ 이 문서 읽기
-☐ docker compose up 실행
-☐ http://localhost:5173 앱 확인
-☐ Phase 3 작업 선택 (DB / 구독 / AOMD UI / 인증)
+Phase 4 시작 전:
+☐ Stripe 실결제 키 설정
+☐ STT 정확도 개선
+☐ 이 문서 + LONG_TERM_STRATEGY 참고
 ```
 
 ---
@@ -567,4 +511,4 @@ Phase 3 시작 전:
 **Cursor와 함께 효율적으로 개발하세요! 🚀**
 
 이 문서는 지속적으로 업데이트됩니다.
-마지막 업데이트: 2026-07-12 (Phase 2: Ontology + AOMD + Scoring + Frontend 100% ✅ 완료)
+마지막 업데이트: 2026-07-12 (Phase 1–3 전체 100% ✅ 완료, 커밋 cacba9d)

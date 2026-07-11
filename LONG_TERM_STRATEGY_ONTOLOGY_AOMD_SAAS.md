@@ -3,7 +3,7 @@
 ## 📍 프로젝트 비전
 
 **목표:** AI 기반 영어 발음 교정 플랫폼 → SaaS 구독 서비스로 성장  
-**현재 단계:** Web MVP (Phase 1)  
+**현재 단계:** Phase 3 완료 (Web MVP + Ontology/AOMD + SaaS 기반) ✅  
 **최종 목표:** 멀티채널, 구독 기반, Ontology 기반 개인화 학습
 
 ---
@@ -61,70 +61,43 @@
 
 ## 📅 개발 로드맵 (Phase별)
 
-### **Phase 1: Web MVP (현재 - 2026년 7월)**
+### **Phase 1: Web MVP (2026년 7월) — ✅ 100% 완료**
 
 **목표:** 기본 웹 환경 및 UI/UX 완성
 
 ```
 ✅ Backend API 기본 구조
 ✅ Frontend UI (분야 선택, 상황 입력)
-✅ LLM 통합 (Gemma 4)
-✅ 기본 발음 분석
-🔄 진행 중: TTS/STT 구현
-
-산출물:
-- 웹 기반 MVP
-- 5개 분야 완성
-- 기본 학습 기능
+✅ LLM 통합 (Gemma 4 via LMStudio)
+✅ 기본 발음 분석 + TTS
+✅ Docker 환경 (backend + frontend)
+커밋: 5d7569f
 ```
 
-### **Phase 2: Ontology & AOMD 시나리오 (2026년 8월-9월)**
+### **Phase 2: Ontology & AOMD 시나리오 (2026년 7월) — ✅ 100% 완료**
 
 **목표:** 개인화된 학습 시나리오 엔진 구축
 
 ```
-📌 Ontology 설계
-   - 도메인 분석 (의료, 통신, 금융, 기술, 자동차)
-   - 개념 맵 생성
-   - 학습 경로 정의
-
-📌 AOMD 역할 기반 시나리오
-   - Advocate: 긍정적 피드백
-   - Opposite: 비판적 피드백
-   - Meditator: 균형잡힌 조언
-   - Decisioner: 행동 방향 제시
-
-📌 점수 시스템
-   - 발음 정확도 (0-100)
-   - 불릿 포인트 정확도
-   - 회화 자연스러움
-   - 누적 점수
-
-📌 진도 추적
-   - 사용자별 학습 경로
-   - 완료도 계산
-   - 취약점 분석
+✅ Ontology 설계 — 5도메인, 50개념, 250어휘
+✅ AOMD 4역할 피드백 엔진 (Advocate/Opposite/Meditator/Decisioner)
+✅ 점수 시스템 (0-100, 4항목 가중합)
+✅ Frontend 학습 경로 UI (분야→난이도→경로→개념→미션)
+✅ 진도 추적 (in-memory → Phase 3에서 DB 전환)
+커밋: 2717f63
 ```
 
-### **Phase 3: 구독 서비스 & 결제 (2026년 10월)**
+### **Phase 3: 구독 서비스 & 결제 (2026년 7월) — ✅ 100% 완료**
 
 **목표:** SaaS 비즈니스 모델 구현
 
 ```
-💳 구독 플랜
-   - Free Tier (기본, 제한적)
-   - Pro (월 $9.99, 무제한)
-   - Enterprise (연 $99, 팀 기능)
-
-💳 결제 시스템
-   - Stripe/Paddle 통합
-   - 자동 갱신
-   - 취소/환불 정책
-
-💳 기능별 제한
-   - Free: 일일 5개 미션, 광고
-   - Pro: 무제한, 광고 없음, 고급 분석
-   - Enterprise: API 접근, 팀 관리
+✅ PostgreSQL — users, progress, scores, subscriptions, daily_usage
+✅ JWT 인증 — 회원가입/로그인, Bearer 토큰
+✅ 구독 플랜 — Free/Pro/Enterprise 티어별 기능 제한
+✅ Stripe mock 결제 — 업그레이드 API
+✅ AOMD Frontend — 4역할 카드, 티어별 조건부 렌더링
+커밋: cacba9d
 ```
 
 ### **Phase 4: 고급 기능 (2026년 11월-12월)**
@@ -600,26 +573,13 @@ Ontology/AOMD 관련:
 ## 📊 진도 추적 (공개)
 
 ```
-Phase 1: Web MVP
-📊 진행률: 60%
-- ✅ Backend API 기본 (100%)
-- ✅ Frontend UI (90%)
-- 🔄 TTS/STT (50%)
-- ⏳ 모바일 (0%)
+Phase 1: Web MVP          📊 100% ✅  (커밋 5d7569f)
+Phase 2: Ontology/AOMD    📊 100% ✅  (커밋 2717f63)
+Phase 3: SaaS             📊 100% ✅  (커밋 cacba9d)
+Phase 4: 고급 기능        📊 0%   ⏳  (계획 단계)
+Phase 5: 모바일 & 확장    📊 0%   ⏳  (계획 단계)
 
-Phase 2: Ontology/AOMD
-📊 진행률: 0%
-- ⏳ Ontology 설계 (0%)
-- ⏳ AOMD 구현 (0%)
-- ⏳ 점수 시스템 (0%)
-
-Phase 3: SaaS
-📊 진행률: 0%
-- ⏳ 결제 시스템 (0%)
-- ⏳ 구독 관리 (0%)
-- ⏳ 라이센싱 (0%)
-
-다음 업데이트: [날짜]
+다음 업데이트: Phase 4 시작 시
 ```
 
 ---
@@ -649,7 +609,5 @@ Phase 3: SaaS
 
 ---
 
-**이제 단기 MVP와 장기 비전이 모두 정렬되었습니다!** 🎯
-
-**다음: CURSOR_HANDOVER.md를 업데이트하고, Phase별 설계 문서를 작성하세요!**
+**Phase 1–3 완료! Phase 4 준비:** CURSOR_HANDOVER.md + PHASE3_FINAL_HANDOVER_PROMPTS.md 참고
 
