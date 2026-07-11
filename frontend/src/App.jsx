@@ -2,16 +2,74 @@ import React, { useState, useRef, useEffect } from 'react';
 import { 
   Mic, Volume2, CheckCircle, SkipForward, Home, Settings, BarChart3, 
   AlertCircle, Repeat2, Zap, BookOpen, Target, Edit2, Sparkles,
-  Play, Pause, Download, Upload, X
+  Play, Pause, Download, Upload, X, ArrowLeft, ChevronRight
 } from 'lucide-react';
 
 const CATEGORIES = [
-  { id: 'medical', name: '의료기기 (Medical Devices)', emoji: '🏥' },
-  { id: 'telecom', name: '통신기술 (Telecommunications)', emoji: '📡' },
-  { id: 'finance', name: '금융 (Finance)', emoji: '💰' },
-  { id: 'tech', name: '기술 (Technology)', emoji: '💻' },
-  { id: 'automotive', name: '자동차 (Automotive)', emoji: '🚗' },
+  { id: 'medical', name: '의료기기 (Medical Devices)', emoji: '🏥', shortName: 'Medical' },
+  { id: 'telecom', name: '통신기술 (Telecommunications)', emoji: '📡', shortName: 'Telecom' },
+  { id: 'finance', name: '금융 (Finance)', emoji: '💰', shortName: 'Finance' },
+  { id: 'tech', name: '기술 (Technology)', emoji: '💻', shortName: 'Technology' },
+  { id: 'automotive', name: '자동차 (Automotive)', emoji: '🚗', shortName: 'Automotive' },
 ];
+
+const CATEGORY_STYLES = {
+  medical: {
+    card: 'bg-gradient-to-br from-blue-600/25 to-blue-900/15 border-blue-400/40 hover:border-blue-400/70 hover:shadow-blue-500/25',
+    panel: 'border-blue-400/30',
+    overlay: 'group-hover:from-blue-500/15 group-hover:to-blue-600/10',
+    title: 'group-hover:text-blue-300',
+    accent: 'text-blue-400',
+    badge: 'bg-blue-500/20 border-blue-400/40 text-blue-200',
+    button: 'from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600',
+    quickStart: 'hover:bg-blue-500/20 hover:text-blue-200',
+    ring: 'ring-blue-400/50',
+  },
+  telecom: {
+    card: 'bg-gradient-to-br from-orange-600/25 to-orange-900/15 border-orange-400/40 hover:border-orange-400/70 hover:shadow-orange-500/25',
+    panel: 'border-orange-400/30',
+    overlay: 'group-hover:from-orange-500/15 group-hover:to-orange-600/10',
+    title: 'group-hover:text-orange-300',
+    accent: 'text-orange-400',
+    badge: 'bg-orange-500/20 border-orange-400/40 text-orange-200',
+    button: 'from-orange-600 to-orange-700 hover:from-orange-500 hover:to-orange-600',
+    quickStart: 'hover:bg-orange-500/20 hover:text-orange-200',
+    ring: 'ring-orange-400/50',
+  },
+  finance: {
+    card: 'bg-gradient-to-br from-green-600/25 to-green-900/15 border-green-400/40 hover:border-green-400/70 hover:shadow-green-500/25',
+    panel: 'border-green-400/30',
+    overlay: 'group-hover:from-green-500/15 group-hover:to-green-600/10',
+    title: 'group-hover:text-green-300',
+    accent: 'text-green-400',
+    badge: 'bg-green-500/20 border-green-400/40 text-green-200',
+    button: 'from-green-600 to-green-700 hover:from-green-500 hover:to-green-600',
+    quickStart: 'hover:bg-green-500/20 hover:text-green-200',
+    ring: 'ring-green-400/50',
+  },
+  tech: {
+    card: 'bg-gradient-to-br from-purple-600/25 to-purple-900/15 border-purple-400/40 hover:border-purple-400/70 hover:shadow-purple-500/25',
+    panel: 'border-purple-400/30',
+    overlay: 'group-hover:from-purple-500/15 group-hover:to-purple-600/10',
+    title: 'group-hover:text-purple-300',
+    accent: 'text-purple-400',
+    badge: 'bg-purple-500/20 border-purple-400/40 text-purple-200',
+    button: 'from-purple-600 to-purple-700 hover:from-purple-500 hover:to-purple-600',
+    quickStart: 'hover:bg-purple-500/20 hover:text-purple-200',
+    ring: 'ring-purple-400/50',
+  },
+  automotive: {
+    card: 'bg-gradient-to-br from-red-600/25 to-red-900/15 border-red-400/40 hover:border-red-400/70 hover:shadow-red-500/25',
+    panel: 'border-red-400/30',
+    overlay: 'group-hover:from-red-500/15 group-hover:to-red-600/10',
+    title: 'group-hover:text-red-300',
+    accent: 'text-red-400',
+    badge: 'bg-red-500/20 border-red-400/40 text-red-200',
+    button: 'from-red-600 to-red-700 hover:from-red-500 hover:to-red-600',
+    quickStart: 'hover:bg-red-500/20 hover:text-red-200',
+    ring: 'ring-red-400/50',
+  },
+};
 
 const SAMPLE_MISSIONS = {
   medical: [
@@ -355,6 +413,18 @@ export default function EnhancedPronunciationMasterApp() {
 
   // ==================== UI 렌더링 ====================
 
+  const selectedCategoryData = CATEGORIES.find(c => c.id === selectedCategory);
+  const selectedStyle = selectedCategory ? CATEGORY_STYLES[selectedCategory] : null;
+
+  const handleCategorySelect = (categoryId) => {
+    setSelectedCategory(categoryId);
+    setAppState('scenario-input');
+  };
+
+  const handleBackToCategories = () => {
+    setAppState('home');
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white font-['Segoe UI']">
       {/* 상단 바 */}
@@ -395,33 +465,35 @@ export default function EnhancedPronunciationMasterApp() {
         {/* ==================== HOME 화면 ==================== */}
         {appState === 'home' && (
           <div className="space-y-8">
-            <div className="text-center space-y-4">
-              <h1 className="text-5xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+            <div className="text-center space-y-4 px-2">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
                 오늘의 발음 수련
               </h1>
-              <p className="text-gray-300 text-lg">분야를 선택하거나 상황을 입력해서 맞춤 연습을 시작하세요</p>
+              <p className="text-gray-300 text-base sm:text-lg">분야를 선택하거나 상황을 입력해서 맞춤 연습을 시작하세요</p>
             </div>
 
             {/* 분야 선택 */}
             <div className="space-y-4">
-              <h2 className="text-2xl font-bold">분야 선택</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {CATEGORIES.map(category => (
+              <h2 className="text-xl sm:text-2xl font-bold">분야 선택</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {CATEGORIES.map(category => {
+                  const style = CATEGORY_STYLES[category.id];
+                  return (
                   <div key={category.id} className="space-y-2">
                     <button
-                      onClick={() => {
-                        setSelectedCategory(category.id);
-                        setAppState('scenario-input');
-                      }}
-                      className="w-full group relative overflow-hidden rounded-xl p-6 bg-gradient-to-br from-white/10 to-white/5 border border-white/20 hover:border-purple-400/50 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-purple-500/20"
+                      onClick={() => handleCategorySelect(category.id)}
+                      className={`w-full group relative overflow-hidden rounded-xl p-5 sm:p-6 border transition-all duration-300 hover:scale-[1.03] hover:shadow-lg active:scale-[0.98] ${style.card}`}
                     >
-                      <div className="absolute inset-0 bg-gradient-to-br from-purple-500/0 to-pink-500/0 group-hover:from-purple-500/10 group-hover:to-pink-500/10 transition-all duration-300" />
-                      <div className="relative z-10">
-                        <div className="text-4xl mb-3">{category.emoji}</div>
-                        <h3 className="text-lg font-bold group-hover:text-purple-300 transition-colors">
+                      <div className={`absolute inset-0 bg-gradient-to-br from-transparent to-transparent transition-all duration-300 ${style.overlay}`} />
+                      <div className="relative z-10 flex flex-col items-start text-left">
+                        <div className="text-3xl sm:text-4xl mb-3">{category.emoji}</div>
+                        <h3 className={`text-base sm:text-lg font-bold transition-colors ${style.title}`}>
                           {category.name}
                         </h3>
-                        <p className="text-sm text-gray-400 mt-2">상황 기반 맞춤 연습</p>
+                        <p className="text-sm text-gray-400 mt-2 flex items-center gap-1">
+                          상황 기반 맞춤 연습
+                          <ChevronRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+                        </p>
                       </div>
                     </button>
 
@@ -434,12 +506,13 @@ export default function EnhancedPronunciationMasterApp() {
                           loadGeneratedMission(mission);
                         }
                       }}
-                      className="w-full py-2 bg-white/10 hover:bg-white/20 rounded-lg text-sm transition-colors"
+                      className={`w-full py-2 bg-white/10 rounded-lg text-sm transition-colors ${style.quickStart}`}
                     >
                       빠른 시작
                     </button>
                   </div>
-                ))}
+                );
+                })}
               </div>
             </div>
 
@@ -464,15 +537,21 @@ export default function EnhancedPronunciationMasterApp() {
         )}
 
         {/* ==================== 상황 입력 화면 ==================== */}
-        {appState === 'scenario-input' && (
+        {appState === 'scenario-input' && selectedCategoryData && selectedStyle && (
           <div className="max-w-2xl mx-auto space-y-6">
-            <div className="bg-gradient-to-br from-white/10 to-white/5 border border-purple-400/30 rounded-lg p-8 space-y-6">
+            {/* 선택된 분야 표시 */}
+            <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-medium ${selectedStyle.badge}`}>
+              <span className="text-lg">{selectedCategoryData.emoji}</span>
+              <span>{selectedCategoryData.name}</span>
+            </div>
+
+            <div className={`bg-gradient-to-br from-white/10 to-white/5 border rounded-xl p-6 sm:p-8 space-y-6 ${selectedStyle.panel}`}>
               <div className="space-y-2">
-                <h2 className="text-2xl font-bold flex items-center gap-2">
-                  <Sparkles className="w-6 h-6 text-yellow-400" />
+                <h2 className="text-xl sm:text-2xl font-bold flex items-center gap-2">
+                  <Sparkles className={`w-6 h-6 ${selectedStyle.accent}`} />
                   상황 기반 연습 만들기
                 </h2>
-                <p className="text-gray-400">
+                <p className="text-gray-400 text-sm sm:text-base">
                   당신이 경험하고 싶은 상황을 설명하면, AI가 맞춤형 연습을 생성합니다.
                 </p>
               </div>
@@ -487,14 +566,14 @@ export default function EnhancedPronunciationMasterApp() {
                     onChange={(e) => setUserScenario(e.target.value)}
                     placeholder="예: 기술 컨퍼런스에서 제품을 영어로 소개하는 상황&#10;예: 해외 은행과의 금융 계약 협상&#10;예: 자동차 판매원과의 상담..."
                     rows={5}
-                    className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg focus:border-purple-400/50 focus:outline-none text-white placeholder-gray-500"
+                    className={`w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none text-white placeholder-gray-500 transition-colors focus:ring-2 ${selectedStyle.ring}`}
                   />
                 </div>
 
                 <button
                   onClick={generateScenarioBasedMissions}
                   disabled={isGeneratingScenario || !userScenario.trim()}
-                  className="w-full py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 disabled:from-gray-600 disabled:to-gray-600 disabled:cursor-not-allowed rounded-lg font-semibold flex items-center justify-center gap-2 transition-all"
+                  className={`w-full py-3 bg-gradient-to-r disabled:from-gray-600 disabled:to-gray-600 disabled:cursor-not-allowed rounded-lg font-semibold flex items-center justify-center gap-2 transition-all active:scale-[0.98] ${selectedStyle.button}`}
                 >
                   <Sparkles className="w-5 h-5" />
                   {isGeneratingScenario ? '생성 중...' : '맞춤 연습 생성'}
@@ -541,10 +620,11 @@ export default function EnhancedPronunciationMasterApp() {
             </div>
 
             <button
-              onClick={() => setAppState('home')}
-              className="w-full py-2 bg-gray-700/50 hover:bg-gray-700 rounded-lg transition-colors"
+              onClick={handleBackToCategories}
+              className="w-full py-3 bg-white/10 hover:bg-white/20 rounded-lg transition-colors flex items-center justify-center gap-2 font-medium"
             >
-              홈으로 돌아가기
+              <ArrowLeft className="w-4 h-4" />
+              이전 (분야 선택)
             </button>
           </div>
         )}

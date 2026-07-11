@@ -3,28 +3,29 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
+    container_name: pronunciation-backend
     ports:
       - "5000:5000"
     environment:
-      - LLM_PROVIDER=ollama
-      - OLLAMA_API_URL=http://ollama:11434
+      - LLM_PROVIDER=lmstudio
+      - LMSTUDIO_API_URL=http://host.docker.internal:1234/v1
+      - LMSTUDIO_MODEL=google/gemma-4-e4b
       - PORT=5000
+    networks:
+      - pronunciation-network
 
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile.dev
+    container_name: pronunciation-frontend
     ports:
       - "5173:5173"
     environment:
       - REACT_APP_API_URL=http://localhost:5000
+    networks:
+      - pronunciation-network
 
-  ollama:
-    image: ollama/ollama:latest
-    ports:
-      - "11434:11434"
-    volumes:
-      - ollama_data:/root/.ollama
-
-volumes:
-  ollama_data:
+networks:
+  pronunciation-network:
+    driver: bridge
