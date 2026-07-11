@@ -13,22 +13,26 @@ export class LLMManager {
 
     try {
       const prompt = this.buildScenarioPrompt(scenario, category, count);
-      let responseText;
-
-      if (this.lmstudioApiUrl) {
-        responseText = await this.callLMStudio(prompt);
-      } else if (this.provider === 'ollama' && this.ollamaApiUrl) {
-        responseText = await this.callOllama(prompt);
-      } else {
-        throw new Error('No LLM provider configured');
-      }
-
+      const responseText = await this.generateText(
+        prompt,
+        'You are an English pronunciation teacher. Respond only with valid JSON.'
+      );
       const missions = this.parseMissionsResponse(responseText, count);
       return { missions };
     } catch (error) {
       console.error('LLM Error:', error.message);
       return { missions: this.getSampleMissions(count, category, scenario) };
     }
+  }
+
+  async generateText(prompt, systemPrompt = 'You are a helpful assistant.') {
+    if (this.lmstudioApiUrl) {
+      return await this.callLMStudio(prompt, systemPrompt);
+    }
+    if (this.provider === 'ollama' && this.ollamaApiUrl) {
+      return await this.callOllama(prompt);
+    }
+    throw new Error('No LLM provider configured');
   }
 
   buildScenarioPrompt(scenario, category, count) {
@@ -69,7 +73,7 @@ Respond ONLY with valid JSON in this format:
 }`;
   }
 
-  async callLMStudio(prompt) {
+  async callLMStudio(prompt, systemPrompt = 'You are a helpful assistant.') {
     const baseUrl = this.lmstudioApiUrl.replace(/\/$/, '');
     const url = `${baseUrl}/chat/completions`;
 
@@ -83,14 +87,11 @@ Respond ONLY with valid JSON in this format:
         body: JSON.stringify({
           model: this.lmstudioModel,
           messages: [
-            {
-              role: 'system',
-              content: 'You are an English pronunciation teacher. Respond only with valid JSON.',
-            },
+            { role: 'system', content: systemPrompt },
             { role: 'user', content: prompt },
           ],
-          temperature: 0.8,
-          max_tokens: 2500,
+          temperature: 0.7,
+          max_tokens: 500,
           stream: false,
         }),
         signal: controller.signal,
@@ -108,7 +109,7 @@ Respond ONLY with valid JSON in this format:
         throw new Error('LMStudio returned empty response');
       }
 
-      return content;
+      return content.trim();
     } finally {
       clearTimeout(timeoutId);
     }

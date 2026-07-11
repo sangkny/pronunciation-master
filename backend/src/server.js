@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import { llmManager } from './services/llmManager.js';
 import ontologyRouter from './routes/ontology.js';
+import aomdRouter from './routes/aomd.js';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -14,6 +15,7 @@ app.get('/health', (req, res) => {
 });
 
 app.use('/api/ontology', ontologyRouter);
+app.use('/api/aomd', aomdRouter);
 
 app.post('/api/mission/generate-by-scenario', async (req, res) => {
   try {

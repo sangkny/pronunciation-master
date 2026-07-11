@@ -4,9 +4,9 @@
 
 **프로젝트명:** Pronunciation Master  
 **목적:** AI 기반 영어 발음 교정 및 상황별 동적 학습 앱  
-**현재 상태:** Phase 1 완료 (100%) + Phase 2 Ontology 완료 (100%)  
-**진행률:** Phase 2 Ontology 설계 및 구현 완료  
-**다음 단계:** Phase 2 AOMD 피드백 엔진, 점수 시스템  
+**현재 상태:** Phase 1 완료 (100%) + Phase 2 Ontology 완료 + **AOMD 피드백 엔진 완료**  
+**진행률:** Phase 2 AOMD 완료, 다음: 점수 시스템  
+**다음 단계:** Phase 2 점수 시스템, Frontend 연동  
 
 ---
 
@@ -31,6 +31,10 @@
   - 5개 도메인, 50개 개념, 250개 어휘
   - 학습 경로 생성, 다음 개념 추천
 - ✅ **Ontology API** 5개 엔드포인트
+- ✅ **AOMD Engine** (`aomdEngine.js`)
+  - Advocate/Opposite/Meditator/Decisioner 4역할 피드백
+  - LLM 연동 + 템플릿 폴백, Promise.all 병렬 처리
+- ✅ **AOMD API** `POST /api/aomd/feedback`
 
 ### 프론트엔드
 - ✅ React 앱 구축 (Vite + Tailwind CSS)
@@ -43,6 +47,7 @@
 - ✅ Git 저장소 (main 브랜치)
 - ✅ 협업 가이드 (Cursor, Claude Code)
 - ✅ **ONTOLOGY_DESIGN.md** (Phase 2 설계 문서)
+- ✅ **AOMD_FRAMEWORK.md** (AOMD 4역할 설계 문서)
 - ✅ 개발 환경 문서화
 
 ---
@@ -52,6 +57,7 @@
 ```
 Learning-Languages/pronunciation-master/
 ├── ONTOLOGY_DESIGN.md               # Phase 2 Ontology 설계 문서
+├── AOMD_FRAMEWORK.md                # AOMD 4역할 피드백 설계
 ├── CURSOR_HANDOVER.md               # 협업 가이드 (본 문서)
 ├── backend/
 │   ├── data/
@@ -62,10 +68,12 @@ Learning-Languages/pronunciation-master/
 │   │   ├── server.js                # Express 메인 서버
 │   │   ├── services/
 │   │   │   ├── llmManager.js        # LLM 통합 (LMStudio)
-│   │   │   └── ontologyEngine.js    # Ontology 엔진
+│   │   │   ├── ontologyEngine.js    # Ontology 엔진
+│   │   │   └── aomdEngine.js        # AOMD 피드백 엔진
 │   │   └── routes/
 │   │       ├── mission.js           # 미션 관련 라우트
-│   │       └── ontology.js          # Ontology API 라우트
+│   │       ├── ontology.js          # Ontology API 라우트
+│   │       └── aomd.js              # AOMD API 라우트
 │   ├── package.json
 │   └── Dockerfile
 ├── frontend/
@@ -382,6 +390,17 @@ curl http://localhost:5000/api/ontology/vocabulary/med_001
 # 응답: { "success": true, "conceptId": "med_001", "vocabulary": [...] }
 ```
 
+### AOMD API
+
+#### POST /api/aomd/feedback
+```bash
+curl -X POST http://localhost:5000/api/aomd/feedback \
+  -H "Content-Type: application/json" \
+  -d '{"userPronunciation":"ih-MAJ-ing","correctPronunciation":"IM-ij-ing","word":"imaging","score":75,"context":"Medical"}'
+
+# 응답: { "success": true, "advocate": "...", "opposite": "...", "meditator": "...", "decisioner": "..." }
+```
+
 ---
 
 ## 📦 주요 의존성
@@ -442,22 +461,15 @@ curl http://localhost:5000/api/ontology/vocabulary/med_001
 ## 🎯 다음 우선순위 (Phase 2 후반)
 
 ### 즉시 시작 가능
-- [ ] **AOMD 피드백 엔진** (`backend/src/services/aomdEngine.js`)
-  - Advocate, Opposite, Meditator, Decisioner 4가지 역할
-  - LLM 기반 동적 피드백 생성
 - [ ] **점수 시스템** (`backend/src/services/scoringEngine.js`)
   - 0-100 발음 정확도 채점
-  - 난이도 조정 로직
-- [ ] **Frontend Ontology 연동**
-  - Ontology API 호출하여 학습 경로 표시
-  - 개념별 어휘 발음 연습 UI
+  - 음절(40) + 유창성(30) + 문맥(20) + 회화성(10)
+- [ ] **Frontend Ontology/AOMD 연동**
+  - 학습 경로 표시, AOMD 피드백 렌더링
 
 ### Phase 2 완료 항목
-- [x] Ontology 설계 문서 (ONTOLOGY_DESIGN.md)
-- [x] ontology.json (50개 개념, 250개 어휘)
-- [x] ontologyEngine.js (8개 메서드)
-- [x] Ontology API 5개 엔드포인트
-- [x] API 테스트 완료
+- [x] Ontology 설계 및 API
+- [x] AOMD 피드백 엔진 (4역할, POST /api/aomd/feedback)
 
 ---
 
@@ -502,4 +514,4 @@ curl http://localhost:5000/api/ontology/vocabulary/med_001
 **Cursor와 함께 효율적으로 개발하세요! 🚀**
 
 이 문서는 지속적으로 업데이트됩니다.
-마지막 업데이트: 2026-07-11 (Phase 2 Ontology 완료)
+마지막 업데이트: 2026-07-11 (Phase 2 AOMD 피드백 엔진 완료)
