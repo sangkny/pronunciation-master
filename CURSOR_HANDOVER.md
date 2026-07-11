@@ -4,9 +4,25 @@
 
 **프로젝트명:** Pronunciation Master  
 **목적:** AI 기반 영어 발음 교정 및 상황별 동적 학습 앱  
-**현재 상태:** Phase 2 완료 (100%) — Ontology + AOMD + Scoring + Frontend 연동  
-**진행률:** Phase 2 전체 완료, 다음: Phase 3 구독 서비스  
-**다음 단계:** Phase 3 구독/결제, 진도 추적 DB  
+**현재 상태:** Phase 1 완료 (100% ✅) + **Phase 2 완료 (100% ✅)**  
+**Phase 2:** Ontology + AOMD + Scoring + Frontend (100% ✅ 완료)  
+**다음 단계:** Phase 3 — 구독 서비스, 진도 추적 DB, 사용자 인증  
+
+---
+
+## 최종 상태 (2026-07-11)
+
+- **커밋:** `2717f63` (Phase 2 완료: AOMD + 점수 + Frontend)
+- **이전 커밋:** `5d7569f` (Ontology), `35bf094` (AOMD)
+- **브랜치:** `main` (GitHub 푸시 완료)
+- **모든 테스트 통과**
+  - Ontology API 5개 엔드포인트 ✅
+  - AOMD API `POST /api/aomd/feedback` ✅
+  - Scoring API `POST /api/scoring/calculate` ✅
+- **Docker build 성공** ✅
+- **Frontend build 성공** (`npm run build`) ✅
+- **브라우저** `http://localhost:5173` 정상 작동 ✅
+  - 분야 선택 → 난이도 → 학습 경로 → 개념 상세 → 미션 흐름 확인
 
 ---
 
@@ -64,6 +80,7 @@
 Learning-Languages/pronunciation-master/
 ├── ONTOLOGY_DESIGN.md               # Phase 2 Ontology 설계 문서
 ├── AOMD_FRAMEWORK.md                # AOMD 4역할 피드백 설계
+├── SCORING_SYSTEM.md                # 0-100 점수 채점 체계
 ├── CURSOR_HANDOVER.md               # 협업 가이드 (본 문서)
 ├── backend/
 │   ├── data/
@@ -75,11 +92,13 @@ Learning-Languages/pronunciation-master/
 │   │   ├── services/
 │   │   │   ├── llmManager.js        # LLM 통합 (LMStudio)
 │   │   │   ├── ontologyEngine.js    # Ontology 엔진
-│   │   │   └── aomdEngine.js        # AOMD 피드백 엔진
+│   │   │   ├── aomdEngine.js        # AOMD 피드백 엔진
+│   │   │   └── scoringEngine.js     # 점수 채점 엔진
 │   │   └── routes/
 │   │       ├── mission.js           # 미션 관련 라우트
 │   │       ├── ontology.js          # Ontology API 라우트
-│   │       └── aomd.js              # AOMD API 라우트
+│   │       ├── aomd.js              # AOMD API 라우트
+│   │       └── scoring.js           # Scoring API 라우트
 │   ├── package.json
 │   └── Dockerfile
 ├── frontend/
@@ -473,18 +492,35 @@ curl -X POST http://localhost:5000/api/scoring/calculate \
 
 ---
 
-## 🎯 다음 우선순위 (Phase 2 후반)
+## 🎯 Phase 2 완료 요약
 
-### Phase 3 (다음)
-- [ ] 구독 서비스 (Free/Pro/Enterprise)
-- [ ] PostgreSQL 진도 추적 DB
-- [ ] AOMD 피드백 Frontend 렌더링
+| 모듈 | 파일 | API | 상태 |
+|------|------|-----|------|
+| Ontology | `ontologyEngine.js` | `GET /api/ontology/*` | ✅ 100% |
+| AOMD | `aomdEngine.js` | `POST /api/aomd/feedback` | ✅ 100% |
+| Scoring | `scoringEngine.js` | `POST /api/scoring/calculate` | ✅ 100% |
+| Frontend | `App.jsx` | Ontology 학습 경로 UI | ✅ 100% |
 
-### Phase 2 완료 항목
-- [x] Ontology 설계 및 API
-- [x] AOMD 피드백 엔진
-- [x] 점수 시스템 (scoringEngine + API)
-- [x] Frontend Ontology 학습 경로 연동
+---
+
+## Phase 3 준비 (다음 작업)
+
+1. **PostgreSQL 사용자 진도 추적**
+   - 학습 이력, 완료 개념, 점수 히스토리 영구 저장
+   - `recommendNextConcept` in-memory → DB 전환
+
+2. **구독 서비스 (Free/Pro/Enterprise)**
+   - Free: 일일 5개 미션, Advocate 피드백만
+   - Pro ($9.99/월): 무제한, 전체 AOMD, 상세 분석
+   - Enterprise ($299/월): API 접근, 팀 관리
+
+3. **AOMD 피드백 Frontend 렌더링**
+   - 미션 완료 후 4역할 피드백 카드 UI
+   - Scoring API 연동으로 실시간 점수 표시
+
+4. **사용자 인증 (JWT/OAuth)**
+   - 로그인/회원가입, 개인화 학습 경로
+   - 진도 데이터 사용자별 분리
 
 ---
 
@@ -506,22 +542,20 @@ curl -X POST http://localhost:5000/api/scoring/calculate \
 ## ✨ 최종 체크리스트
 
 ```
-개발 시작 전:
+Phase 2 완료 확인:
+☑ Ontology API 테스트 통과
+☑ AOMD API 테스트 통과
+☑ Scoring API 테스트 통과
+☑ Frontend 빌드 성공
+☑ 브라우저 학습 경로 UI 확인
+☑ Git 커밋 2717f63 푸시 완료
+☑ CURSOR_HANDOVER.md 업데이트
+
+Phase 3 시작 전:
 ☐ 이 문서 읽기
-☐ 프로젝트 구조 이해
 ☐ docker compose up 실행
 ☐ http://localhost:5173 앱 확인
-☐ Cursor 열기
-
-개발 중:
-☐ 위의 프롬프트 사용
-☐ 자주 테스트 (http://localhost:5173)
-☐ 진행상황 이 문서에 반영
-
-개발 완료 후:
-☐ Git 커밋
-☐ 이 문서 업데이트
-☐ 다음 우선순위 확인
+☐ Phase 3 작업 선택 (DB / 구독 / AOMD UI / 인증)
 ```
 
 ---
@@ -529,4 +563,4 @@ curl -X POST http://localhost:5000/api/scoring/calculate \
 **Cursor와 함께 효율적으로 개발하세요! 🚀**
 
 이 문서는 지속적으로 업데이트됩니다.
-마지막 업데이트: 2026-07-12 (Phase 2 완료 100%)
+마지막 업데이트: 2026-07-12 (Phase 2: Ontology + AOMD + Scoring + Frontend 100% ✅ 완료)
