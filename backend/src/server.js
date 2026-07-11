@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import { llmManager } from './services/llmManager.js';
+import ontologyRouter from './routes/ontology.js';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -11,6 +12,8 @@ app.use(express.json());
 app.get('/health', (req, res) => {
   res.json({ status: 'healthy' });
 });
+
+app.use('/api/ontology', ontologyRouter);
 
 app.post('/api/mission/generate-by-scenario', async (req, res) => {
   try {

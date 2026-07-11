@@ -1,0 +1,2817 @@
+{
+  "version": "1.0",
+  "domains": [
+    {
+      "id": "medical",
+      "name": "Medical Devices",
+      "concepts": [
+        {
+          "id": "med_001",
+          "name": "Equipment",
+          "difficulty": "beginner",
+          "prerequisites": [],
+          "vocabulary": [
+            {
+              "word": "imaging",
+              "pronunciation": "/ˈɪmɪdʒɪŋ/",
+              "definition": "The process of creating visual representations of internal body structures",
+              "examples": [
+                "The imaging system provides high-resolution diagnostic images.",
+                "Our portable imaging device is FDA-approved for clinical use."
+              ]
+            },
+            {
+              "word": "monitor",
+              "pronunciation": "/ˈmɒnɪtər/",
+              "definition": "A device that continuously observes and displays patient vital signs",
+              "examples": [
+                "The patient monitor alerts staff when heart rate exceeds threshold.",
+                "We installed bedside monitors in every ICU room."
+              ]
+            },
+            {
+              "word": "sensor",
+              "pronunciation": "/ˈsensər/",
+              "definition": "A device that detects and responds to physical input from the environment",
+              "examples": [
+                "The pressure sensor must be calibrated before each procedure.",
+                "Wireless sensors transmit data directly to the central system."
+              ]
+            },
+            {
+              "word": "calibration",
+              "pronunciation": "/ˌkælɪˈbreɪʃən/",
+              "definition": "The process of adjusting equipment to ensure accurate measurements",
+              "examples": [
+                "Annual calibration is required for all diagnostic equipment.",
+                "The technician completed calibration of the ultrasound machine."
+              ]
+            },
+            {
+              "word": "sterile",
+              "pronunciation": "/ˈsterəl/",
+              "definition": "Free from all living microorganisms and contaminants",
+              "examples": [
+                "All surgical instruments must remain sterile until use.",
+                "The sterile field was maintained throughout the procedure."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "med_002",
+          "name": "Procedure",
+          "difficulty": "beginner",
+          "prerequisites": [
+            "med_001"
+          ],
+          "vocabulary": [
+            {
+              "word": "incision",
+              "pronunciation": "/ɪnˈsɪʒən/",
+              "definition": "A surgical cut made in skin or tissue",
+              "examples": [
+                "The surgeon made a precise incision along the marked line.",
+                "Minimally invasive procedures require smaller incisions."
+              ]
+            },
+            {
+              "word": "anesthesia",
+              "pronunciation": "/ˌænəsˈθiːziə/",
+              "definition": "Medical treatment that prevents patients from feeling pain during surgery",
+              "examples": [
+                "Local anesthesia was administered before the minor procedure.",
+                "The anesthesiologist monitored the patient throughout anesthesia."
+              ]
+            },
+            {
+              "word": "catheter",
+              "pronunciation": "/ˈkæθɪtər/",
+              "definition": "A thin tube inserted into the body to deliver fluids or drain substances",
+              "examples": [
+                "The nurse inserted the catheter using sterile technique.",
+                "Urinary catheter placement requires careful infection control."
+              ]
+            },
+            {
+              "word": "suture",
+              "pronunciation": "/ˈsuːtʃər/",
+              "definition": "A stitch used to close a wound or surgical incision",
+              "examples": [
+                "Dissolvable sutures eliminate the need for removal.",
+                "The wound was closed with six interrupted sutures."
+              ]
+            },
+            {
+              "word": "protocol",
+              "pronunciation": "/ˈprəʊtəkɒl/",
+              "definition": "An established procedure or set of rules for medical operations",
+              "examples": [
+                "All staff must follow the sterilization protocol.",
+                "The emergency protocol was activated within two minutes."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "med_003",
+          "name": "Diagnosis",
+          "difficulty": "intermediate",
+          "prerequisites": [
+            "med_001",
+            "med_002"
+          ],
+          "vocabulary": [
+            {
+              "word": "diagnostic",
+              "pronunciation": "/ˌdaɪəɡˈnɒstɪk/",
+              "definition": "Relating to the identification of disease or medical conditions",
+              "examples": [
+                "The diagnostic accuracy of this device exceeds industry standards.",
+                "Early diagnostic testing improves patient outcomes significantly."
+              ]
+            },
+            {
+              "word": "biomarker",
+              "pronunciation": "/ˈbaɪəʊˌmɑːkər/",
+              "definition": "A measurable biological indicator of a disease or condition",
+              "examples": [
+                "Blood biomarkers help physicians detect cancer at early stages.",
+                "The test panel analyzes twelve key biomarkers simultaneously."
+              ]
+            },
+            {
+              "word": "pathology",
+              "pronunciation": "/pəˈθɒlədʒi/",
+              "definition": "The study of disease causes, processes, and effects",
+              "examples": [
+                "Pathology reports confirmed the preliminary diagnosis.",
+                "Digital pathology enables remote consultation between specialists."
+              ]
+            },
+            {
+              "word": "prognosis",
+              "pronunciation": "/prɒɡˈnəʊsɪs/",
+              "definition": "A forecast of the likely course and outcome of a disease",
+              "examples": [
+                "Early intervention improved the patient prognosis considerably.",
+                "The physician discussed prognosis with the patient family."
+              ]
+            },
+            {
+              "word": "differential",
+              "pronunciation": "/ˌdɪfəˈrenʃəl/",
+              "definition": "The process of distinguishing between conditions with similar symptoms",
+              "examples": [
+                "Differential diagnosis ruled out several alternative conditions.",
+                "The algorithm supports differential diagnosis in complex cases."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "med_004",
+          "name": "Safety",
+          "difficulty": "intermediate",
+          "prerequisites": [
+            "med_001",
+            "med_002"
+          ],
+          "vocabulary": [
+            {
+              "word": "hazard",
+              "pronunciation": "/ˈhæzəd/",
+              "definition": "A potential source of danger or harm in a medical environment",
+              "examples": [
+                "The risk assessment identified three primary hazards.",
+                "Electrical hazards must be eliminated in wet clinical areas."
+              ]
+            },
+            {
+              "word": "contamination",
+              "pronunciation": "/kənˌtæmɪˈneɪʃən/",
+              "definition": "The presence of harmful substances or microorganisms",
+              "examples": [
+                "Cross-contamination was prevented through strict isolation protocols.",
+                "The recall was issued due to product contamination concerns."
+              ]
+            },
+            {
+              "word": "adverse",
+              "pronunciation": "/ˈædvɜːs/",
+              "definition": "Harmful or unfavorable, especially regarding medical events",
+              "examples": [
+                "All adverse events must be reported within twenty-four hours.",
+                "The study monitored adverse reactions throughout the trial period."
+              ]
+            },
+            {
+              "word": "compliance",
+              "pronunciation": "/kəmˈplaɪəns/",
+              "definition": "Adherence to regulatory standards and safety requirements",
+              "examples": [
+                "Regulatory compliance is mandatory for all medical device manufacturers.",
+                "The audit confirmed full compliance with ISO standards."
+              ]
+            },
+            {
+              "word": "mitigation",
+              "pronunciation": "/ˌmɪtɪˈɡeɪʃən/",
+              "definition": "Actions taken to reduce the severity or impact of risks",
+              "examples": [
+                "Risk mitigation strategies were implemented across all facilities.",
+                "The safety team proposed additional mitigation measures."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "med_005",
+          "name": "Integration",
+          "difficulty": "intermediate",
+          "prerequisites": [
+            "med_001",
+            "med_002",
+            "med_003"
+          ],
+          "vocabulary": [
+            {
+              "word": "interoperability",
+              "pronunciation": "/ˌɪntərˌɒpərəˈbɪləti/",
+              "definition": "The ability of different systems to exchange and use information",
+              "examples": [
+                "Interoperability standards enable seamless hospital system integration.",
+                "Our platform supports HL7 interoperability with legacy systems."
+              ]
+            },
+            {
+              "word": "interface",
+              "pronunciation": "/ˈɪntəfeɪs/",
+              "definition": "A point of interaction between two systems or devices",
+              "examples": [
+                "The user interface was redesigned based on clinician feedback.",
+                "API interfaces connect the device to electronic health records."
+              ]
+            },
+            {
+              "word": "workflow",
+              "pronunciation": "/ˈwɜːkfləʊ/",
+              "definition": "A sequence of tasks performed in clinical or operational settings",
+              "examples": [
+                "Digital workflow automation reduced documentation time by forty percent.",
+                "The integration streamlined the entire patient admission workflow."
+              ]
+            },
+            {
+              "word": "synchronization",
+              "pronunciation": "/ˌsɪŋkrənaɪˈzeɪʃən/",
+              "definition": "Coordinating data or processes across multiple systems simultaneously",
+              "examples": [
+                "Real-time synchronization ensures all departments see current data.",
+                "Data synchronization errors were resolved within the maintenance window."
+              ]
+            },
+            {
+              "word": "middleware",
+              "pronunciation": "/ˈmɪdlweər/",
+              "definition": "Software that connects different applications and enables communication",
+              "examples": [
+                "Middleware handles data translation between incompatible systems.",
+                "The hospital deployed middleware to integrate three vendor platforms."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "med_006",
+          "name": "Regulation",
+          "difficulty": "intermediate",
+          "prerequisites": [
+            "med_004",
+            "med_003"
+          ],
+          "vocabulary": [
+            {
+              "word": "FDA",
+              "pronunciation": "/ˌef diː ˈeɪ/",
+              "definition": "The U.S. Food and Drug Administration that regulates medical devices",
+              "examples": [
+                "FDA clearance is required before marketing Class II devices.",
+                "The company submitted its FDA application in January."
+              ]
+            },
+            {
+              "word": "clearance",
+              "pronunciation": "/ˈklɪərəns/",
+              "definition": "Official authorization to market a medical device",
+              "examples": [
+                "510(k) clearance was obtained within the expected timeframe.",
+                "Regulatory clearance expanded our market access to Europe."
+              ]
+            },
+            {
+              "word": "submission",
+              "pronunciation": "/səbˈmɪʃən/",
+              "definition": "Formal documentation sent to regulatory authorities for approval",
+              "examples": [
+                "The regulatory submission included comprehensive clinical data.",
+                "Our team prepared the submission package over six months."
+              ]
+            },
+            {
+              "word": "classification",
+              "pronunciation": "/ˌklæsɪfɪˈkeɪʃən/",
+              "definition": "Categorization of devices by risk level for regulatory purposes",
+              "examples": [
+                "Device classification determines the regulatory pathway required.",
+                "The product received Class II classification from authorities."
+              ]
+            },
+            {
+              "word": "audit",
+              "pronunciation": "/ˈɔːdɪt/",
+              "definition": "A systematic examination of compliance with regulatory requirements",
+              "examples": [
+                "The annual quality audit identified no major non-conformities.",
+                "Regulatory auditors reviewed manufacturing processes for three days."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "med_007",
+          "name": "Sterilization",
+          "difficulty": "intermediate",
+          "prerequisites": [
+            "med_001",
+            "med_002",
+            "med_004"
+          ],
+          "vocabulary": [
+            {
+              "word": "autoclave",
+              "pronunciation": "/ˈɔːtəkleɪv/",
+              "definition": "A pressurized chamber used to sterilize equipment with steam",
+              "examples": [
+                "Instruments were sterilized in the autoclave for thirty minutes.",
+                "The autoclave cycle log is reviewed daily by quality staff."
+              ]
+            },
+            {
+              "word": "disinfection",
+              "pronunciation": "/ˌdɪsɪnˈfekʃən/",
+              "definition": "The process of eliminating most pathogenic microorganisms from surfaces",
+              "examples": [
+                "Surface disinfection protocols were updated for the new facility.",
+                "High-level disinfection is required for semi-critical devices."
+              ]
+            },
+            {
+              "word": "ethylene",
+              "pronunciation": "/ˈeθɪliːn/",
+              "definition": "A gas commonly used for low-temperature sterilization of sensitive materials",
+              "examples": [
+                "Ethylene oxide sterilization preserves heat-sensitive components.",
+                "Ethylene oxide residuals must be below regulatory limits."
+              ]
+            },
+            {
+              "word": "validation",
+              "pronunciation": "/ˌvælɪˈdeɪʃən/",
+              "definition": "Documented evidence that a sterilization process consistently achieves results",
+              "examples": [
+                "Sterilization validation was completed before production launch.",
+                "Annual revalidation confirms continued process effectiveness."
+              ]
+            },
+            {
+              "word": "bioburden",
+              "pronunciation": "/ˈbaɪəʊˌbɜːdən/",
+              "definition": "The level of microbial contamination on a product before sterilization",
+              "examples": [
+                "Bioburden testing ensures sterilization parameters are adequate.",
+                "Reduced bioburden levels improve sterilization efficiency."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "med_008",
+          "name": "Clinical Trial",
+          "difficulty": "advanced",
+          "prerequisites": [
+            "med_003",
+            "med_006",
+            "med_004"
+          ],
+          "vocabulary": [
+            {
+              "word": "randomized",
+              "pronunciation": "/ˈrændəmaɪzd/",
+              "definition": "A trial design where participants are assigned to groups by chance",
+              "examples": [
+                "The randomized controlled trial enrolled five hundred participants.",
+                "Randomized assignment minimizes selection bias in clinical studies."
+              ]
+            },
+            {
+              "word": "endpoint",
+              "pronunciation": "/ˈendpɔɪnt/",
+              "definition": "A predefined outcome measure used to assess trial success",
+              "examples": [
+                "The primary endpoint was reduction in mortality at twelve months.",
+                "Secondary endpoints included quality of life improvements."
+              ]
+            },
+            {
+              "word": "placebo",
+              "pronunciation": "/pləˈsiːbəʊ/",
+              "definition": "An inactive treatment used as a control in clinical trials",
+              "examples": [
+                "The placebo group showed no significant improvement.",
+                "Double-blind design ensured neither patients nor investigators knew placebo assignments."
+              ]
+            },
+            {
+              "word": "cohort",
+              "pronunciation": "/ˈkəʊhɔːt/",
+              "definition": "A group of participants sharing a common characteristic in a study",
+              "examples": [
+                "The patient cohort was followed for three years post-treatment.",
+                "Longitudinal cohort studies provide valuable real-world evidence."
+              ]
+            },
+            {
+              "word": "efficacy",
+              "pronunciation": "/ˈefɪkəsi/",
+              "definition": "The ability of a treatment to produce the desired therapeutic effect",
+              "examples": [
+                "Clinical efficacy data supported the regulatory submission.",
+                "The trial demonstrated significant efficacy compared to standard care."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "med_009",
+          "name": "Patient Monitoring",
+          "difficulty": "intermediate",
+          "prerequisites": [
+            "med_001",
+            "med_003"
+          ],
+          "vocabulary": [
+            {
+              "word": "telemetry",
+              "pronunciation": "/təˈlemətri/",
+              "definition": "Remote transmission of patient data for continuous monitoring",
+              "examples": [
+                "Telemetry systems alert nurses to critical changes immediately.",
+                "Wireless telemetry enables patient mobility during recovery."
+              ]
+            },
+            {
+              "word": "hemodynamic",
+              "pronunciation": "/ˌhiːməʊdaɪˈnæmɪk/",
+              "definition": "Relating to blood flow and pressure within the cardiovascular system",
+              "examples": [
+                "Hemodynamic monitoring guides fluid management in critical patients.",
+                "The device provides real-time hemodynamic parameter displays."
+              ]
+            },
+            {
+              "word": "saturation",
+              "pronunciation": "/ˌsætʃəˈreɪʃən/",
+              "definition": "The percentage of hemoglobin binding sites occupied by oxygen",
+              "examples": [
+                "Oxygen saturation dropped below ninety percent during the procedure.",
+                "Pulse oximetry continuously measures oxygen saturation levels."
+              ]
+            },
+            {
+              "word": "arrhythmia",
+              "pronunciation": "/əˈrɪðmiə/",
+              "definition": "An irregular heartbeat rhythm that may require medical intervention",
+              "examples": [
+                "The monitor detected arrhythmia and triggered an automatic alert.",
+                "Cardiac arrhythmia management is a key feature of our device."
+              ]
+            },
+            {
+              "word": "triage",
+              "pronunciation": "/ˈtriːɑːʒ/",
+              "definition": "The process of prioritizing patients based on severity of condition",
+              "examples": [
+                "Automated triage algorithms help emergency departments manage patient flow.",
+                "Remote triage capabilities expanded access to specialist consultation."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "med_010",
+          "name": "Quality Assurance",
+          "difficulty": "advanced",
+          "prerequisites": [
+            "med_006",
+            "med_004",
+            "med_005"
+          ],
+          "vocabulary": [
+            {
+              "word": "CAPA",
+              "pronunciation": "/ˈkæpə/",
+              "definition": "Corrective and Preventive Action process for addressing quality issues",
+              "examples": [
+                "The CAPA system tracked resolution of all customer complaints.",
+                "Root cause analysis is mandatory before closing any CAPA."
+              ]
+            },
+            {
+              "word": "traceability",
+              "pronunciation": "/ˌtreɪsəˈbɪləti/",
+              "definition": "The ability to track product history, location, and handling throughout supply chain",
+              "examples": [
+                "Full traceability from raw materials to finished product is maintained.",
+                "Lot traceability enabled rapid identification of affected devices."
+              ]
+            },
+            {
+              "word": "nonconformity",
+              "pronunciation": "/ˌnɒnkənˈfɔːməti/",
+              "definition": "A deviation from specified requirements or standards",
+              "examples": [
+                "Minor nonconformities were addressed within the thirty-day deadline.",
+                "The inspection revealed one major nonconformity in packaging."
+              ]
+            },
+            {
+              "word": "verification",
+              "pronunciation": "/ˌverɪfɪˈkeɪʃən/",
+              "definition": "Confirmation that specified requirements have been fulfilled",
+              "examples": [
+                "Design verification confirmed all performance specifications were met.",
+                "Software verification included comprehensive unit and integration testing."
+              ]
+            },
+            {
+              "word": "documentation",
+              "pronunciation": "/ˌdɒkjumenˈteɪʃən/",
+              "definition": "Recorded information demonstrating compliance and traceability",
+              "examples": [
+                "Complete documentation supported the successful regulatory inspection.",
+                "Quality documentation must be maintained for the product lifetime."
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "telecom",
+      "name": "Telecommunications",
+      "concepts": [
+        {
+          "id": "tel_001",
+          "name": "Network",
+          "difficulty": "beginner",
+          "prerequisites": [],
+          "vocabulary": [
+            {
+              "word": "bandwidth",
+              "pronunciation": "/ˈbændwɪdθ/",
+              "definition": "The maximum rate of data transfer across a network connection",
+              "examples": [
+                "Network bandwidth must support simultaneous video conferencing.",
+                "We upgraded bandwidth to handle increased traffic during peak hours."
+              ]
+            },
+            {
+              "word": "router",
+              "pronunciation": "/ˈruːtər/",
+              "definition": "A device that forwards data packets between computer networks",
+              "examples": [
+                "The enterprise router manages traffic across twelve branch offices.",
+                "Configure the router to prioritize voice traffic over data."
+              ]
+            },
+            {
+              "word": "subnet",
+              "pronunciation": "/ˈsʌbnet/",
+              "definition": "A logical subdivision of an IP network for organizational purposes",
+              "examples": [
+                "Each department operates on a separate subnet for security.",
+                "Subnet configuration reduced broadcast traffic significantly."
+              ]
+            },
+            {
+              "word": "latency",
+              "pronunciation": "/ˈleɪtənsi/",
+              "definition": "The delay before data transfer begins following an instruction",
+              "examples": [
+                "Low latency is critical for real-time communication applications.",
+                "Network latency increased after the fiber cut in the region."
+              ]
+            },
+            {
+              "word": "topology",
+              "pronunciation": "/təˈpɒlədʒi/",
+              "definition": "The arrangement of network elements and their interconnections",
+              "examples": [
+                "Star topology simplifies troubleshooting in enterprise networks.",
+                "The network topology was redesigned for improved redundancy."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "tel_002",
+          "name": "Protocol",
+          "difficulty": "beginner",
+          "prerequisites": [
+            "tel_001"
+          ],
+          "vocabulary": [
+            {
+              "word": "TCP",
+              "pronunciation": "/ˌtiː siː ˈpiː/",
+              "definition": "Transmission Control Protocol ensuring reliable data delivery",
+              "examples": [
+                "TCP guarantees packet delivery in the correct order.",
+                "Video streaming applications often use TCP for reliability."
+              ]
+            },
+            {
+              "word": "UDP",
+              "pronunciation": "/ˌjuː diː ˈpiː/",
+              "definition": "User Datagram Protocol for fast but unreliable data transmission",
+              "examples": [
+                "UDP is preferred for live streaming where speed matters most.",
+                "Voice over IP often uses UDP to minimize transmission delay."
+              ]
+            },
+            {
+              "word": "handshake",
+              "pronunciation": "/ˈhændʃeɪk/",
+              "definition": "The process of establishing a connection between network devices",
+              "examples": [
+                "The TCP handshake completes in three steps before data transfer.",
+                "SSL handshake establishes encrypted communication channels."
+              ]
+            },
+            {
+              "word": "packet",
+              "pronunciation": "/ˈpækɪt/",
+              "definition": "A formatted unit of data transmitted over a network",
+              "examples": [
+                "Packet loss above one percent degrades call quality noticeably.",
+                "The firewall inspects every incoming packet for threats."
+              ]
+            },
+            {
+              "word": "header",
+              "pronunciation": "/ˈhedər/",
+              "definition": "Metadata attached to data packets containing routing information",
+              "examples": [
+                "Packet headers contain source and destination IP addresses.",
+                "Protocol headers enable routers to forward traffic correctly."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "tel_003",
+          "name": "Infrastructure",
+          "difficulty": "intermediate",
+          "prerequisites": [
+            "tel_001"
+          ],
+          "vocabulary": [
+            {
+              "word": "fiber",
+              "pronunciation": "/ˈfaɪbər/",
+              "definition": "Optical cable using light pulses to transmit data at high speeds",
+              "examples": [
+                "Fiber infrastructure supports gigabit speeds to residential customers.",
+                "The fiber backbone connects all regional data centers."
+              ]
+            },
+            {
+              "word": "backbone",
+              "pronunciation": "/ˈbækbəʊn/",
+              "definition": "The principal high-capacity network connecting major nodes",
+              "examples": [
+                "The national backbone carries intercity telecommunications traffic.",
+                "Backbone redundancy ensures service continuity during outages."
+              ]
+            },
+            {
+              "word": "tower",
+              "pronunciation": "/ˈtaʊər/",
+              "definition": "A structure supporting antennas for wireless signal transmission",
+              "examples": [
+                "Cell tower deployment expanded coverage to rural areas.",
+                "The tower lease agreement covers twenty years of operation."
+              ]
+            },
+            {
+              "word": "switching",
+              "pronunciation": "/ˈswɪtʃɪŋ/",
+              "definition": "The process of directing data to its intended destination in a network",
+              "examples": [
+                "Packet switching enables efficient use of network resources.",
+                "Circuit switching guarantees dedicated bandwidth for voice calls."
+              ]
+            },
+            {
+              "word": "redundancy",
+              "pronunciation": "/rɪˈdʌndənsi/",
+              "definition": "Duplication of critical components to ensure system reliability",
+              "examples": [
+                "Network redundancy prevented service disruption during maintenance.",
+                "Geographic redundancy protects against regional disasters."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "tel_004",
+          "name": "Security",
+          "difficulty": "intermediate",
+          "prerequisites": [
+            "tel_001",
+            "tel_002"
+          ],
+          "vocabulary": [
+            {
+              "word": "encryption",
+              "pronunciation": "/ɪnˈkrɪpʃən/",
+              "definition": "Converting data into coded form to prevent unauthorized access",
+              "examples": [
+                "End-to-end encryption protects customer communications from interception.",
+                "AES encryption is the industry standard for telecom security."
+              ]
+            },
+            {
+              "word": "firewall",
+              "pronunciation": "/ˈfaɪəwɔːl/",
+              "definition": "A security system monitoring and controlling network traffic",
+              "examples": [
+                "The firewall blocked unauthorized access attempts overnight.",
+                "Next-generation firewalls inspect application-layer traffic."
+              ]
+            },
+            {
+              "word": "intrusion",
+              "pronunciation": "/ɪnˈtruːʒən/",
+              "definition": "Unauthorized access to a network or system",
+              "examples": [
+                "Intrusion detection systems alert security teams to threats.",
+                "The intrusion attempt was traced to an external IP address."
+              ]
+            },
+            {
+              "word": "authentication",
+              "pronunciation": "/ɔːˌθentɪˈkeɪʃən/",
+              "definition": "Verifying the identity of users or devices accessing a network",
+              "examples": [
+                "Multi-factor authentication strengthens network access security.",
+                "Certificate-based authentication secures device-to-device communication."
+              ]
+            },
+            {
+              "word": "vulnerability",
+              "pronunciation": "/ˌvʌlnərəˈbɪləti/",
+              "definition": "A weakness that could be exploited to compromise system security",
+              "examples": [
+                "Security patches addressed critical vulnerabilities within forty-eight hours.",
+                "Regular vulnerability assessments identify risks before exploitation."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "tel_005",
+          "name": "Bandwidth Management",
+          "difficulty": "beginner",
+          "prerequisites": [
+            "tel_001"
+          ],
+          "vocabulary": [
+            {
+              "word": "throttling",
+              "pronunciation": "/ˈθrɒtlɪŋ/",
+              "definition": "Intentionally limiting data transfer speed to manage network load",
+              "examples": [
+                "Bandwidth throttling prevents network congestion during peak usage.",
+                "The ISP implemented throttling for heavy data consumers."
+              ]
+            },
+            {
+              "word": "allocation",
+              "pronunciation": "/ˌæləˈkeɪʃən/",
+              "definition": "Distribution of available bandwidth among users or applications",
+              "examples": [
+                "Dynamic bandwidth allocation prioritizes business-critical applications.",
+                "Fair allocation policies ensure equitable service for all subscribers."
+              ]
+            },
+            {
+              "word": "throughput",
+              "pronunciation": "/ˈθruːpʊt/",
+              "definition": "The actual rate of successful data delivery over a network",
+              "examples": [
+                "Measured throughput fell below contracted service levels.",
+                "Throughput optimization improved customer satisfaction scores."
+              ]
+            },
+            {
+              "word": "congestion",
+              "pronunciation": "/kənˈdʒestʃən/",
+              "definition": "Network overload when traffic exceeds available capacity",
+              "examples": [
+                "Traffic congestion during events requires proactive capacity planning.",
+                "Congestion management algorithms reroute traffic automatically."
+              ]
+            },
+            {
+              "word": "QoS",
+              "pronunciation": "/ˌkjuː əʊ ˈes/",
+              "definition": "Quality of Service mechanisms prioritizing critical network traffic",
+              "examples": [
+                "QoS policies ensure voice calls maintain priority over downloads.",
+                "Implementing QoS reduced call drop rates by thirty percent."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "tel_006",
+          "name": "Latency Optimization",
+          "difficulty": "intermediate",
+          "prerequisites": [
+            "tel_001",
+            "tel_005"
+          ],
+          "vocabulary": [
+            {
+              "word": "jitter",
+              "pronunciation": "/ˈdʒɪtər/",
+              "definition": "Variation in packet arrival time affecting real-time communication quality",
+              "examples": [
+                "High jitter causes choppy audio during video conferences.",
+                "Jitter buffers compensate for inconsistent packet delivery."
+              ]
+            },
+            {
+              "word": "ping",
+              "pronunciation": "/pɪŋ/",
+              "definition": "A network utility measuring round-trip time to a destination",
+              "examples": [
+                "Ping times below fifty milliseconds indicate excellent connectivity.",
+                "The technician ran ping tests to diagnose connectivity issues."
+              ]
+            },
+            {
+              "word": "buffering",
+              "pronunciation": "/ˈbʌfərɪŋ/",
+              "definition": "Temporarily storing data to smooth playback or transmission",
+              "examples": [
+                "Excessive buffering indicates insufficient network bandwidth.",
+                "Adaptive buffering adjusts to varying network conditions."
+              ]
+            },
+            {
+              "word": "edge",
+              "pronunciation": "/edʒ/",
+              "definition": "Computing or caching performed near end users to reduce latency",
+              "examples": [
+                "Edge computing brings content closer to subscribers.",
+                "CDN edge servers reduced page load times dramatically."
+              ]
+            },
+            {
+              "word": "propagation",
+              "pronunciation": "/ˌprɒpəˈɡeɪʃən/",
+              "definition": "The time for a signal to travel through a transmission medium",
+              "examples": [
+                "Signal propagation delay limits maximum fiber cable distances.",
+                "Understanding propagation characteristics guides network design."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "tel_007",
+          "name": "5G Technology",
+          "difficulty": "advanced",
+          "prerequisites": [
+            "tel_001",
+            "tel_003"
+          ],
+          "vocabulary": [
+            {
+              "word": "millimeter",
+              "pronunciation": "/ˈmɪlɪmiːtər/",
+              "definition": "High-frequency radio waves used in 5G for ultra-fast data transfer",
+              "examples": [
+                "Millimeter wave technology enables multi-gigabit 5G speeds.",
+                "Millimeter signals require dense small cell deployment."
+              ]
+            },
+            {
+              "word": "beamforming",
+              "pronunciation": "/ˈbiːmfɔːmɪŋ/",
+              "definition": "Directing wireless signals toward specific devices for efficiency",
+              "examples": [
+                "Beamforming improves signal strength at cell edge locations.",
+                "Massive MIMO with beamforming increases network capacity fivefold."
+              ]
+            },
+            {
+              "word": "slicing",
+              "pronunciation": "/ˈslaɪsɪŋ/",
+              "definition": "Creating virtual network segments with dedicated resources",
+              "examples": [
+                "Network slicing enables customized services for enterprise clients.",
+                "A dedicated slice guarantees bandwidth for emergency services."
+              ]
+            },
+            {
+              "word": "MIMO",
+              "pronunciation": "/ˈmaɪməʊ/",
+              "definition": "Multiple Input Multiple Output using multiple antennas for better performance",
+              "examples": [
+                "MIMO technology doubles data throughput without additional bandwidth.",
+                "Massive MIMO is a cornerstone of 5G network architecture."
+              ]
+            },
+            {
+              "word": "latency-critical",
+              "pronunciation": "/ˈleɪtənsi ˈkrɪtɪkəl/",
+              "definition": "Applications requiring extremely low network delay",
+              "examples": [
+                "Latency-critical applications include autonomous vehicle communication.",
+                "5G supports latency-critical industrial automation use cases."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "tel_008",
+          "name": "Cloud Services",
+          "difficulty": "intermediate",
+          "prerequisites": [
+            "tel_003",
+            "tel_002"
+          ],
+          "vocabulary": [
+            {
+              "word": "virtualization",
+              "pronunciation": "/ˌvɜːtʃuəlaɪˈzeɪʃən/",
+              "definition": "Creating virtual versions of hardware, storage, or network resources",
+              "examples": [
+                "Network virtualization reduces hardware costs significantly.",
+                "Server virtualization enabled rapid disaster recovery capabilities."
+              ]
+            },
+            {
+              "word": "orchestration",
+              "pronunciation": "/ˌɔːkɪstreɪˈʃən/",
+              "definition": "Automated coordination and management of complex network services",
+              "examples": [
+                "Service orchestration deploys network functions in minutes.",
+                "Cloud orchestration manages resources across multiple data centers."
+              ]
+            },
+            {
+              "word": "container",
+              "pronunciation": "/kənˈteɪnər/",
+              "definition": "A lightweight package containing application code and dependencies",
+              "examples": [
+                "Container deployment accelerated service rollout timelines.",
+                "Network functions are increasingly deployed as containers."
+              ]
+            },
+            {
+              "word": "scalability",
+              "pronunciation": "/ˌskeɪləˈbɪləti/",
+              "definition": "The ability to handle growing workloads by adding resources",
+              "examples": [
+                "Cloud scalability supports seasonal traffic spikes effortlessly.",
+                "Horizontal scalability adds servers to distribute increasing load."
+              ]
+            },
+            {
+              "word": "multitenancy",
+              "pronunciation": "/ˌmʌltiˈtenənsi/",
+              "definition": "A single infrastructure instance serving multiple customers securely",
+              "examples": [
+                "Multitenancy architecture reduces operational costs per subscriber.",
+                "Secure multitenancy isolates customer data completely."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "tel_009",
+          "name": "Network Troubleshooting",
+          "difficulty": "advanced",
+          "prerequisites": [
+            "tel_001",
+            "tel_002",
+            "tel_004"
+          ],
+          "vocabulary": [
+            {
+              "word": "diagnostic",
+              "pronunciation": "/ˌdaɪəɡˈnɒstɪk/",
+              "definition": "Tools and procedures for identifying network problems",
+              "examples": [
+                "Network diagnostic tools pinpointed the faulty switch port.",
+                "Automated diagnostics reduced mean time to resolution by half."
+              ]
+            },
+            {
+              "word": "traceroute",
+              "pronunciation": "/ˈtreɪsruːt/",
+              "definition": "A utility showing the path packets take to reach a destination",
+              "examples": [
+                "Traceroute revealed a routing loop causing packet loss.",
+                "The engineer used traceroute to identify the bottleneck hop."
+              ]
+            },
+            {
+              "word": "SNMP",
+              "pronunciation": "/ˌes en em ˈpiː/",
+              "definition": "Simple Network Management Protocol for monitoring network devices",
+              "examples": [
+                "SNMP monitoring alerts operators to device failures instantly.",
+                "SNMP traps notify the NOC of critical threshold breaches."
+              ]
+            },
+            {
+              "word": "root cause",
+              "pronunciation": "/ruːt kɔːz/",
+              "definition": "The fundamental reason behind a network failure or issue",
+              "examples": [
+                "Root cause analysis identified a firmware bug as the culprit.",
+                "Finding the root cause prevents recurring network outages."
+              ]
+            },
+            {
+              "word": "escalation",
+              "pronunciation": "/ˌeskəˈleɪʃən/",
+              "definition": "Raising an unresolved issue to higher support levels",
+              "examples": [
+                "Tier three escalation resolved the complex routing issue.",
+                "Automatic escalation triggers when SLA thresholds are breached."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "tel_010",
+          "name": "Telecommunications Sales",
+          "difficulty": "advanced",
+          "prerequisites": [
+            "tel_007",
+            "tel_008"
+          ],
+          "vocabulary": [
+            {
+              "word": "provisioning",
+              "pronunciation": "/prəˈvɪʒənɪŋ/",
+              "definition": "Setting up and configuring services for new customers",
+              "examples": [
+                "Automated provisioning activates services within minutes of order.",
+                "Service provisioning errors were reduced by ninety percent."
+              ]
+            },
+            {
+              "word": "SLA",
+              "pronunciation": "/ˌes el ˈeɪ/",
+              "definition": "Service Level Agreement defining guaranteed performance standards",
+              "examples": [
+                "The enterprise SLA guarantees ninety-nine point nine percent uptime.",
+                "SLA penalties apply when performance targets are not met."
+              ]
+            },
+            {
+              "word": "churn",
+              "pronunciation": "/tʃɜːn/",
+              "definition": "The rate at which customers cancel or switch service providers",
+              "examples": [
+                "Customer churn decreased after improving network reliability.",
+                "Proactive support programs target accounts at risk of churn."
+              ]
+            },
+            {
+              "word": "upselling",
+              "pronunciation": "/ˈʌpselɪŋ/",
+              "definition": "Encouraging customers to purchase higher-tier or additional services",
+              "examples": [
+                "Upselling fiber upgrades increased average revenue per user.",
+                "The sales team focuses on upselling enterprise security packages."
+              ]
+            },
+            {
+              "word": "ROI",
+              "pronunciation": "/ˌɑːr əʊ ˈaɪ/",
+              "definition": "Return on Investment measuring financial benefit relative to cost",
+              "examples": [
+                "The client calculated ROI from reduced downtime costs.",
+                "Presenting ROI data helped close the enterprise contract."
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "finance",
+      "name": "Finance",
+      "concepts": [
+        {
+          "id": "fin_001",
+          "name": "Investment",
+          "difficulty": "beginner",
+          "prerequisites": [],
+          "vocabulary": [
+            {
+              "word": "portfolio",
+              "pronunciation": "/pɔːtˈfəʊliəʊ/",
+              "definition": "A collection of financial assets held by an investor",
+              "examples": [
+                "The portfolio was diversified across multiple asset classes.",
+                "Portfolio performance exceeded the benchmark index this quarter."
+              ]
+            },
+            {
+              "word": "equity",
+              "pronunciation": "/ˈekwəti/",
+              "definition": "Ownership interest in a company represented by shares",
+              "examples": [
+                "Equity markets rallied following the positive earnings report.",
+                "Private equity firms acquired the company for two billion dollars."
+              ]
+            },
+            {
+              "word": "dividend",
+              "pronunciation": "/ˈdɪvɪdend/",
+              "definition": "A payment distributed to shareholders from company profits",
+              "examples": [
+                "The board approved a quarterly dividend of fifty cents per share.",
+                "Dividend yield attracted income-focused investors."
+              ]
+            },
+            {
+              "word": "liquidity",
+              "pronunciation": "/lɪˈkwɪdəti/",
+              "definition": "The ease with which an asset can be converted to cash",
+              "examples": [
+                "Market liquidity dried up during the financial crisis.",
+                "High liquidity ensures investors can exit positions quickly."
+              ]
+            },
+            {
+              "word": "yield",
+              "pronunciation": "/jiːld/",
+              "definition": "The income return on an investment over a given period",
+              "examples": [
+                "Bond yields rose as central banks tightened monetary policy.",
+                "The fund targets a yield of four percent annually."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "fin_002",
+          "name": "Risk",
+          "difficulty": "beginner",
+          "prerequisites": [
+            "fin_001"
+          ],
+          "vocabulary": [
+            {
+              "word": "volatility",
+              "pronunciation": "/ˌvɒləˈtɪləti/",
+              "definition": "The degree of variation in asset prices over time",
+              "examples": [
+                "Market volatility increased ahead of the earnings announcement.",
+                "Options trading profits from correctly predicting volatility."
+              ]
+            },
+            {
+              "word": "hedge",
+              "pronunciation": "/hedʒ/",
+              "definition": "An investment made to reduce the risk of adverse price movements",
+              "examples": [
+                "Currency hedging protected the fund from exchange rate fluctuations.",
+                "The company hedged commodity exposure through futures contracts."
+              ]
+            },
+            {
+              "word": "exposure",
+              "pronunciation": "/ɪkˈspəʊʒər/",
+              "definition": "The degree to which an investor is vulnerable to financial loss",
+              "examples": [
+                "Credit exposure limits were tightened across all trading desks.",
+                "Geographic exposure was reduced by reallocating to domestic assets."
+              ]
+            },
+            {
+              "word": "default",
+              "pronunciation": "/dɪˈfɔːlt/",
+              "definition": "Failure to fulfill financial obligations such as loan repayment",
+              "examples": [
+                "Bond default rates remained below historical averages.",
+                "Credit analysts assessed the probability of corporate default."
+              ]
+            },
+            {
+              "word": "correlation",
+              "pronunciation": "/ˌkɒrəˈleɪʃən/",
+              "definition": "A statistical relationship between the movements of two assets",
+              "examples": [
+                "Low correlation between assets improves portfolio diversification.",
+                "Correlation analysis revealed hidden concentration risks."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "fin_003",
+          "name": "Market",
+          "difficulty": "intermediate",
+          "prerequisites": [
+            "fin_001"
+          ],
+          "vocabulary": [
+            {
+              "word": "bull",
+              "pronunciation": "/bʊl/",
+              "definition": "A market condition where prices are rising or expected to rise",
+              "examples": [
+                "The bull market continued for eighteen consecutive months.",
+                "Investor sentiment turned bullish after the policy announcement."
+              ]
+            },
+            {
+              "word": "bear",
+              "pronunciation": "/beər/",
+              "definition": "A market condition where prices are falling or expected to fall",
+              "examples": [
+                "Bear market conditions prompted defensive portfolio repositioning.",
+                "The analyst warned of a potential bear market correction."
+              ]
+            },
+            {
+              "word": "index",
+              "pronunciation": "/ˈɪndeks/",
+              "definition": "A statistical measure tracking performance of a market segment",
+              "examples": [
+                "The S&P index reached an all-time high last week.",
+                "Index funds provide low-cost exposure to broad markets."
+              ]
+            },
+            {
+              "word": "arbitrage",
+              "pronunciation": "/ˈɑːbɪtrɑːʒ/",
+              "definition": "Profiting from price differences of the same asset in different markets",
+              "examples": [
+                "Arbitrage opportunities disappeared as markets became more efficient.",
+                "Statistical arbitrage strategies exploit temporary price discrepancies."
+              ]
+            },
+            {
+              "word": "sentiment",
+              "pronunciation": "/ˈsentɪmənt/",
+              "definition": "The overall attitude of investors toward market conditions",
+              "examples": [
+                "Market sentiment improved following the interest rate decision.",
+                "Sentiment indicators suggest cautious optimism among fund managers."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "fin_004",
+          "name": "Analytics",
+          "difficulty": "intermediate",
+          "prerequisites": [
+            "fin_003",
+            "fin_002"
+          ],
+          "vocabulary": [
+            {
+              "word": "regression",
+              "pronunciation": "/rɪˈɡreʃən/",
+              "definition": "A statistical method modeling relationships between variables",
+              "examples": [
+                "Regression analysis identified key drivers of stock performance.",
+                "Multiple regression models forecast revenue with high accuracy."
+              ]
+            },
+            {
+              "word": "forecasting",
+              "pronunciation": "/ˈfɔːkɑːstɪŋ/",
+              "definition": "Predicting future financial outcomes based on historical data",
+              "examples": [
+                "Revenue forecasting incorporated macroeconomic scenario analysis.",
+                "Machine learning improved forecasting accuracy by fifteen percent."
+              ]
+            },
+            {
+              "word": "benchmark",
+              "pronunciation": "/ˈbentʃmɑːk/",
+              "definition": "A standard used to measure performance of investments or strategies",
+              "examples": [
+                "The fund outperformed its benchmark by two hundred basis points.",
+                "Benchmark selection significantly affects perceived fund performance."
+              ]
+            },
+            {
+              "word": "alpha",
+              "pronunciation": "/ˈælfə/",
+              "definition": "Excess return of an investment relative to a benchmark index",
+              "examples": [
+                "The manager generated positive alpha through stock selection.",
+                "Alpha decay occurs as successful strategies attract imitators."
+              ]
+            },
+            {
+              "word": "beta",
+              "pronunciation": "/ˈbeɪtə/",
+              "definition": "A measure of an asset volatility relative to the overall market",
+              "examples": [
+                "High beta stocks amplify market movements in both directions.",
+                "Portfolio beta was adjusted to match the client risk tolerance."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "fin_005",
+          "name": "Portfolio Management",
+          "difficulty": "intermediate",
+          "prerequisites": [
+            "fin_001",
+            "fin_002"
+          ],
+          "vocabulary": [
+            {
+              "word": "rebalancing",
+              "pronunciation": "/riːˈbælənsɪŋ/",
+              "definition": "Adjusting portfolio allocations back to target weights",
+              "examples": [
+                "Quarterly rebalancing maintained the desired asset allocation.",
+                "Tax-efficient rebalancing minimized capital gains realization."
+              ]
+            },
+            {
+              "word": "allocation",
+              "pronunciation": "/ˌæləˈkeɪʃən/",
+              "definition": "Distribution of investments across different asset categories",
+              "examples": [
+                "Strategic asset allocation drives long-term portfolio returns.",
+                "The allocation shifted toward fixed income as retirement approached."
+              ]
+            },
+            {
+              "word": "diversification",
+              "pronunciation": "/daɪˌvɜːsɪfɪˈkeɪʃən/",
+              "definition": "Spreading investments to reduce exposure to any single risk",
+              "examples": [
+                "Portfolio diversification limited losses during the sector downturn.",
+                "Geographic diversification reduced country-specific political risk."
+              ]
+            },
+            {
+              "word": "turnover",
+              "pronunciation": "/ˈtɜːnəʊvər/",
+              "definition": "The rate at which portfolio holdings are bought and sold",
+              "examples": [
+                "Low portfolio turnover reduces transaction costs and taxes.",
+                "High turnover may indicate active trading strategy changes."
+              ]
+            },
+            {
+              "word": "drawdown",
+              "pronunciation": "/ˈdrɔːdaʊn/",
+              "definition": "The peak-to-trough decline in portfolio value during a period",
+              "examples": [
+                "Maximum drawdown is a key risk metric for hedge funds.",
+                "The portfolio recovered from a fifteen percent drawdown within six months."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "fin_006",
+          "name": "Compliance",
+          "difficulty": "advanced",
+          "prerequisites": [
+            "fin_002",
+            "fin_004"
+          ],
+          "vocabulary": [
+            {
+              "word": "AML",
+              "pronunciation": "/ˌeɪ em ˈel/",
+              "definition": "Anti-Money Laundering regulations preventing illicit financial activity",
+              "examples": [
+                "AML procedures flagged suspicious transaction patterns automatically.",
+                "Staff completed mandatory AML training before year end."
+              ]
+            },
+            {
+              "word": "KYC",
+              "pronunciation": "/ˌkeɪ waɪ ˈsiː/",
+              "definition": "Know Your Customer process verifying client identity and risk profile",
+              "examples": [
+                "Enhanced KYC requirements apply to high-net-worth clients.",
+                "Digital KYC onboarding reduced account opening time significantly."
+              ]
+            },
+            {
+              "word": "fiduciary",
+              "pronunciation": "/fɪˈdjuːʃiəri/",
+              "definition": "A legal obligation to act in the best financial interest of clients",
+              "examples": [
+                "Fiduciary duty requires transparent fee disclosure to clients.",
+                "The advisor operates under strict fiduciary standards."
+              ]
+            },
+            {
+              "word": "disclosure",
+              "pronunciation": "/dɪsˈkləʊʒər/",
+              "definition": "Required revelation of material financial information to stakeholders",
+              "examples": [
+                "Regulatory disclosure requirements were updated this quarter.",
+                "Full disclosure of conflicts of interest builds client trust."
+              ]
+            },
+            {
+              "word": "sanctions",
+              "pronunciation": "/ˈsæŋkʃənz/",
+              "definition": "Government restrictions on financial transactions with certain entities",
+              "examples": [
+                "Sanctions screening blocked transactions with restricted parties.",
+                "Compliance updated sanctions lists daily from regulatory sources."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "fin_007",
+          "name": "Derivatives",
+          "difficulty": "advanced",
+          "prerequisites": [
+            "fin_001",
+            "fin_002",
+            "fin_004"
+          ],
+          "vocabulary": [
+            {
+              "word": "option",
+              "pronunciation": "/ˈɒpʃən/",
+              "definition": "A contract giving the right but not obligation to buy or sell an asset",
+              "examples": [
+                "Call options gained value as the underlying stock price rose.",
+                "Options strategies can generate income in flat markets."
+              ]
+            },
+            {
+              "word": "futures",
+              "pronunciation": "/ˈfjuːtʃəz/",
+              "definition": "Contracts obligating purchase or sale of an asset at a predetermined price",
+              "examples": [
+                "Commodity futures hedged against raw material price increases.",
+                "Futures markets provide price discovery for agricultural products."
+              ]
+            },
+            {
+              "word": "swap",
+              "pronunciation": "/swɒp/",
+              "definition": "An agreement to exchange cash flows between two parties",
+              "examples": [
+                "Interest rate swaps converted variable payments to fixed rates.",
+                "Credit default swaps transferred counterparty risk to insurers."
+              ]
+            },
+            {
+              "word": "notional",
+              "pronunciation": "/ˈnəʊʃənəl/",
+              "definition": "The theoretical value underlying a derivatives contract",
+              "examples": [
+                "Total notional value of derivatives exceeded one trillion dollars.",
+                "Notional amounts do not represent actual money at risk."
+              ]
+            },
+            {
+              "word": "counterparty",
+              "pronunciation": "/ˈkaʊntəpɑːti/",
+              "definition": "The other party in a financial contract or transaction",
+              "examples": [
+                "Counterparty risk assessment is mandatory before large trades.",
+                "Central clearing reduced counterparty risk across the market."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "fin_008",
+          "name": "Financial Reporting",
+          "difficulty": "intermediate",
+          "prerequisites": [
+            "fin_004",
+            "fin_006"
+          ],
+          "vocabulary": [
+            {
+              "word": "reconciliation",
+              "pronunciation": "/ˌrekənsɪliˈeɪʃən/",
+              "definition": "Comparing records to ensure consistency between accounts",
+              "examples": [
+                "Monthly reconciliation identified discrepancies in three accounts.",
+                "Automated reconciliation reduced manual processing time by seventy percent."
+              ]
+            },
+            {
+              "word": "accrual",
+              "pronunciation": "/əˈkruːəl/",
+              "definition": "Recording revenue or expenses when earned or incurred, not when paid",
+              "examples": [
+                "Accrual accounting provides a more accurate financial picture.",
+                "Accrued liabilities were properly disclosed in the quarterly report."
+              ]
+            },
+            {
+              "word": "amortization",
+              "pronunciation": "/əˌmɔːtɪˈzeɪʃən/",
+              "definition": "Gradually writing off the cost of an intangible asset over time",
+              "examples": [
+                "Loan amortization schedules show principal and interest breakdown.",
+                "Goodwill amortization affected reported earnings this quarter."
+              ]
+            },
+            {
+              "word": "impairment",
+              "pronunciation": "/ɪmˈpeəmənt/",
+              "definition": "A reduction in the recoverable value of an asset below its book value",
+              "examples": [
+                "Asset impairment charges reduced net income significantly.",
+                "Annual impairment testing is required for intangible assets."
+              ]
+            },
+            {
+              "word": "consolidation",
+              "pronunciation": "/kənˌsɒlɪˈdeɪʃən/",
+              "definition": "Combining financial statements of parent and subsidiary companies",
+              "examples": [
+                "Financial consolidation included twelve subsidiary entities.",
+                "Consolidation adjustments eliminated intercompany transactions."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "fin_009",
+          "name": "Merger and Acquisition",
+          "difficulty": "advanced",
+          "prerequisites": [
+            "fin_001",
+            "fin_006",
+            "fin_008"
+          ],
+          "vocabulary": [
+            {
+              "word": "due diligence",
+              "pronunciation": "/djuː ˈdɪlɪdʒəns/",
+              "definition": "Comprehensive investigation of a company before acquisition",
+              "examples": [
+                "Due diligence revealed undisclosed liabilities in the target company.",
+                "Financial due diligence validated the acquisition valuation."
+              ]
+            },
+            {
+              "word": "synergy",
+              "pronunciation": "/ˈsɪnədʒi/",
+              "definition": "Additional value created by combining two companies",
+              "examples": [
+                "Cost synergies from the merger totaled fifty million annually.",
+                "Revenue synergies will materialize over the next three years."
+              ]
+            },
+            {
+              "word": "valuation",
+              "pronunciation": "/ˌvæljuˈeɪʃən/",
+              "definition": "Determining the economic worth of a company or asset",
+              "examples": [
+                "DCF valuation supported the proposed acquisition price.",
+                "Independent valuation confirmed fair market value of shares."
+              ]
+            },
+            {
+              "word": "leverage",
+              "pronunciation": "/ˈliːvərɪdʒ/",
+              "definition": "Using borrowed capital to increase potential investment returns",
+              "examples": [
+                "The acquisition was financed through leveraged buyout structure.",
+                "Excessive leverage increased financial risk during the downturn."
+              ]
+            },
+            {
+              "word": "accretion",
+              "pronunciation": "/əˈkriːʃən/",
+              "definition": "Growth in earnings per share resulting from an acquisition",
+              "examples": [
+                "The deal is expected to be accretive to earnings within two years.",
+                "Accretion analysis supported board approval of the transaction."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "fin_010",
+          "name": "Asset Management",
+          "difficulty": "advanced",
+          "prerequisites": [
+            "fin_005",
+            "fin_004",
+            "fin_006"
+          ],
+          "vocabulary": [
+            {
+              "word": "custodian",
+              "pronunciation": "/kʌsˈtəʊdiən/",
+              "definition": "A financial institution holding and safeguarding client assets",
+              "examples": [
+                "The custodian reported all holdings to regulators monthly.",
+                "Switching custodians required three months of transition planning."
+              ]
+            },
+            {
+              "word": "fiduciary",
+              "pronunciation": "/fɪˈdjuːʃiəri/",
+              "definition": "Managing assets with legal obligation to prioritize client interests",
+              "examples": [
+                "Fiduciary asset management demands transparent fee structures.",
+                "The firm operates as a registered fiduciary investment advisor."
+              ]
+            },
+            {
+              "word": "mandate",
+              "pronunciation": "/ˈmændeɪt/",
+              "definition": "Specific investment guidelines agreed between client and manager",
+              "examples": [
+                "The investment mandate restricts exposure to emerging markets.",
+                "ESG mandates increasingly influence asset allocation decisions."
+              ]
+            },
+            {
+              "word": "attribution",
+              "pronunciation": "/ˌætrɪˈbjuːʃən/",
+              "definition": "Analysis identifying sources of portfolio performance relative to benchmark",
+              "examples": [
+                "Performance attribution revealed sector selection drove outperformance.",
+                "Risk attribution highlighted unexpected currency exposure."
+              ]
+            },
+            {
+              "word": "underweight",
+              "pronunciation": "/ˌʌndəˈweɪt/",
+              "definition": "Holding less of an asset than its weight in the benchmark index",
+              "examples": [
+                "The fund is underweight technology relative to the index.",
+                "Strategic underweighting of bonds reduced interest rate risk."
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tech",
+      "name": "Technology",
+      "concepts": [
+        {
+          "id": "tech_001",
+          "name": "Architecture",
+          "difficulty": "beginner",
+          "prerequisites": [],
+          "vocabulary": [
+            {
+              "word": "microservice",
+              "pronunciation": "/ˈmaɪkrəʊˌsɜːvɪs/",
+              "definition": "An independently deployable software service in a distributed system",
+              "examples": [
+                "Microservice architecture enables teams to deploy independently.",
+                "Each microservice handles a single business capability."
+              ]
+            },
+            {
+              "word": "monolith",
+              "pronunciation": "/ˈmɒnəlɪθ/",
+              "definition": "A single unified software application containing all functionality",
+              "examples": [
+                "Migrating from monolith to microservices improved scalability.",
+                "The legacy monolith still handles core billing functions."
+              ]
+            },
+            {
+              "word": "middleware",
+              "pronunciation": "/ˈmɪdlweər/",
+              "definition": "Software connecting different applications and enabling data exchange",
+              "examples": [
+                "Message middleware handles asynchronous communication between services.",
+                "API middleware translates requests between incompatible systems."
+              ]
+            },
+            {
+              "word": "abstraction",
+              "pronunciation": "/æbˈstrækʃən/",
+              "definition": "Hiding complex implementation details behind a simplified interface",
+              "examples": [
+                "Layered abstraction simplifies database access for developers.",
+                "Good abstraction reduces coupling between system components."
+              ]
+            },
+            {
+              "word": "modularity",
+              "pronunciation": "/ˌmɒdʒəˈlærəti/",
+              "definition": "Designing systems as interchangeable independent components",
+              "examples": [
+                "Modularity allows replacing components without affecting the whole system.",
+                "High modularity accelerated feature development cycles."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "tech_002",
+          "name": "Development",
+          "difficulty": "beginner",
+          "prerequisites": [],
+          "vocabulary": [
+            {
+              "word": "repository",
+              "pronunciation": "/rɪˈpɒzɪtəri/",
+              "definition": "A storage location for software code and version history",
+              "examples": [
+                "All developers commit code to the central repository daily.",
+                "Repository access is restricted to authorized team members."
+              ]
+            },
+            {
+              "word": "refactoring",
+              "pronunciation": "/riːˈfæktərɪŋ/",
+              "definition": "Restructuring existing code without changing its external behavior",
+              "examples": [
+                "Refactoring improved code readability without introducing bugs.",
+                "Regular refactoring prevents technical debt accumulation."
+              ]
+            },
+            {
+              "word": "debugging",
+              "pronunciation": "/diːˈbʌɡɪŋ/",
+              "definition": "Identifying and fixing errors or defects in software code",
+              "examples": [
+                "Debugging the memory leak took three days of investigation.",
+                "Automated debugging tools accelerated issue resolution."
+              ]
+            },
+            {
+              "word": "iteration",
+              "pronunciation": "/ˌɪtəˈreɪʃən/",
+              "definition": "A single cycle of development producing an incremental improvement",
+              "examples": [
+                "Each sprint iteration delivers working software to stakeholders.",
+                "Rapid iteration based on user feedback improved product quality."
+              ]
+            },
+            {
+              "word": "dependency",
+              "pronunciation": "/dɪˈpendənsi/",
+              "definition": "An external library or module required by a software project",
+              "examples": [
+                "Dependency updates must be tested before production deployment.",
+                "Managing dependencies prevents security vulnerabilities in the codebase."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "tech_003",
+          "name": "Deployment",
+          "difficulty": "intermediate",
+          "prerequisites": [
+            "tech_002",
+            "tech_001"
+          ],
+          "vocabulary": [
+            {
+              "word": "pipeline",
+              "pronunciation": "/ˈpaɪplaɪn/",
+              "definition": "An automated sequence of steps building and deploying software",
+              "examples": [
+                "The CI/CD pipeline deploys code to production within thirty minutes.",
+                "Pipeline failures trigger immediate notifications to the team."
+              ]
+            },
+            {
+              "word": "rollback",
+              "pronunciation": "/ˈrəʊlbæk/",
+              "definition": "Reverting to a previous software version after a failed deployment",
+              "examples": [
+                "Automatic rollback activated when error rates exceeded threshold.",
+                "The team executed rollback within five minutes of detecting issues."
+              ]
+            },
+            {
+              "word": "staging",
+              "pronunciation": "/ˈsteɪdʒɪŋ/",
+              "definition": "A pre-production environment mirroring production for testing",
+              "examples": [
+                "All releases are validated in staging before production deployment.",
+                "Staging environment tests caught a critical bug before release."
+              ]
+            },
+            {
+              "word": "artifact",
+              "pronunciation": "/ˈɑːtɪfækt/",
+              "definition": "A packaged output produced by the build process ready for deployment",
+              "examples": [
+                "Build artifacts are stored in the container registry.",
+                "Each artifact is tagged with version and commit hash."
+              ]
+            },
+            {
+              "word": "canary",
+              "pronunciation": "/kəˈneəri/",
+              "definition": "A deployment strategy releasing changes to a small subset of users first",
+              "examples": [
+                "Canary deployment limited blast radius of the new feature.",
+                "Monitoring canary metrics guided the full rollout decision."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "tech_004",
+          "name": "Scalability",
+          "difficulty": "intermediate",
+          "prerequisites": [
+            "tech_001"
+          ],
+          "vocabulary": [
+            {
+              "word": "horizontal",
+              "pronunciation": "/ˌhɒrɪˈzɒntəl/",
+              "definition": "Adding more machines to handle increased workload",
+              "examples": [
+                "Horizontal scaling added ten servers during the traffic surge.",
+                "Load balancers distribute traffic across horizontally scaled instances."
+              ]
+            },
+            {
+              "word": "vertical",
+              "pronunciation": "/ˈvɜːtɪkəl/",
+              "definition": "Adding more power to existing machines to handle increased workload",
+              "examples": [
+                "Vertical scaling upgraded server memory from sixteen to sixty-four gigabytes.",
+                "Vertical scaling has physical limits unlike horizontal approaches."
+              ]
+            },
+            {
+              "word": "bottleneck",
+              "pronunciation": "/ˈbɒtlnek/",
+              "definition": "A component limiting overall system performance or throughput",
+              "examples": [
+                "Database queries were identified as the primary performance bottleneck.",
+                "Removing the bottleneck doubled application response speed."
+              ]
+            },
+            {
+              "word": "caching",
+              "pronunciation": "/ˈkæʃɪŋ/",
+              "definition": "Storing frequently accessed data for faster retrieval",
+              "examples": [
+                "Redis caching reduced database load by eighty percent.",
+                "CDN caching delivers static content from edge locations globally."
+              ]
+            },
+            {
+              "word": "partitioning",
+              "pronunciation": "/pɑːˈtɪʃənɪŋ/",
+              "definition": "Dividing data across multiple storage systems for performance",
+              "examples": [
+                "Database partitioning improved query performance on large datasets.",
+                "Horizontal partitioning distributes rows across multiple servers."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "tech_005",
+          "name": "API Design",
+          "difficulty": "intermediate",
+          "prerequisites": [
+            "tech_001",
+            "tech_002"
+          ],
+          "vocabulary": [
+            {
+              "word": "endpoint",
+              "pronunciation": "/ˈendpɔɪnt/",
+              "definition": "A specific URL where an API can be accessed to perform operations",
+              "examples": [
+                "The REST endpoint returns user data in JSON format.",
+                "Deprecated endpoints will be removed in the next major version."
+              ]
+            },
+            {
+              "word": "payload",
+              "pronunciation": "/ˈpeɪləʊd/",
+              "definition": "The actual data transmitted in an API request or response",
+              "examples": [
+                "Request payload must include valid authentication tokens.",
+                "Compressed payloads reduced bandwidth consumption significantly."
+              ]
+            },
+            {
+              "word": "authentication",
+              "pronunciation": "/ɔːˌθentɪˈkeɪʃən/",
+              "definition": "Verifying identity of API consumers before granting access",
+              "examples": [
+                "OAuth authentication secures all third-party API integrations.",
+                "API authentication tokens expire after twenty-four hours."
+              ]
+            },
+            {
+              "word": "rate limiting",
+              "pronunciation": "/reɪt ˈlɪmɪtɪŋ/",
+              "definition": "Restricting the number of API requests a client can make",
+              "examples": [
+                "Rate limiting prevents abuse of public API endpoints.",
+                "Premium clients receive higher rate limiting thresholds."
+              ]
+            },
+            {
+              "word": "versioning",
+              "pronunciation": "/ˈvɜːʃənɪŋ/",
+              "definition": "Managing multiple API versions to maintain backward compatibility",
+              "examples": [
+                "API versioning ensures existing clients continue functioning.",
+                "Semantic versioning communicates breaking changes clearly."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "tech_006",
+          "name": "Cloud Computing",
+          "difficulty": "intermediate",
+          "prerequisites": [
+            "tech_001",
+            "tech_003"
+          ],
+          "vocabulary": [
+            {
+              "word": "serverless",
+              "pronunciation": "/ˈsɜːvərləs/",
+              "definition": "Cloud computing where the provider manages server infrastructure",
+              "examples": [
+                "Serverless functions scale automatically with incoming requests.",
+                "Moving to serverless reduced infrastructure management overhead."
+              ]
+            },
+            {
+              "word": "provisioning",
+              "pronunciation": "/prəˈvɪʒənɪŋ/",
+              "definition": "Allocating cloud resources for application deployment",
+              "examples": [
+                "Infrastructure provisioning is fully automated through Terraform.",
+                "Auto-provisioning scales resources based on demand patterns."
+              ]
+            },
+            {
+              "word": "multi-cloud",
+              "pronunciation": "/ˈmʌlti klaʊd/",
+              "definition": "Using services from multiple cloud providers simultaneously",
+              "examples": [
+                "Multi-cloud strategy avoids vendor lock-in risks.",
+                "Data replication across multi-cloud environments ensures resilience."
+              ]
+            },
+            {
+              "word": "IaC",
+              "pronunciation": "/ˌaɪ eɪ ˈsiː/",
+              "definition": "Infrastructure as Code managing cloud resources through configuration files",
+              "examples": [
+                "IaC templates ensure consistent environment configuration.",
+                "Version-controlled IaC enables reproducible infrastructure deployments."
+              ]
+            },
+            {
+              "word": "resilience",
+              "pronunciation": "/rɪˈzɪliəns/",
+              "definition": "The ability of a system to recover from failures and continue operating",
+              "examples": [
+                "Cloud resilience patterns include circuit breakers and retries.",
+                "Multi-region deployment improved system resilience significantly."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "tech_007",
+          "name": "DevOps",
+          "difficulty": "advanced",
+          "prerequisites": [
+            "tech_002",
+            "tech_003"
+          ],
+          "vocabulary": [
+            {
+              "word": "observability",
+              "pronunciation": "/əbˌzɜːvəˈbɪləti/",
+              "definition": "The ability to understand internal system state from external outputs",
+              "examples": [
+                "Full observability requires metrics, logs, and distributed tracing.",
+                "Improved observability reduced mean time to detection by sixty percent."
+              ]
+            },
+            {
+              "word": "incident",
+              "pronunciation": "/ˈɪnsɪdənt/",
+              "definition": "An unplanned interruption or reduction in quality of an IT service",
+              "examples": [
+                "The incident response team resolved the outage within forty-five minutes.",
+                "Post-incident reviews identify improvements for future responses."
+              ]
+            },
+            {
+              "word": "runbook",
+              "pronunciation": "/ˈrʌnbʊk/",
+              "definition": "Documented procedures for handling common operational tasks or incidents",
+              "examples": [
+                "The runbook guided on-call engineers through database recovery.",
+                "Automated runbooks execute remediation steps without human intervention."
+              ]
+            },
+            {
+              "word": "SRE",
+              "pronunciation": "/ˌes ɑːr ˈiː/",
+              "definition": "Site Reliability Engineering applying software practices to operations",
+              "examples": [
+                "SRE principles balance feature development with system reliability.",
+                "Error budgets guide decisions between velocity and stability."
+              ]
+            },
+            {
+              "word": "postmortem",
+              "pronunciation": "/ˈpəʊstmɔːtəm/",
+              "definition": "A structured review analyzing the causes and lessons of an incident",
+              "examples": [
+                "The blameless postmortem identified three actionable improvements.",
+                "Postmortem findings are shared across all engineering teams."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "tech_008",
+          "name": "Microservices",
+          "difficulty": "advanced",
+          "prerequisites": [
+            "tech_001",
+            "tech_005"
+          ],
+          "vocabulary": [
+            {
+              "word": "orchestration",
+              "pronunciation": "/ˌɔːkɪstreɪˈʃən/",
+              "definition": "Coordinating multiple services to accomplish a business process",
+              "examples": [
+                "Service orchestration manages complex multi-step workflows.",
+                "Kubernetes orchestration handles container scheduling and scaling."
+              ]
+            },
+            {
+              "word": "service mesh",
+              "pronunciation": "/ˈsɜːvɪs meʃ/",
+              "definition": "Infrastructure layer managing service-to-service communication",
+              "examples": [
+                "The service mesh handles encryption and load balancing transparently.",
+                "Istio service mesh provides observability across all microservices."
+              ]
+            },
+            {
+              "word": "circuit breaker",
+              "pronunciation": "/ˈsɜːkɪt ˈbreɪkər/",
+              "definition": "A pattern preventing cascading failures by stopping calls to failing services",
+              "examples": [
+                "Circuit breaker patterns prevented system-wide outage during database failure.",
+                "The circuit breaker opened after five consecutive timeout errors."
+              ]
+            },
+            {
+              "word": "event-driven",
+              "pronunciation": "/ɪˈvent ˈdrɪvən/",
+              "definition": "Architecture where services communicate through asynchronous events",
+              "examples": [
+                "Event-driven design decouples producers from consumers effectively.",
+                "Kafka enables event-driven communication between microservices."
+              ]
+            },
+            {
+              "word": "idempotency",
+              "pronunciation": "/ˌaɪdəmˈpɒtənsi/",
+              "definition": "Ensuring repeated identical requests produce the same result",
+              "examples": [
+                "Idempotency keys prevent duplicate payment processing.",
+                "API design must guarantee idempotency for all mutation endpoints."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "tech_009",
+          "name": "Code Review",
+          "difficulty": "intermediate",
+          "prerequisites": [
+            "tech_002"
+          ],
+          "vocabulary": [
+            {
+              "word": "pull request",
+              "pronunciation": "/pʊl rɪˈkwest/",
+              "definition": "A proposal to merge code changes reviewed by team members",
+              "examples": [
+                "Every pull request requires approval from two senior developers.",
+                "The pull request description explains the motivation for changes."
+              ]
+            },
+            {
+              "word": "linting",
+              "pronunciation": "/ˈlɪntɪŋ/",
+              "definition": "Automated analysis identifying programming errors and style violations",
+              "examples": [
+                "Linting rules enforce consistent code style across the team.",
+                "CI pipeline fails if linting detects any critical violations."
+              ]
+            },
+            {
+              "word": "coverage",
+              "pronunciation": "/ˈkʌvərɪdʒ/",
+              "definition": "The percentage of code exercised by automated tests",
+              "examples": [
+                "Test coverage must exceed eighty percent for production releases.",
+                "Coverage reports highlight untested critical code paths."
+              ]
+            },
+            {
+              "word": "convention",
+              "pronunciation": "/kənˈvenʃən/",
+              "definition": "Agreed-upon standards for writing and organizing code",
+              "examples": [
+                "Naming conventions improve code readability for all team members.",
+                "Following conventions reduces cognitive load during code reviews."
+              ]
+            },
+            {
+              "word": "regression",
+              "pronunciation": "/rɪˈɡreʃən/",
+              "definition": "A software bug where previously working functionality breaks",
+              "examples": [
+                "Regression tests caught the bug before it reached production.",
+                "The regression was introduced by an unrelated configuration change."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "tech_010",
+          "name": "Performance Optimization",
+          "difficulty": "advanced",
+          "prerequisites": [
+            "tech_004",
+            "tech_001",
+            "tech_007"
+          ],
+          "vocabulary": [
+            {
+              "word": "profiling",
+              "pronunciation": "/ˈprəʊfaɪlɪŋ/",
+              "definition": "Analyzing program execution to identify performance bottlenecks",
+              "examples": [
+                "CPU profiling revealed an inefficient sorting algorithm.",
+                "Memory profiling detected a leak in the connection pool."
+              ]
+            },
+            {
+              "word": "optimization",
+              "pronunciation": "/ˌɒptɪmaɪˈzeɪʃən/",
+              "definition": "Improving system performance by reducing resource consumption",
+              "examples": [
+                "Query optimization reduced database response time by ninety percent.",
+                "Frontend optimization improved page load speed to under two seconds."
+              ]
+            },
+            {
+              "word": "throughput",
+              "pronunciation": "/ˈθruːpʊt/",
+              "definition": "The amount of work completed by a system in a given time period",
+              "examples": [
+                "System throughput increased threefold after caching implementation.",
+                "Load testing measured maximum sustainable throughput levels."
+              ]
+            },
+            {
+              "word": "latency",
+              "pronunciation": "/ˈleɪtənsi/",
+              "definition": "The time delay between a request and its response",
+              "examples": [
+                "P99 latency must remain below two hundred milliseconds.",
+                "Latency spikes during peak hours triggered auto-scaling policies."
+              ]
+            },
+            {
+              "word": "benchmark",
+              "pronunciation": "/ˈbentʃmɑːk/",
+              "definition": "A standardized test measuring system performance against criteria",
+              "examples": [
+                "Performance benchmarks are run before every major release.",
+                "The benchmark suite covers API, database, and rendering metrics."
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "automotive",
+      "name": "Automotive",
+      "concepts": [
+        {
+          "id": "auto_001",
+          "name": "Design",
+          "difficulty": "beginner",
+          "prerequisites": [],
+          "vocabulary": [
+            {
+              "word": "aerodynamic",
+              "pronunciation": "/ˌeərəʊdaɪˈnæmɪk/",
+              "definition": "Designed to reduce air resistance and improve fuel efficiency",
+              "examples": [
+                "The aerodynamic body shape reduced drag coefficient significantly.",
+                "Wind tunnel testing validated the aerodynamic design improvements."
+              ]
+            },
+            {
+              "word": "chassis",
+              "pronunciation": "/ˈʃæsi/",
+              "definition": "The structural framework supporting all vehicle components",
+              "examples": [
+                "The lightweight chassis improved handling and fuel economy.",
+                "Chassis rigidity affects both safety and driving dynamics."
+              ]
+            },
+            {
+              "word": "ergonomic",
+              "pronunciation": "/ˌɜːɡəˈnɒmɪk/",
+              "definition": "Designed for comfort and efficiency of human use",
+              "examples": [
+                "Ergonomic seat design reduces driver fatigue on long journeys.",
+                "The ergonomic dashboard layout places controls within easy reach."
+              ]
+            },
+            {
+              "word": "prototype",
+              "pronunciation": "/ˈprəʊtətaɪp/",
+              "definition": "An early sample or model built to test a design concept",
+              "examples": [
+                "The design team built three prototypes before finalizing the model.",
+                "Prototype testing revealed issues with door seal durability."
+              ]
+            },
+            {
+              "word": "CAD",
+              "pronunciation": "/ˌsiː eɪ ˈdiː/",
+              "definition": "Computer-Aided Design software for creating precise engineering models",
+              "examples": [
+                "CAD models accelerated collaboration between design and engineering teams.",
+                "All components are designed using industry-standard CAD tools."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "auto_002",
+          "name": "Manufacturing",
+          "difficulty": "beginner",
+          "prerequisites": [
+            "auto_001"
+          ],
+          "vocabulary": [
+            {
+              "word": "assembly",
+              "pronunciation": "/əˈsembli/",
+              "definition": "The process of putting together vehicle components on a production line",
+              "examples": [
+                "Assembly line automation increased production output by twenty percent.",
+                "Just-in-time assembly reduces inventory holding costs."
+              ]
+            },
+            {
+              "word": "stamping",
+              "pronunciation": "/ˈstæmpɪŋ/",
+              "definition": "Shaping metal sheets into vehicle body panels using presses",
+              "examples": [
+                "Stamping operations produce door panels with micron-level precision.",
+                "New stamping dies reduced material waste by twelve percent."
+              ]
+            },
+            {
+              "word": "welding",
+              "pronunciation": "/ˈweldɪŋ/",
+              "definition": "Joining metal parts using heat to create structural connections",
+              "examples": [
+                "Robotic welding ensures consistent joint quality across all units.",
+                "Laser welding provides stronger bonds with less heat distortion."
+              ]
+            },
+            {
+              "word": "tolerance",
+              "pronunciation": "/ˈtɒlərəns/",
+              "definition": "The acceptable range of variation in manufactured part dimensions",
+              "examples": [
+                "Tight tolerances are critical for engine component fitment.",
+                "Quality inspection verifies all parts meet specified tolerances."
+              ]
+            },
+            {
+              "word": "throughput",
+              "pronunciation": "/ˈθruːpʊt/",
+              "definition": "The number of vehicles produced in a given time period",
+              "examples": [
+                "Factory throughput reached five hundred units per day last month.",
+                "Bottleneck analysis improved assembly line throughput by fifteen percent."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "auto_003",
+          "name": "Performance",
+          "difficulty": "intermediate",
+          "prerequisites": [
+            "auto_001"
+          ],
+          "vocabulary": [
+            {
+              "word": "horsepower",
+              "pronunciation": "/ˈhɔːspaʊər/",
+              "definition": "A unit measuring the power output of an engine",
+              "examples": [
+                "The turbocharged engine delivers three hundred horsepower.",
+                "Horsepower ratings vary between European and American measurement standards."
+              ]
+            },
+            {
+              "word": "torque",
+              "pronunciation": "/tɔːk/",
+              "definition": "Rotational force produced by the engine transmitted to the wheels",
+              "examples": [
+                "High torque at low RPM improves towing capability significantly.",
+                "Electric motors deliver instant torque from standstill."
+              ]
+            },
+            {
+              "word": "acceleration",
+              "pronunciation": "/əkˌseləˈreɪʃən/",
+              "definition": "The rate at which a vehicle increases its speed",
+              "examples": [
+                "Zero to sixty acceleration takes just four point two seconds.",
+                "Acceleration performance is a key selling point for sports models."
+              ]
+            },
+            {
+              "word": "suspension",
+              "pronunciation": "/səˈspenʃən/",
+              "definition": "The system of springs and dampers connecting wheels to the vehicle body",
+              "examples": [
+                "Adaptive suspension adjusts stiffness based on driving conditions.",
+                "Suspension tuning balances comfort against handling performance."
+              ]
+            },
+            {
+              "word": "aerodynamics",
+              "pronunciation": "/ˌeərəʊdaɪˈnæmɪks/",
+              "definition": "The science of how air flow affects vehicle performance and efficiency",
+              "examples": [
+                "Active aerodynamics deploy spoilers at high speeds for stability.",
+                "Aerodynamics improvements extended electric vehicle range by eight percent."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "auto_004",
+          "name": "Safety",
+          "difficulty": "intermediate",
+          "prerequisites": [
+            "auto_001",
+            "auto_002"
+          ],
+          "vocabulary": [
+            {
+              "word": "airbag",
+              "pronunciation": "/ˈeəbæɡ/",
+              "definition": "A safety device that inflates rapidly to protect occupants during collision",
+              "examples": [
+                "Side airbags provide additional protection in lateral impacts.",
+                "Airbag deployment sensors distinguish between minor and severe crashes."
+              ]
+            },
+            {
+              "word": "collision",
+              "pronunciation": "/kəˈlɪʒən/",
+              "definition": "An impact between a vehicle and another object or vehicle",
+              "examples": [
+                "Automatic emergency braking prevents low-speed collision scenarios.",
+                "Collision avoidance systems reduced accident rates in fleet testing."
+              ]
+            },
+            {
+              "word": "restraint",
+              "pronunciation": "/rɪˈstreɪnt/",
+              "definition": "Safety equipment limiting occupant movement during a crash",
+              "examples": [
+                "Three-point restraints are mandatory in all passenger vehicles.",
+                "Child restraint systems must meet strict safety certification standards."
+              ]
+            },
+            {
+              "word": "crumple",
+              "pronunciation": "/ˈkrʌmpəl/",
+              "definition": "Designed vehicle zones that deform to absorb crash energy",
+              "examples": [
+                "Crumple zones protect occupants by dissipating impact forces.",
+                "Front crumple zone design was optimized through crash simulations."
+              ]
+            },
+            {
+              "word": "NCAP",
+              "pronunciation": "/ˈen kæp/",
+              "definition": "New Car Assessment Program rating vehicle safety performance",
+              "examples": [
+                "The model achieved five-star NCAP safety rating.",
+                "NCAP testing includes adult and child occupant protection scores."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "auto_005",
+          "name": "Powertrain",
+          "difficulty": "intermediate",
+          "prerequisites": [
+            "auto_001",
+            "auto_003"
+          ],
+          "vocabulary": [
+            {
+              "word": "transmission",
+              "pronunciation": "/trænzˈmɪʃən/",
+              "definition": "The system transferring engine power to the drive wheels",
+              "examples": [
+                "The eight-speed automatic transmission shifts smoothly under acceleration.",
+                "Dual-clutch transmission provides faster gear changes than conventional types."
+              ]
+            },
+            {
+              "word": "drivetrain",
+              "pronunciation": "/ˈdraɪvtreɪn/",
+              "definition": "All components delivering power from engine to wheels",
+              "examples": [
+                "All-wheel drivetrain improves traction on slippery road surfaces.",
+                "Drivetrain efficiency directly affects fuel consumption ratings."
+              ]
+            },
+            {
+              "word": "turbocharger",
+              "pronunciation": "/ˈtɜːbəʊˌtʃɑːdʒər/",
+              "definition": "A device forcing extra air into the engine to increase power output",
+              "examples": [
+                "The turbocharger boosts power without increasing engine displacement.",
+                "Twin turbochargers eliminate lag in high-performance applications."
+              ]
+            },
+            {
+              "word": "differential",
+              "pronunciation": "/ˌdɪfəˈrenʃəl/",
+              "definition": "A gearbox allowing wheels to rotate at different speeds when turning",
+              "examples": [
+                "Limited-slip differential improves traction during aggressive cornering.",
+                "Electronic differential control optimizes torque distribution dynamically."
+              ]
+            },
+            {
+              "word": "efficiency",
+              "pronunciation": "/ɪˈfɪʃənsi/",
+              "definition": "The ratio of useful power output to energy input in a powertrain",
+              "examples": [
+                "Powertrain efficiency improvements reduced emissions by twenty percent.",
+                "Thermal efficiency of the new engine exceeds forty percent."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "auto_006",
+          "name": "Electric Vehicle",
+          "difficulty": "advanced",
+          "prerequisites": [
+            "auto_005",
+            "auto_004"
+          ],
+          "vocabulary": [
+            {
+              "word": "battery",
+              "pronunciation": "/ˈbætəri/",
+              "definition": "An energy storage device powering electric vehicle motors",
+              "examples": [
+                "Battery capacity determines maximum driving range per charge.",
+                "Solid-state battery technology promises faster charging and longer life."
+              ]
+            },
+            {
+              "word": "regenerative",
+              "pronunciation": "/rɪˈdʒenərətɪv/",
+              "definition": "Recovering kinetic energy during braking to recharge the battery",
+              "examples": [
+                "Regenerative braking extends range by up to twenty percent.",
+                "One-pedal driving maximizes regenerative energy recovery."
+              ]
+            },
+            {
+              "word": "charging",
+              "pronunciation": "/ˈtʃɑːdʒɪŋ/",
+              "definition": "Supplying electrical energy to recharge an electric vehicle battery",
+              "examples": [
+                "Fast charging stations deliver eighty percent charge in thirty minutes.",
+                "Home charging infrastructure is included with every vehicle purchase."
+              ]
+            },
+            {
+              "word": "kilowatt",
+              "pronunciation": "/ˈkɪləwɒt/",
+              "definition": "A unit of electrical power measuring motor output or charging rate",
+              "examples": [
+                "The motor produces two hundred fifty kilowatts of peak power.",
+                "One hundred fifty kilowatt charging reduces downtime significantly."
+              ]
+            },
+            {
+              "word": "range",
+              "pronunciation": "/reɪndʒ/",
+              "definition": "The maximum distance an electric vehicle can travel on a full charge",
+              "examples": [
+                "EPA-rated range exceeds four hundred miles on a single charge.",
+                "Cold weather reduces effective range by approximately twenty percent."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "auto_007",
+          "name": "Autonomous Driving",
+          "difficulty": "advanced",
+          "prerequisites": [
+            "auto_006",
+            "auto_004",
+            "auto_003"
+          ],
+          "vocabulary": [
+            {
+              "word": "LiDAR",
+              "pronunciation": "/ˈlaɪdɑːr/",
+              "definition": "Light Detection and Ranging using lasers to map the surrounding environment",
+              "examples": [
+                "LiDAR sensors create detailed three-dimensional environment maps.",
+                "Combining LiDAR with cameras improves object detection accuracy."
+              ]
+            },
+            {
+              "word": "autonomous",
+              "pronunciation": "/ɔːˈtɒnəməs/",
+              "definition": "Capable of operating without human intervention or control",
+              "examples": [
+                "Level three autonomous driving handles highway conditions automatically.",
+                "Autonomous vehicle testing requires millions of simulated miles."
+              ]
+            },
+            {
+              "word": "perception",
+              "pronunciation": "/pəˈsepʃən/",
+              "definition": "The ability of a vehicle to detect and interpret its surroundings",
+              "examples": [
+                "Perception algorithms fuse data from multiple sensor types.",
+                "Adverse weather conditions challenge perception system reliability."
+              ]
+            },
+            {
+              "word": "waypoint",
+              "pronunciation": "/ˈweɪpɔɪnt/",
+              "definition": "A defined location used for navigation routing in autonomous systems",
+              "examples": [
+                "The route planner calculates optimal waypoints for delivery vehicles.",
+                "Dynamic waypoint adjustment responds to real-time traffic conditions."
+              ]
+            },
+            {
+              "word": "redundancy",
+              "pronunciation": "/rɪˈdʌndənsi/",
+              "definition": "Duplication of critical systems to ensure safe autonomous operation",
+              "examples": [
+                "Sensor redundancy ensures continued operation if one component fails.",
+                "Computing redundancy meets functional safety ISO requirements."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "auto_008",
+          "name": "Supply Chain",
+          "difficulty": "intermediate",
+          "prerequisites": [
+            "auto_002"
+          ],
+          "vocabulary": [
+            {
+              "word": "logistics",
+              "pronunciation": "/ləˈdʒɪstɪks/",
+              "definition": "Planning and executing the movement of materials and finished vehicles",
+              "examples": [
+                "Global logistics networks deliver parts to factories within forty-eight hours.",
+                "Logistics optimization reduced shipping costs by twelve percent."
+              ]
+            },
+            {
+              "word": "procurement",
+              "pronunciation": "/prəˈkjʊəmənt/",
+              "definition": "The process of sourcing and purchasing materials and components",
+              "examples": [
+                "Strategic procurement secured long-term semiconductor supply agreements.",
+                "Procurement teams negotiate pricing with tier-one suppliers annually."
+              ]
+            },
+            {
+              "word": "inventory",
+              "pronunciation": "/ˈɪnvəntəri/",
+              "definition": "Stock of parts and materials held for production and distribution",
+              "examples": [
+                "Lean inventory practices minimize warehouse holding costs.",
+                "Inventory shortages halted production for three days last quarter."
+              ]
+            },
+            {
+              "word": "supplier",
+              "pronunciation": "/səˈplaɪər/",
+              "definition": "A company providing parts, materials, or services to the manufacturer",
+              "examples": [
+                "Supplier quality audits ensure components meet engineering specifications.",
+                "Diversifying suppliers reduced single-source dependency risks."
+              ]
+            },
+            {
+              "word": "lead time",
+              "pronunciation": "/liːd taɪm/",
+              "definition": "The time between placing an order and receiving delivery",
+              "examples": [
+                "Semiconductor lead times extended to twenty-six weeks during the shortage.",
+                "Reducing lead times requires closer supplier collaboration."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "auto_009",
+          "name": "Quality Control",
+          "difficulty": "intermediate",
+          "prerequisites": [
+            "auto_002",
+            "auto_004"
+          ],
+          "vocabulary": [
+            {
+              "word": "inspection",
+              "pronunciation": "/ɪnˈspekʃən/",
+              "definition": "Systematic examination of vehicles or parts to verify quality standards",
+              "examples": [
+                "Final inspection checks over two hundred quality points per vehicle.",
+                "Automated visual inspection detected paint defects with high accuracy."
+              ]
+            },
+            {
+              "word": "defect",
+              "pronunciation": "/ˈdiːfekt/",
+              "definition": "A flaw or imperfection that fails to meet quality specifications",
+              "examples": [
+                "Zero-defect policy drives continuous improvement in manufacturing.",
+                "The defect rate dropped below fifty parts per million."
+              ]
+            },
+            {
+              "word": "warranty",
+              "pronunciation": "/ˈwɒrənti/",
+              "definition": "A guarantee covering repair or replacement of defective components",
+              "examples": [
+                "Extended warranty programs increase customer confidence in reliability.",
+                "Warranty claim data identifies recurring quality issues for correction."
+              ]
+            },
+            {
+              "word": "recall",
+              "pronunciation": "/rɪˈkɔːl/",
+              "definition": "A manufacturer action to return and fix defective vehicles",
+              "examples": [
+                "The safety recall affected two hundred thousand vehicles nationwide.",
+                "Rapid recall response protects brand reputation and customer safety."
+              ]
+            },
+            {
+              "word": "traceability",
+              "pronunciation": "/ˌtreɪsəˈbɪləti/",
+              "definition": "Ability to track component history from supplier to finished vehicle",
+              "examples": [
+                "Full traceability enabled rapid identification of affected recall units.",
+                "Batch traceability links every component to its production records."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "auto_010",
+          "name": "Product Launch",
+          "difficulty": "advanced",
+          "prerequisites": [
+            "auto_001",
+            "auto_003",
+            "auto_009"
+          ],
+          "vocabulary": [
+            {
+              "word": "unveiling",
+              "pronunciation": "/ʌnˈveɪlɪŋ/",
+              "definition": "The official public introduction of a new vehicle model",
+              "examples": [
+                "The global unveiling generated unprecedented media coverage.",
+                "Virtual unveiling reached audiences in fifty countries simultaneously."
+              ]
+            },
+            {
+              "word": "positioning",
+              "pronunciation": "/pəˈzɪʃənɪŋ/",
+              "definition": "Defining how a product is perceived relative to competitors in the market",
+              "examples": [
+                "Premium positioning targets affluent buyers seeking luxury features.",
+                "Market positioning differentiates the brand from mass-market competitors."
+              ]
+            },
+            {
+              "word": "dealer",
+              "pronunciation": "/ˈdiːlər/",
+              "definition": "An authorized business selling and servicing vehicles to consumers",
+              "examples": [
+                "Dealer network expansion added forty locations this year.",
+                "Dealer training ensures consistent customer experience nationwide."
+              ]
+            },
+            {
+              "word": "MSRP",
+              "pronunciation": "/ˌem es ɑːr ˈpiː/",
+              "definition": "Manufacturer Suggested Retail Price for a new vehicle",
+              "examples": [
+                "MSRP for the base model starts at thirty-five thousand dollars.",
+                "Dealers may offer discounts below MSRP during promotional periods."
+              ]
+            },
+            {
+              "word": "market penetration",
+              "pronunciation": "/ˈmɑːkɪt ˌpenɪˈtreɪʃən/",
+              "definition": "The extent to which a product gains adoption in its target market",
+              "examples": [
+                "Market penetration exceeded projections in the first sales quarter.",
+                "Aggressive pricing strategy accelerated market penetration rates."
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

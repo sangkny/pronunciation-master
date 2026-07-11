@@ -4,8 +4,9 @@
 
 **프로젝트명:** Pronunciation Master  
 **목적:** AI 기반 영어 발음 교정 및 상황별 동적 학습 앱  
-**현재 상태:** MVP 완성, 기본 UI 렌더링 성공  
-**다음 단계:** UI/UX 개선, 기능 확장  
+**현재 상태:** Phase 1 완료 (100%) + Phase 2 Ontology 완료 (100%)  
+**진행률:** Phase 2 Ontology 설계 및 구현 완료  
+**다음 단계:** Phase 2 AOMD 피드백 엔진, 점수 시스템  
 
 ---
 
@@ -24,24 +25,24 @@
 ### 백엔드
 - ✅ Express.js 서버 구축
 - ✅ `/api/mission/generate-by-scenario` 엔드포인트
-- ✅ `/api/pronunciation/analyze` 기본 구조
-- ✅ LLM Manager (Ollama 통합)
-- ✅ 에러 처리 기본 구조
+- ✅ LLM Manager (LMStudio Gemma 4 통합)
+- ✅ 에러 처리 및 샘플 데이터 폴백
+- ✅ **Ontology Engine** (`ontologyEngine.js`)
+  - 5개 도메인, 50개 개념, 250개 어휘
+  - 학습 경로 생성, 다음 개념 추천
+- ✅ **Ontology API** 5개 엔드포인트
 
 ### 프론트엔드
-- ✅ React 앱 구축 (Vite)
-- ✅ 5가지 분야 선택 UI
-  - 의료기기 (Medical Devices)
-  - 통신기술 (Telecommunications)
-  - 금융 (Finance)
-  - 기술 (Technology)
-  - 자동차 (Automotive)
-- ✅ 기본 컴포넌트 구조
-- ✅ 앱 렌더링 정상 작동
+- ✅ React 앱 구축 (Vite + Tailwind CSS)
+- ✅ 5가지 분야 선택 UI (분야별 색상 테마)
+- ✅ 분야 선택 → 상황 입력 화면 전환
+- ✅ TTS 기본 구현 (Web Speech API)
+- ✅ 미션 연습 화면 (녹음, 피드백 시뮬레이션)
 
 ### DevOps & 문서
-- ✅ Git 저장소 초기화
+- ✅ Git 저장소 (main 브랜치)
 - ✅ 협업 가이드 (Cursor, Claude Code)
+- ✅ **ONTOLOGY_DESIGN.md** (Phase 2 설계 문서)
 - ✅ 개발 환경 문서화
 
 ---
@@ -50,36 +51,34 @@
 
 ```
 Learning-Languages/pronunciation-master/
+├── ONTOLOGY_DESIGN.md               # Phase 2 Ontology 설계 문서
+├── CURSOR_HANDOVER.md               # 협업 가이드 (본 문서)
 ├── backend/
+│   ├── data/
+│   │   └── ontology.json            # 5 도메인, 50 개념, 250 어휘
+│   ├── scripts/
+│   │   └── generate-ontology.js     # Ontology JSON 생성 스크립트
 │   ├── src/
-│   │   ├── server.js                 # Express 메인 서버
+│   │   ├── server.js                # Express 메인 서버
 │   │   ├── services/
-│   │   │   ├── llmManager.js        # LLM 통합 (Ollama)
-│   │   │   └── providers/
-│   │   ├── routes/
-│   │   │   └── mission.js           # 미션 관련 라우트
-│   │   └── utils/
+│   │   │   ├── llmManager.js        # LLM 통합 (LMStudio)
+│   │   │   └── ontologyEngine.js    # Ontology 엔진
+│   │   └── routes/
+│   │       ├── mission.js           # 미션 관련 라우트
+│   │       └── ontology.js          # Ontology API 라우트
 │   ├── package.json
 │   └── Dockerfile
 ├── frontend/
 │   ├── src/
-│   │   ├── App.jsx                  # 메인 컴포넌트 (분야 선택 UI)
-│   │   ├── main.jsx                 # React 진입점
-│   │   ├── services/
-│   │   │   └── apiClient.js        # API 통신
-│   │   ├── components/              # 재사용 컴포넌트
-│   │   ├── styles/                  # CSS 파일들
-│   │   └── utils/
-│   ├── index.html                   # HTML 진입점
-│   ├── vite.config.js              # Vite 설정
+│   │   ├── App.jsx                  # 메인 컴포넌트 (Tailwind CSS)
+│   │   ├── main.jsx
+│   │   ├── index.css                # Tailwind CSS
+│   │   └── services/apiClient.js
+│   ├── tailwind.config.js
 │   ├── package.json
-│   ├── Dockerfile.dev
-│   └── public/
-├── data/                            # 데이터 폴더 (미사용)
-├── docs/                            # 문서들
-├── docker-compose.yml               # Docker 구성
-├── .env.local                       # 환경 변수
-└── README.md
+│   └── Dockerfile.dev
+├── docker-compose.yml
+└── docs/
 ```
 
 ---
@@ -349,19 +348,38 @@ curl -X POST http://localhost:5000/api/pronunciation/analyze \
     "userTranscript": "This is a test sentence",
     "focusPoints": ["test", "sentence"]
   }'
+```
 
-# 응답:
-{
-  "score": 85,
-  "feedback": "발음이 매우 좋습니다",
-  "wordScores": {
-    "This": 90,
-    "is": 80,
-    "a": 85,
-    "test": 80,
-    "sentence": 85
-  }
-}
+### Ontology API
+
+#### GET /api/ontology/domains
+```bash
+curl http://localhost:5000/api/ontology/domains
+# 응답: { "success": true, "domains": [{ "id": "medical", "name": "Medical Devices", "conceptCount": 10 }, ...] }
+```
+
+#### GET /api/ontology/domain/:domainId/concepts
+```bash
+curl http://localhost:5000/api/ontology/domain/medical/concepts
+# 응답: { "success": true, "domainId": "medical", "concepts": [...] }
+```
+
+#### GET /api/ontology/concept/:conceptId
+```bash
+curl http://localhost:5000/api/ontology/concept/med_003
+# 응답: { "success": true, "concept": {...}, "prerequisites": [...] }
+```
+
+#### GET /api/ontology/learning-path/:domainId
+```bash
+curl "http://localhost:5000/api/ontology/learning-path/medical?userLevel=beginner"
+# 응답: { "success": true, "domainId": "medical", "path": [...] }
+```
+
+#### GET /api/ontology/vocabulary/:conceptId
+```bash
+curl http://localhost:5000/api/ontology/vocabulary/med_001
+# 응답: { "success": true, "conceptId": "med_001", "vocabulary": [...] }
 ```
 
 ---
@@ -421,26 +439,25 @@ curl -X POST http://localhost:5000/api/pronunciation/analyze \
 
 ---
 
-## 🎯 다음 우선순위 (Cursor에게 맡길 작업)
+## 🎯 다음 우선순위 (Phase 2 후반)
 
-### Week 1
-- [ ] UI 개선 (Tailwind CSS)
-- [ ] 상황 입력 화면 구현
-- [ ] 분야 선택 → 상황 입력 전환
+### 즉시 시작 가능
+- [ ] **AOMD 피드백 엔진** (`backend/src/services/aomdEngine.js`)
+  - Advocate, Opposite, Meditator, Decisioner 4가지 역할
+  - LLM 기반 동적 피드백 생성
+- [ ] **점수 시스템** (`backend/src/services/scoringEngine.js`)
+  - 0-100 발음 정확도 채점
+  - 난이도 조정 로직
+- [ ] **Frontend Ontology 연동**
+  - Ontology API 호출하여 학습 경로 표시
+  - 개념별 어휘 발음 연습 UI
 
-### Week 2
-- [ ] Backend API에서 실제 LLM 호출
-- [ ] Frontend에서 API 연결
-- [ ] 미션 결과 화면 표시
-
-### Week 3
-- [ ] TTS (음성 재생) 구현
-- [ ] 발음 연습 화면 구현
-
-### Week 4
-- [ ] STT (음성 녹음) 구현
-- [ ] 발음 분석 기능
-- [ ] 결과 피드백
+### Phase 2 완료 항목
+- [x] Ontology 설계 문서 (ONTOLOGY_DESIGN.md)
+- [x] ontology.json (50개 개념, 250개 어휘)
+- [x] ontologyEngine.js (8개 메서드)
+- [x] Ontology API 5개 엔드포인트
+- [x] API 테스트 완료
 
 ---
 
@@ -485,4 +502,4 @@ curl -X POST http://localhost:5000/api/pronunciation/analyze \
 **Cursor와 함께 효율적으로 개발하세요! 🚀**
 
 이 문서는 지속적으로 업데이트됩니다.
-마지막 업데이트: 2026-05-31
+마지막 업데이트: 2026-07-11 (Phase 2 Ontology 완료)
