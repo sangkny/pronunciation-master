@@ -4,9 +4,9 @@
 
 **프로젝트명:** Pronunciation Master  
 **목적:** AI 기반 영어 발음 교정 및 상황별 동적 학습 앱  
-**현재 상태:** Phase 1–3 완료 (100% ✅) + **Phase 4 진행 중**  
-**Phase 4:** STT + Analytics 대시보드 + Leaderboard + i18n  
-**최종 커밋:** `b4abefd` (Phase 3 문서 정리)  
+**현재 상태:** Phase 1–4 완료 (100% ✅) + **Phase 5 진행 완료**  
+**Phase 5:** PWA + i18n 확장 + Expo 모바일 + Stripe Webhook  
+**최종 커밋:** `4aebfcc` (Phase 4)  
 **장기 전략:** `LONG_TERM_STRATEGY_ONTOLOGY_AOMD_SAAS.md` 참고
 
 ---
@@ -33,6 +33,33 @@
 - Part 3: 구독 서비스 (Free/Pro/Enterprise, Stripe mock)
 - Part 4: AOMD 피드백 UI (4역할 카드, 티어별 조건부 렌더링)
 - 최종 커밋: `cacba9d`
+
+---
+
+### Phase 4: STT + Analytics + Leaderboard + i18n (100% ✅)
+- 최종 커밋: `4aebfcc`
+
+### Phase 5: PWA + i18n 확장 + Mobile + Stripe (100% ✅)
+- Part 1: PWA — manifest, service worker, 홈 화면 설치
+- Part 2: i18n — ja/zh + 지역 커리큘럼 API
+- Part 3: mobile/ Expo 스캐폴드 (Login + Home)
+- Part 4: Stripe webhook — POST /api/stripe/webhook
+
+---
+
+## Phase 5 진행 현황
+
+| Part | 내용 | 상태 |
+|------|------|------|
+| 1 | PWA (manifest + sw.js) | ✅ |
+| 2 | i18n ja/zh + `/api/i18n/*` | ✅ |
+| 3 | React Native Expo `mobile/` | ✅ |
+| 4 | Stripe Webhook | ✅ |
+
+### Phase 6 예정
+- Expo 발음 녹음 (expo-av)
+- 푸시 알림 (expo-notifications)
+- Stripe 실결제 키 프로덕션 배포
 
 ---
 

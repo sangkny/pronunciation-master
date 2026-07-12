@@ -72,6 +72,24 @@ class StripeManager {
     }
     return { received: true };
   }
+
+  async handleWebhookRequest(rawBody, signature) {
+    let event;
+
+    if (stripe && process.env.STRIPE_WEBHOOK_SECRET && !process.env.STRIPE_WEBHOOK_SECRET.includes('placeholder')) {
+      event = stripe.webhooks.constructEvent(
+        rawBody,
+        signature,
+        process.env.STRIPE_WEBHOOK_SECRET
+      );
+    } else {
+      const payload = typeof rawBody === 'string' ? JSON.parse(rawBody) : JSON.parse(rawBody.toString());
+      event = payload;
+      console.log('Stripe webhook: mock mode (no signature verification)');
+    }
+
+    return this.handleWebhook(event);
+  }
 }
 
 export const stripeManager = new StripeManager();

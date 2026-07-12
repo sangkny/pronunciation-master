@@ -5,6 +5,7 @@
 
 # 의존성
 node_modules/
+mobile/node_modules/
 dist/
 build/
 package-lock.json

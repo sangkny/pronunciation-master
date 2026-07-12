@@ -113,20 +113,16 @@
 ⏳ 모바일 앱 — Phase 5 예정
 ```
 
-### **Phase 5: 모바일 & 확장 (2027년 이상)**
+### **Phase 5: 모바일 & 확장 (2026년 7월) — ✅ 100% 완료**
 
 **목표:** 크로스 플랫폼 지원
 
 ```
-📱 모바일 앱 (iOS/Android)
-   - Web과 동일 기능
-   - 오프라인 모드
-   - 푸시 알림
-
-🌍 국제화
-   - 다국어 지원
-   - 지역별 커리큘럼
-   - 현지화된 발음 기준
+✅ PWA — manifest + Service Worker, 홈 화면 설치
+✅ i18n 확장 — ja, zh + 지역별 커리큘럼 API
+✅ React Native Expo — mobile/ 로그인 + 홈 스캐폴드
+✅ Stripe Webhook — POST /api/stripe/webhook
+⏳ 푸시 알림, 오프라인 녹음 — Phase 6 예정
 ```
 
 ---
@@ -571,7 +567,8 @@ Phase 1: Web MVP          📊 100% ✅  (커밋 5d7569f)
 Phase 2: Ontology/AOMD    📊 100% ✅  (커밋 2717f63)
 Phase 3: SaaS             📊 100% ✅  (커밋 cacba9d)
 Phase 4: 고급 기능        📊 100% ✅  (STT, Analytics, Leaderboard, i18n)
-Phase 5: 모바일 & 확장    📊 0%   ⏳  (계획 단계)
+Phase 5: 모바일 & 확장    📊 100% ✅  (PWA, i18n ja/zh, Expo, Stripe webhook)
+Phase 6: 프로덕션 배포    📊 0%   ⏳  (계획 단계)
 
 다음 업데이트: Phase 4 시작 시
 ```

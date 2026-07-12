@@ -104,7 +104,8 @@ const SAMPLE_MISSIONS = {
 };
 
 export default function EnhancedPronunciationMasterApp() {
-  const { t, toggleLang } = useLanguage();
+  const { t, toggleLang, locale } = useLanguage();
+  const [regionalGreeting, setRegionalGreeting] = useState('');
   // ==================== 상태 관리 ====================
   const [appState, setAppState] = useState('home');
   const [user, setUser] = useState(null);
@@ -160,6 +161,14 @@ export default function EnhancedPronunciationMasterApp() {
     const restored = authService.restoreSession();
     if (restored) setUser(restored);
   }, []);
+
+  useEffect(() => {
+    if (!user) return;
+    fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/i18n/curriculum/${locale}`)
+      .then(r => r.json())
+      .then(data => { if (data.greeting) setRegionalGreeting(data.greeting); })
+      .catch(() => setRegionalGreeting(''));
+  }, [user, locale]);
 
   const handleAuth = async (e) => {
     e.preventDefault();
@@ -688,9 +697,9 @@ export default function EnhancedPronunciationMasterApp() {
           <div className="space-y-8">
             <div className="text-center space-y-4 px-2">
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-                오늘의 발음 수련
+                {regionalGreeting || t('todayPractice')}
               </h1>
-              <p className="text-gray-300 text-base sm:text-lg">분야를 선택하거나 상황을 입력해서 맞춤 연습을 시작하세요</p>
+              <p className="text-gray-300 text-base sm:text-lg">{t('selectCategory')}</p>
             </div>
 
             {/* 분야 선택 */}
