@@ -26,6 +26,54 @@ class StripeManager {
     return 'mock';
   }
 
+  getProductionReadiness() {
+    const mode = this.getMode();
+    const checks = {
+      secretKey: !!process.env.STRIPE_SECRET_KEY
+        && !process.env.STRIPE_SECRET_KEY.includes('placeholder'),
+      webhookSecret: !!process.env.STRIPE_WEBHOOK_SECRET
+        && !process.env.STRIPE_WEBHOOK_SECRET.includes('placeholder'),
+      publicKey: !!process.env.STRIPE_PUBLIC_KEY
+        && !process.env.STRIPE_PUBLIC_KEY.includes('placeholder'),
+      liveKeyFormat: this.isProduction(),
+    };
+
+    return {
+      mode,
+      isProduction: this.isProduction(),
+      isConfigured: this.isConfigured(),
+      checks,
+      productionReady: checks.secretKey
+        && checks.webhookSecret
+        && checks.publicKey
+        && (mode === 'test' || checks.liveKeyFormat),
+    };
+  }
+
+  async verifyLiveConnection() {
+    if (!this.isProduction() || !stripe) {
+      return { connected: false, reason: 'Not in production mode' };
+    }
+
+    try {
+      await stripe.balance.retrieve();
+      return { connected: true };
+    } catch (error) {
+      return { connected: false, error: error.message };
+    }
+  }
+
+  async getProductionStatus() {
+    const readiness = this.getProductionReadiness();
+    let liveVerification = null;
+
+    if (this.isProduction()) {
+      liveVerification = await this.verifyLiveConnection();
+    }
+
+    return { ...readiness, liveVerification };
+  }
+
   async createPaymentIntent(userId, tier, amount) {
     if (!stripe) {
       return {

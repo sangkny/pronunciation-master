@@ -1,0 +1,73 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: pronunciation_master
+          POSTGRES_USER: pronunciation
+          POSTGRES_PASSWORD: ci_test_password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U pronunciation -d pronunciation_master"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: npm
+          cache-dependency-path: |
+            backend/package-lock.json
+            frontend/package-lock.json
+
+      - name: Install backend dependencies
+        working-directory: backend
+        run: npm install
+
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm install
+
+      - name: Build frontend
+        working-directory: frontend
+        run: npm run build
+
+      - name: Start backend server
+        working-directory: backend
+        env:
+          NODE_ENV: test
+          PORT: 5000
+          DB_HOST: localhost
+          DB_PORT: 5432
+          DB_NAME: pronunciation_master
+          DB_USER: pronunciation
+          DB_PASSWORD: ci_test_password
+          JWT_SECRET: ci-test-jwt-secret-key-min-32-chars
+        run: |
+          npm start &
+          for i in $(seq 1 30); do
+            if curl -sf http://localhost:5000/api/health > /dev/null; then
+              echo "Backend ready"
+              break
+            fi
+            sleep 2
+          done
+
+      - name: Run smoke tests
+        run: bash scripts/test-phase7.sh

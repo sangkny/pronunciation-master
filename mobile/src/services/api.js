@@ -73,4 +73,15 @@ export async function registerPushToken(expoPushToken, platform) {
   });
 }
 
+export async function transcribeAudio(payload) {
+  return request('/api/stt/transcribe', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function getSttStatus() {
+  return request('/api/stt/status');
+}
+
 export { API_URL };

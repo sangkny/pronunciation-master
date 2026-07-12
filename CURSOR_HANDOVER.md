@@ -4,9 +4,9 @@
 
 **프로젝트명:** Pronunciation Master  
 **목적:** AI 기반 영어 발음 교정 및 상황별 동적 학습 앱  
-**현재 상태:** Phase 1–6 완료 (100% ✅)  
-**Phase 6:** 모바일 녹음 + 푸시 알림 + 프로덕션 배포 + Stripe 프로덕션  
-**최종 커밋:** `0b79675` (Phase 6)  
+**현재 상태:** Phase 1–7 완료 (100% ✅)  
+**Phase 7:** 모바일 STT + Stripe live 검증 + CI/CD  
+**최종 커밋:** `0b79675` (Phase 6) → Phase 7 커밋 예정  
 **장기 전략:** `LONG_TERM_STRATEGY_ONTOLOGY_AOMD_SAAS.md` 참고
 
 ---
@@ -53,21 +53,27 @@
 - Part 4: Stripe 프로덕션 — `isProduction()`, `STRIPE_PRODUCTION.md`, `DEPLOYMENT_GUIDE.md`
 - 최종 커밋: `0b79675`
 
+### Phase 7: STT + Stripe 검증 + CI/CD (100% ✅)
+- Part 1: 모바일 STT — `sttEngine.js`, `/api/stt/*`, `mobile/sttService.js`
+- Part 2: Stripe live — `GET /api/stripe/status`, `getProductionStatus()`
+- Part 3: CI/CD — `.github/workflows/ci.yml`, `scripts/test-phase7.sh`
+- Part 4: 문서 — `CI_CD_GUIDE.md`, `PHASE7_CODE_LOOP_PROMPTS.md`
+
 ---
 
-## Phase 6 진행 현황
+## Phase 7 진행 현황
 
 | Part | 내용 | 상태 |
 |------|------|------|
-| 1 | Expo 녹음 (MissionScreen) | ✅ |
-| 2 | 푸시 알림 (notifications API) | ✅ |
-| 3 | 프로덕션 Docker (prod compose) | ✅ |
-| 4 | Stripe 프로덕션 + 문서 동기화 | ✅ |
+| 1 | 모바일 STT (Whisper/mock) | ✅ |
+| 2 | Stripe live 검증 API | ✅ |
+| 3 | GitHub Actions CI | ✅ |
+| 4 | 문서 동기화 | ✅ |
 
-### Phase 7 예정 (향후)
-- 실제 STT 연동 (모바일 음성 → 텍스트)
-- Stripe live 키 실운영 검증
-- CI/CD 파이프라인
+### Phase 8 예정 (향후)
+- Enterprise SSO
+- 맞춤형 Ontology API
+- 성능 모니터링 (Datadog/Sentry)
 
 ---
 

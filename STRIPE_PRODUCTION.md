@@ -17,6 +17,18 @@
 - [ ] `STRIPE_WEBHOOK_SECRET=whsec_...` (Live endpoint)
 - [ ] Webhook URL: `https://api.yourdomain.com/api/stripe/webhook`
 - [ ] 이벤트: `payment_intent.succeeded`, `customer.subscription.deleted`
+- [ ] `GET /api/stripe/status` → `productionReady: true`, `liveVerification.connected: true`
+
+## 상태 API
+
+```bash
+curl http://localhost:5000/api/stripe/status
+```
+
+응답 필드:
+- `mode`: mock | test | production
+- `productionReady`: 키/웹훅 설정 완료 여부
+- `liveVerification`: live 모드 시 Stripe API 연결 결과
 
 ## SaaS 티어 (장기 전략 정렬)
 
