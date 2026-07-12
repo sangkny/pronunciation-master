@@ -6,7 +6,7 @@
 **목적:** AI 기반 영어 발음 교정 및 상황별 동적 학습 앱  
 **현재 상태:** Phase 1–7 완료 (100% ✅)  
 **Phase 7:** 모바일 STT + Stripe live 검증 + CI/CD  
-**최종 커밋:** `0b79675` (Phase 6) → Phase 7 커밋 예정  
+**최종 커밋:** `fc62750` (Phase 7)  
 **장기 전략:** `LONG_TERM_STRATEGY_ONTOLOGY_AOMD_SAAS.md` 참고
 
 ---
@@ -58,6 +58,7 @@
 - Part 2: Stripe live — `GET /api/stripe/status`, `getProductionStatus()`
 - Part 3: CI/CD — `.github/workflows/ci.yml`, `scripts/test-phase7.sh`
 - Part 4: 문서 — `CI_CD_GUIDE.md`, `PHASE7_CODE_LOOP_PROMPTS.md`
+- 최종 커밋: `fc62750`
 
 ---
 
