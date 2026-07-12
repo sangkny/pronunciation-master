@@ -134,6 +134,7 @@
 ✅ 프로덕션 배포 — docker-compose.prod.yml, frontend/Dockerfile, nginx
 ✅ Stripe 프로덕션 — isProduction()/getMode(), STRIPE_PRODUCTION.md
 ✅ 문서 동기화 — DEPLOYMENT_GUIDE.md, .env.production.example
+커밋: 0b79675
 ```
 
 ---
@@ -579,7 +580,7 @@ Phase 2: Ontology/AOMD    📊 100% ✅  (커밋 2717f63)
 Phase 3: SaaS             📊 100% ✅  (커밋 cacba9d)
 Phase 4: 고급 기능        📊 100% ✅  (커밋 4aebfcc)
 Phase 5: 모바일 & 확장    📊 100% ✅  (커밋 5fd6548)
-Phase 6: 프로덕션 배포    📊 100% ✅  (모바일 녹음, 푸시, prod Docker)
+Phase 6: 프로덕션 배포    📊 100% ✅  (커밋 0b79675)
 
 다음 업데이트: Phase 7 계획 시
 ```

@@ -6,7 +6,7 @@
 **목적:** AI 기반 영어 발음 교정 및 상황별 동적 학습 앱  
 **현재 상태:** Phase 1–6 완료 (100% ✅)  
 **Phase 6:** 모바일 녹음 + 푸시 알림 + 프로덕션 배포 + Stripe 프로덕션  
-**최종 커밋:** `5fd6548` (Phase 5) → Phase 6 커밋 예정  
+**최종 커밋:** `0b79675` (Phase 6)  
 **장기 전략:** `LONG_TERM_STRATEGY_ONTOLOGY_AOMD_SAAS.md` 참고
 
 ---
@@ -51,6 +51,7 @@
 - Part 2: 푸시 알림 — `expo-notifications`, `push_tokens` DB, `/api/notifications/*`
 - Part 3: 프로덕션 — `docker-compose.prod.yml`, `frontend/Dockerfile`, `nginx.conf`
 - Part 4: Stripe 프로덕션 — `isProduction()`, `STRIPE_PRODUCTION.md`, `DEPLOYMENT_GUIDE.md`
+- 최종 커밋: `0b79675`
 
 ---
 
