@@ -170,6 +170,7 @@
 ✅ B2B API 키 — api_keys, /api/api-keys/*, X-API-Key 인증
 ✅ 글로벌 CDN — nginx immutable 캐시, CDN_DEPLOYMENT_GUIDE.md
 ✅ Book Chapter — book/ Ch0–12, Phase 1–9 전체 반영
+커밋: 4a4e4ba
 ```
 
 ---
@@ -618,7 +619,7 @@ Phase 5: 모바일 & 확장    📊 100% ✅  (커밋 5fd6548)
 Phase 6: 프로덕션 배포    📊 100% ✅  (커밋 0b79675)
 Phase 7: 운영 완성        📊 100% ✅  (커밋 fc62750)
 Phase 8: Enterprise 확장  📊 100% ✅  (커밋 69380cd)
-Phase 9: B2B & 글로벌      📊 100% ✅  (팀, API키, CDN, Book)
+Phase 9: B2B & 글로벌      📊 100% ✅  (커밋 4a4e4ba)
 
 다음 업데이트: Phase 10 계획 시
 ```

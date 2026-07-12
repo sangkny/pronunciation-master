@@ -44,7 +44,7 @@ pronunciation-master/
 | 6 | 프로덕션 배포 | 0b79675 |
 | 7 | STT + CI/CD | fc62750 |
 | 8 | SSO + 모니터링 | 69380cd |
-| 9 | 팀 + B2B API + CDN | (이번 커밋) |
+| 9 | 팀 + B2B API + CDN | 4a4e4ba |
 
 ## 📖 문서
 

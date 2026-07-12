@@ -6,7 +6,7 @@
 **목적:** AI 기반 영어 발음 교정 및 상황별 동적 학습 앱  
 **현재 상태:** Phase 1–9 완료 (100% ✅)  
 **Phase 9:** 팀 관리 + B2B API 키 + CDN + Book Chapter  
-**최종 커밋:** `69380cd` (Phase 8) → Phase 9 커밋 예정  
+**최종 커밋:** `4a4e4ba` (Phase 9)  
 **장기 전략:** `LONG_TERM_STRATEGY_ONTOLOGY_AOMD_SAAS.md` 참고  
 **Book:** `book/README.md` (Ch0–12)
 
@@ -73,6 +73,7 @@
 - Part 2: B2B API 키 — `/api/api-keys/*`, `X-API-Key` 인증
 - Part 3: CDN — `nginx.conf` 캐시, `CDN_DEPLOYMENT_GUIDE.md`
 - Part 4: Book — `book/` Ch0–12, Strategy/Handover 동기화
+- 최종 커밋: `4a4e4ba`
 
 ---
 
