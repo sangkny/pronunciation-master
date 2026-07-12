@@ -1,97 +1,74 @@
 # 🎤 Pronunciation Master
 
-AI 기반 영어 발음 교정 및 상황별 동적 학습 앱
+AI 기반 영어 발음 교정 SaaS — Ontology · AOMD · 구독 · Enterprise B2B
+
+**현재:** Phase 1–9 완료 ✅ | **전략 SSOT:** [LONG_TERM_STRATEGY_ONTOLOGY_AOMD_SAAS.md](./LONG_TERM_STRATEGY_ONTOLOGY_AOMD_SAAS.md) | **Book:** [book/README.md](./book/README.md)
 
 ## 🚀 빠른 시작
 
-### 전제조건
-- Docker & Docker Compose
-- Git
-- WSL 2 (Windows 사용자)
-
-### 설치
-
 ```bash
-# 저장소 클론
 git clone https://github.com/sangkny/pronunciation-master.git
 cd pronunciation-master
-
-# 환경 변수 설정
-cp .env.example .env.local
-
-# Docker 실행
-docker compose up
+cp .env.example .env.local   # 또는 .env.production.example
+docker compose up -d --build
 ```
 
-### 접속
-- 프론트엔드: http://localhost:3000
-- 백엔드: http://localhost:5000
-- Ollama: http://localhost:11434
+| 서비스 | URL |
+|--------|-----|
+| Frontend (dev) | http://localhost:5173 |
+| Backend API | http://localhost:5000 |
+| PostgreSQL | localhost:5432 |
+| LMStudio | http://localhost:1234 (호스트) |
 
-## 📁 프로젝트 구조
+## 📁 구조
 
 ```
 pronunciation-master/
-├── backend/               # Node.js 백엔드
-├── frontend/              # React 프론트엔드
-├── data/                  # 학습 데이터
-├── docs/                  # 문서
-├── docker-compose.yml     # Docker 구성
-└── .env.example          # 환경 변수 템플릿
+├── backend/          # Express API (Ontology, AOMD, SaaS, SSO, B2B)
+├── frontend/         # React + Tailwind + PWA
+├── mobile/           # Expo (녹음, STT, 푸시)
+├── book/             # 기술 서적 Ch0–12 (Phase 1–9)
+├── scripts/          # test-phase6~9.sh
+└── docker-compose.yml
 ```
 
-## 🤖 지원하는 LLM
+## 📅 Phase 완료 현황
 
-- Ollama (로컬, 기본값)
-- Claude API
-- Google Gemini
-- Cohere
-- Hugging Face
+| Phase | 내용 | 커밋 |
+|-------|------|------|
+| 1 | Web MVP | 5d7569f |
+| 2 | Ontology + AOMD | 2717f63 |
+| 3 | PostgreSQL + SaaS | cacba9d |
+| 4 | STT + Analytics + i18n | 4aebfcc |
+| 5 | PWA + Mobile + Stripe | 5fd6548 |
+| 6 | 프로덕션 배포 | 0b79675 |
+| 7 | STT + CI/CD | fc62750 |
+| 8 | SSO + 모니터링 | 69380cd |
+| 9 | 팀 + B2B API + CDN | (이번 커밋) |
 
 ## 📖 문서
 
-- [빠른 시작](docs/QUICK_START.md)
-- [WSL/Docker 가이드](docs/WSL_DOCKER_GUIDE.md)
-- [LLM 프로바이더](docs/LLM_PROVIDERS_GUIDE.md)
+| 문서 | 설명 |
+|------|------|
+| [CURSOR_HANDOVER.md](./CURSOR_HANDOVER.md) | 항상 최신 Handover |
+| [book/README.md](./book/README.md) | Book 목차 Ch0–12 |
+| [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md) | 프로덕션 배포 |
+| [SSO_GUIDE.md](./SSO_GUIDE.md) | Enterprise SSO |
+| [CDN_DEPLOYMENT_GUIDE.md](./CDN_DEPLOYMENT_GUIDE.md) | CDN 설정 |
+| [CI_CD_GUIDE.md](./CI_CD_GUIDE.md) | GitHub Actions |
 
-## 🛠️ 개발
-
-```bash
-# 백엔드 개발
-cd backend
-npm install
-npm run dev
-
-# 프론트엔드 개발
-cd frontend
-npm install
-npm run dev
-```
-
-## 📝 Git 워크플로우
+## 🧪 테스트
 
 ```bash
-# 변경사항 확인
-git status
-
-# 변경사항 스테이징
-git add .
-
-# 커밋
-git commit -m "feat: 기능 설명"
-
-# 푸시
-git push origin main
+bash scripts/test-phase9.sh
 ```
 
-## 📄 라이선스
+## 🛠️ 프로덕션
 
-MIT
-
-## 👤 작성자
-
-Your Name
+```bash
+docker compose -f docker-compose.prod.yml up -d --build
+```
 
 ---
 
-**행운을 빕니다! 🎉**
+MIT License

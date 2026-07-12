@@ -25,19 +25,21 @@ Learning-Languages/pronunciation-master/
 │   ├── DEVELOPMENT_LOG.md                        ← NEW: 개발 진행 로그
 │   └── NEXT_PHASE_PLAN.md                        ← NEW: Phase 2 계획
 │
-├── 📚 book/ (기술 서적용 챕터)
-│   ├── README.md                                 ← Book 개요
-│   ├── 00_INTRODUCTION.md                        ← 서론
-│   ├── 01_ARCHITECTURE_OVERVIEW.md               ← Ch1: 아키텍처 개요
-│   ├── 02_PHASE1_ENVIRONMENT_SETUP.md            ← Ch2: Phase 1 환경 구성
-│   ├── 03_PHASE1_FRONTEND_DEVELOPMENT.md        ← Ch3: Phase 1 프론트엔드
-│   ├── 04_PHASE1_BACKEND_LLM_INTEGRATION.md     ← Ch4: Phase 1 백엔드/LLM
-│   ├── 05_PHASE1_TESTING_DEPLOYMENT.md          ← Ch5: Phase 1 테스트/배포
-│   ├── 06_PHASE2_ONTOLOGY_DESIGN.md             ← Ch6: Phase 2 Ontology
-│   ├── 07_PHASE2_AOMD_IMPLEMENTATION.md         ← Ch7: Phase 2 AOMD
-│   ├── 08_PHASE3_SAAS_STRATEGY.md               ← Ch8: Phase 3 SaaS
-│   ├── 09_LESSONS_LEARNED.md                    ← Ch9: 배운 점
-│   └── 10_FUTURE_ROADMAP.md                     ← Ch10: 미래 계획
+├── 📚 book/ (기술 서적 — Phase 1–9 완료 ✅)
+│   ├── README.md                                 ← Book 목차 (Ch0–12)
+│   ├── 00_INTRODUCTION.md                        ← Ch0: 서론
+│   ├── 01_ARCHITECTURE_OVERVIEW.md               ← Ch1: 아키텍처
+│   ├── 02_PHASE1_ENVIRONMENT_SETUP.md            ← Ch2: 환경 구성
+│   ├── 03_PHASE1_FRONTEND_DEVELOPMENT.md        ← Ch3: Frontend ✅
+│   ├── 04_PHASE1_BACKEND_LLM_INTEGRATION.md     ← Ch4: Backend/LLM ✅
+│   ├── 05_PHASE1_TESTING_DEPLOYMENT.md          ← Ch5: 테스트/배포
+│   ├── 06_PHASE2_ONTOLOGY_DESIGN.md             ← Ch6: Ontology
+│   ├── 07_PHASE2_AOMD_IMPLEMENTATION.md         ← Ch7: AOMD
+│   ├── 08_PHASE3_SAAS_STRATEGY.md               ← Ch8: SaaS
+│   ├── 09_PHASE4_TO_7_PLATFORM_EXPANSION.md   ← Ch9: Phase 4–7
+│   ├── 10_PHASE8_TO_9_ENTERPRISE.md             ← Ch10: Enterprise
+│   ├── 11_LESSONS_LEARNED.md                    ← Ch11: 배운 점
+│   └── 12_FUTURE_ROADMAP.md                     ← Ch12: 미래 계획
 │
 ├── backend/
 │   ├── src/
@@ -87,11 +89,13 @@ Part 3: Phase 2 계획 (Ontology & AOMD)
 ├─ Ch7: AOMD 구현 (4가지 피드백 역할)
 └─ [점수/진도 시스템은 Ch8의 일부]
 
-Part 4: Phase 3 & 이후 (SaaS & 확장)
-├─ Ch8: SaaS 비즈니스 모델
-├─ Ch9: 배운 점 & 최적화
-└─ Ch10: 미래 로드맵
+Part 4: Phase 8–9 (Enterprise & B2B)
+├─ Ch10: Phase 8–9 Enterprise (SSO, 팀, API, CDN)
+├─ Ch11: 배운 점 & 최적화
+└─ Ch12: 미래 로드맵 (Phase 10+)
 ```
+
+**SSOT:** 루트 `LONG_TERM_STRATEGY_ONTOLOGY_AOMD_SAAS.md` — Book·Handover·Phase 프롬프트는 이 문서와 동기화
 
 ---
 

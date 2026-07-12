@@ -3,7 +3,7 @@
 ## 📍 프로젝트 비전
 
 **목표:** AI 기반 영어 발음 교정 플랫폼 → SaaS 구독 서비스로 성장  
-**현재 단계:** Phase 8 완료 (Enterprise SSO + 맞춤 Ontology + 모니터링) ✅  
+**현재 단계:** Phase 9 완료 (팀 관리 + B2B API + CDN + Book) ✅  
 **최종 목표:** 멀티채널, 구독 기반, Ontology 기반 개인화 학습
 
 ---
@@ -159,6 +159,17 @@
 ✅ 모니터링 — monitoringMiddleware, Sentry/Datadog 훅
 ✅ 문서 — SSO_GUIDE.md, MONITORING_GUIDE.md
 커밋: 69380cd
+```
+
+### **Phase 9: B2B & 글로벌 (2026년 7월) — ✅ 100% 완료**
+
+**목표:** 팀 관리, B2B API, CDN, Book 문서화
+
+```
+✅ 팀/그룹 관리 — teams/team_members, /api/teams/*, EnterprisePanel
+✅ B2B API 키 — api_keys, /api/api-keys/*, X-API-Key 인증
+✅ 글로벌 CDN — nginx immutable 캐시, CDN_DEPLOYMENT_GUIDE.md
+✅ Book Chapter — book/ Ch0–12, Phase 1–9 전체 반영
 ```
 
 ---
@@ -607,8 +618,9 @@ Phase 5: 모바일 & 확장    📊 100% ✅  (커밋 5fd6548)
 Phase 6: 프로덕션 배포    📊 100% ✅  (커밋 0b79675)
 Phase 7: 운영 완성        📊 100% ✅  (커밋 fc62750)
 Phase 8: Enterprise 확장  📊 100% ✅  (커밋 69380cd)
+Phase 9: B2B & 글로벌      📊 100% ✅  (팀, API키, CDN, Book)
 
-다음 업데이트: Phase 9 계획 시
+다음 업데이트: Phase 10 계획 시
 ```
 
 ---

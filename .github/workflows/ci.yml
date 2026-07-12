@@ -70,4 +70,4 @@ jobs:
           done
 
       - name: Run smoke tests
-        run: bash scripts/test-phase8.sh
+        run: bash scripts/test-phase9.sh

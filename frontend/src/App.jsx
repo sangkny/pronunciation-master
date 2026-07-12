@@ -10,6 +10,7 @@ import authService from './services/authService.js';
 import PronunciationMission from './components/PronunciationMission.jsx';
 import SubscriptionModal from './components/SubscriptionModal.jsx';
 import ProgressDashboard from './components/ProgressDashboard.jsx';
+import EnterprisePanel from './components/EnterprisePanel.jsx';
 import { useLanguage } from './hooks/useLanguage.js';
 
 const DIFFICULTY_OPTIONS = [
@@ -680,6 +681,15 @@ export default function EnhancedPronunciationMasterApp() {
             >
               <BarChart3 className="w-5 h-5" />
             </button>
+            {user.tier === 'Enterprise' && (
+              <button
+                onClick={() => setAppState('enterprise')}
+                className="p-2 hover:bg-yellow-600/20 rounded-lg transition-colors"
+                title="Enterprise Console"
+              >
+                <Settings className="w-5 h-5 text-yellow-300" />
+              </button>
+            )}
             <button
               onClick={handleLogout}
               className="p-2 hover:bg-white/10 rounded-lg transition-colors"
@@ -1042,6 +1052,9 @@ export default function EnhancedPronunciationMasterApp() {
         {/* ==================== STATS 화면 ==================== */}
         {appState === 'stats' && (
           <ProgressDashboard t={t} onBack={() => setAppState('home')} />
+        )}
+        {appState === 'enterprise' && (
+          <EnterprisePanel onBack={() => setAppState('home')} />
         )}
       </div>
     </div>

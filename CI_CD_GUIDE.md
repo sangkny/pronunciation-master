@@ -9,7 +9,7 @@ GitHub Actions: `.github/workflows/ci.yml`
 | Trigger | `main` push / PR |
 | Services | PostgreSQL 16 |
 | Build | `frontend` npm build |
-| Test | `scripts/test-phase8.sh` smoke test |
+| Test | `scripts/test-phase9.sh` smoke test |
 
 ## 로컬 테스트
 

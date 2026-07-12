@@ -42,6 +42,19 @@ class APIClient {
     return response.json();
   }
 
+  async delete(endpoint) {
+    const response = await fetch(`${this.baseURL}${endpoint}`, {
+      method: 'DELETE',
+      headers: this.getHeaders(),
+    });
+    if (!response.ok) {
+      const err = new Error(`API error: ${response.status}`);
+      err.status = response.status;
+      throw err;
+    }
+    return response.json();
+  }
+
   async postPublic(endpoint, data) {
     const response = await fetch(`${this.baseURL}${endpoint}`, {
       method: 'POST',
@@ -81,6 +94,30 @@ class APIClient {
 
   async getSubscriptionStatus() {
     return this.get('/api/subscription/status');
+  }
+
+  async getTeams() {
+    return this.get('/api/teams');
+  }
+
+  async createTeam(name) {
+    return this.post('/api/teams', { name });
+  }
+
+  async addTeamMember(teamId, email) {
+    return this.post(`/api/teams/${teamId}/members`, { email });
+  }
+
+  async getApiKeys() {
+    return this.get('/api/api-keys');
+  }
+
+  async createApiKey(name) {
+    return this.post('/api/api-keys', { name });
+  }
+
+  async revokeApiKey(keyId) {
+    return this.delete(`/api/api-keys/${keyId}`);
   }
 }
 

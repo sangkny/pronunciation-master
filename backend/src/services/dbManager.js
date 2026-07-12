@@ -102,6 +102,34 @@ class DBManager {
           UNIQUE(user_id, domain_id)
         );
 
+        CREATE TABLE IF NOT EXISTS teams (
+          id SERIAL PRIMARY KEY,
+          owner_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+          name VARCHAR(200) NOT NULL,
+          max_members INTEGER DEFAULT 100,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+
+        CREATE TABLE IF NOT EXISTS team_members (
+          id SERIAL PRIMARY KEY,
+          team_id INTEGER NOT NULL REFERENCES teams(id) ON DELETE CASCADE,
+          user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+          role VARCHAR(20) DEFAULT 'member' CHECK (role IN ('owner', 'admin', 'member')),
+          joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          UNIQUE(team_id, user_id)
+        );
+
+        CREATE TABLE IF NOT EXISTS api_keys (
+          id SERIAL PRIMARY KEY,
+          user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+          name VARCHAR(100) NOT NULL,
+          key_hash VARCHAR(64) NOT NULL UNIQUE,
+          key_prefix VARCHAR(20) NOT NULL,
+          enabled BOOLEAN DEFAULT true,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          last_used_at TIMESTAMP
+        );
+
         CREATE INDEX IF NOT EXISTS idx_user_progress_user ON user_progress(user_id);
         CREATE INDEX IF NOT EXISTS idx_user_scores_user ON user_scores(user_id);
         CREATE INDEX IF NOT EXISTS idx_user_scores_created ON user_scores(created_at);
@@ -110,6 +138,9 @@ class DBManager {
         CREATE INDEX IF NOT EXISTS idx_push_tokens_user ON push_tokens(user_id);
         CREATE INDEX IF NOT EXISTS idx_sso_identities_user ON sso_identities(user_id);
         CREATE INDEX IF NOT EXISTS idx_custom_ontologies_user ON custom_ontologies(user_id);
+        CREATE INDEX IF NOT EXISTS idx_teams_owner ON teams(owner_id);
+        CREATE INDEX IF NOT EXISTS idx_team_members_team ON team_members(team_id);
+        CREATE INDEX IF NOT EXISTS idx_api_keys_user ON api_keys(user_id);
       `);
 
       this.isConnected = true;
@@ -401,6 +432,123 @@ class DBManager {
     const result = await this.query(
       'DELETE FROM custom_ontologies WHERE user_id = $1 AND domain_id = $2 RETURNING *',
       [userId, domainId]
+    );
+    return result.rows[0] || null;
+  }
+
+  async createTeam(ownerId, name, maxMembers = 100) {
+    const result = await this.query(
+      'INSERT INTO teams (owner_id, name, max_members) VALUES ($1, $2, $3) RETURNING *',
+      [ownerId, name, maxMembers]
+    );
+    const team = result.rows[0];
+    await this.query(
+      'INSERT INTO team_members (team_id, user_id, role) VALUES ($1, $2, $3)',
+      [team.id, ownerId, 'owner']
+    );
+    return team;
+  }
+
+  async getTeamsForUser(userId) {
+    const result = await this.query(
+      `SELECT t.*, tm.role
+       FROM teams t
+       JOIN team_members tm ON t.id = tm.team_id
+       WHERE tm.user_id = $1
+       ORDER BY t.created_at DESC`,
+      [userId]
+    );
+    return result.rows;
+  }
+
+  async getTeamById(teamId) {
+    const result = await this.query('SELECT * FROM teams WHERE id = $1', [teamId]);
+    return result.rows[0] || null;
+  }
+
+  async getTeamMembership(teamId, userId) {
+    const result = await this.query(
+      'SELECT * FROM team_members WHERE team_id = $1 AND user_id = $2',
+      [teamId, userId]
+    );
+    return result.rows[0] || null;
+  }
+
+  async getTeamMembers(teamId) {
+    const result = await this.query(
+      `SELECT tm.role, tm.joined_at, u.id, u.email, u.name, u.tier
+       FROM team_members tm
+       JOIN users u ON tm.user_id = u.id
+       WHERE tm.team_id = $1
+       ORDER BY tm.joined_at`,
+      [teamId]
+    );
+    return result.rows;
+  }
+
+  async getTeamMemberCount(teamId) {
+    const result = await this.query(
+      'SELECT COUNT(*)::int AS count FROM team_members WHERE team_id = $1',
+      [teamId]
+    );
+    return result.rows[0].count;
+  }
+
+  async addTeamMember(teamId, userId, role = 'member') {
+    const result = await this.query(
+      `INSERT INTO team_members (team_id, user_id, role)
+       VALUES ($1, $2, $3)
+       ON CONFLICT (team_id, user_id) DO UPDATE SET role = $3
+       RETURNING *`,
+      [teamId, userId, role]
+    );
+    return result.rows[0];
+  }
+
+  async removeTeamMember(teamId, userId) {
+    const result = await this.query(
+      'DELETE FROM team_members WHERE team_id = $1 AND user_id = $2 RETURNING *',
+      [teamId, userId]
+    );
+    return result.rows[0] || null;
+  }
+
+  async createApiKey(userId, name, keyHash, keyPrefix) {
+    const result = await this.query(
+      `INSERT INTO api_keys (user_id, name, key_hash, key_prefix)
+       VALUES ($1, $2, $3, $4) RETURNING *`,
+      [userId, name, keyHash, keyPrefix]
+    );
+    return result.rows[0];
+  }
+
+  async getApiKeys(userId) {
+    const result = await this.query(
+      'SELECT * FROM api_keys WHERE user_id = $1 ORDER BY created_at DESC',
+      [userId]
+    );
+    return result.rows;
+  }
+
+  async getApiKeyByHash(keyHash) {
+    const result = await this.query(
+      'SELECT * FROM api_keys WHERE key_hash = $1',
+      [keyHash]
+    );
+    return result.rows[0] || null;
+  }
+
+  async touchApiKey(keyId) {
+    await this.query(
+      'UPDATE api_keys SET last_used_at = CURRENT_TIMESTAMP WHERE id = $1',
+      [keyId]
+    );
+  }
+
+  async revokeApiKey(userId, keyId) {
+    const result = await this.query(
+      'UPDATE api_keys SET enabled = false WHERE id = $1 AND user_id = $2 RETURNING *',
+      [keyId, userId]
     );
     return result.rows[0] || null;
   }

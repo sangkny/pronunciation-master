@@ -4,10 +4,11 @@
 
 **프로젝트명:** Pronunciation Master  
 **목적:** AI 기반 영어 발음 교정 및 상황별 동적 학습 앱  
-**현재 상태:** Phase 1–8 완료 (100% ✅)  
-**Phase 8:** Enterprise SSO + 맞춤 Ontology + 모니터링  
-**최종 커밋:** `69380cd` (Phase 8)  
-**장기 전략:** `LONG_TERM_STRATEGY_ONTOLOGY_AOMD_SAAS.md` 참고
+**현재 상태:** Phase 1–9 완료 (100% ✅)  
+**Phase 9:** 팀 관리 + B2B API 키 + CDN + Book Chapter  
+**최종 커밋:** `69380cd` (Phase 8) → Phase 9 커밋 예정  
+**장기 전략:** `LONG_TERM_STRATEGY_ONTOLOGY_AOMD_SAAS.md` 참고  
+**Book:** `book/README.md` (Ch0–12)
 
 ---
 
@@ -67,21 +68,27 @@
 - Part 4: 문서 — `SSO_GUIDE.md`, `MONITORING_GUIDE.md`
 - 최종 커밋: `69380cd`
 
+### Phase 9: 팀 + B2B API + CDN + Book (100% ✅)
+- Part 1: 팀 관리 — `/api/teams/*`, `EnterprisePanel.jsx`
+- Part 2: B2B API 키 — `/api/api-keys/*`, `X-API-Key` 인증
+- Part 3: CDN — `nginx.conf` 캐시, `CDN_DEPLOYMENT_GUIDE.md`
+- Part 4: Book — `book/` Ch0–12, Strategy/Handover 동기화
+
 ---
 
-## Phase 8 진행 현황
+## Phase 9 진행 현황
 
 | Part | 내용 | 상태 |
 |------|------|------|
-| 1 | Enterprise SSO | ✅ |
-| 2 | 맞춤 Ontology API | ✅ |
-| 3 | 모니터링 (Sentry/Datadog) | ✅ |
-| 4 | 문서 동기화 | ✅ |
+| 1 | 팀/그룹 관리 | ✅ |
+| 2 | B2B API 키 | ✅ |
+| 3 | 글로벌 CDN | ✅ |
+| 4 | Book Chapter + 문서 | ✅ |
 
-### Phase 9 예정 (향후)
-- 팀/그룹 관리 UI
-- B2B API 키 발급
-- 글로벌 CDN 배포
+### Phase 10 예정 (향후)
+- Cloud CDN 실연동 (CloudFront/Cloudflare)
+- API Rate limit & 사용량 과금
+- Kubernetes 배포 옵션
 
 ---
 

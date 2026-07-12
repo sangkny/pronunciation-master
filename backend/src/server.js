@@ -20,6 +20,8 @@ import sttRouter from './routes/stt.js';
 import ssoRouter from './routes/sso.js';
 import customOntologyRouter from './routes/customOntology.js';
 import monitoringRouter from './routes/monitoring.js';
+import teamsRouter from './routes/teams.js';
+import apiKeysRouter from './routes/apiKeys.js';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -57,6 +59,8 @@ app.use('/api/stt', sttRouter);
 app.use('/api/subscription', subscriptionRouter);
 app.use('/api/analytics', analyticsRouter);
 app.use('/api/notifications', notificationsRouter);
+app.use('/api/teams', teamsRouter);
+app.use('/api/api-keys', apiKeysRouter);
 
 app.post('/api/mission/generate-by-scenario', async (req, res) => {
   try {
