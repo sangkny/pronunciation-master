@@ -1,0 +1,70 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: pronunciation-postgres-prod
+    environment:
+      POSTGRES_DB: ${DB_NAME:-pronunciation_master}
+      POSTGRES_USER: ${DB_USER:-pronunciation}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD required}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - pronunciation-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-pronunciation} -d ${DB_NAME:-pronunciation_master}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: pronunciation-backend-prod
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=production
+      - PORT=5000
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=${DB_NAME:-pronunciation_master}
+      - DB_USER=${DB_USER:-pronunciation}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - JWT_SECRET=${JWT_SECRET:?JWT_SECRET required}
+      - JWT_EXPIRES_IN=${JWT_EXPIRES_IN:-24h}
+      - STRIPE_PUBLIC_KEY=${STRIPE_PUBLIC_KEY}
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
+      - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET}
+      - LLM_PROVIDER=${LLM_PROVIDER:-lmstudio}
+      - LMSTUDIO_API_URL=${LMSTUDIO_API_URL:-http://host.docker.internal:1234/v1}
+      - LMSTUDIO_MODEL=${LMSTUDIO_MODEL:-google/gemma-4-e4b}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - pronunciation-network
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: ${VITE_API_URL:-http://localhost:5000}
+    container_name: pronunciation-frontend-prod
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - pronunciation-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+
+networks:
+  pronunciation-network:
+    driver: bridge

@@ -4,9 +4,9 @@
 
 **프로젝트명:** Pronunciation Master  
 **목적:** AI 기반 영어 발음 교정 및 상황별 동적 학습 앱  
-**현재 상태:** Phase 1–4 완료 (100% ✅) + **Phase 5 진행 완료**  
-**Phase 5:** PWA + i18n 확장 + Expo 모바일 + Stripe Webhook  
-**최종 커밋:** `4aebfcc` (Phase 4)  
+**현재 상태:** Phase 1–6 완료 (100% ✅)  
+**Phase 6:** 모바일 녹음 + 푸시 알림 + 프로덕션 배포 + Stripe 프로덕션  
+**최종 커밋:** `5fd6548` (Phase 5) → Phase 6 커밋 예정  
 **장기 전략:** `LONG_TERM_STRATEGY_ONTOLOGY_AOMD_SAAS.md` 참고
 
 ---
@@ -44,22 +44,29 @@
 - Part 2: i18n — ja/zh + 지역 커리큘럼 API
 - Part 3: mobile/ Expo 스캐폴드 (Login + Home)
 - Part 4: Stripe webhook — POST /api/stripe/webhook
+- 최종 커밋: `5fd6548`
+
+### Phase 6: 모바일 녹음 + 푸시 + 프로덕션 배포 (100% ✅)
+- Part 1: Expo 녹음 — `expo-av`, `MissionScreen`, scoring/AOMD API
+- Part 2: 푸시 알림 — `expo-notifications`, `push_tokens` DB, `/api/notifications/*`
+- Part 3: 프로덕션 — `docker-compose.prod.yml`, `frontend/Dockerfile`, `nginx.conf`
+- Part 4: Stripe 프로덕션 — `isProduction()`, `STRIPE_PRODUCTION.md`, `DEPLOYMENT_GUIDE.md`
 
 ---
 
-## Phase 5 진행 현황
+## Phase 6 진행 현황
 
 | Part | 내용 | 상태 |
 |------|------|------|
-| 1 | PWA (manifest + sw.js) | ✅ |
-| 2 | i18n ja/zh + `/api/i18n/*` | ✅ |
-| 3 | React Native Expo `mobile/` | ✅ |
-| 4 | Stripe Webhook | ✅ |
+| 1 | Expo 녹음 (MissionScreen) | ✅ |
+| 2 | 푸시 알림 (notifications API) | ✅ |
+| 3 | 프로덕션 Docker (prod compose) | ✅ |
+| 4 | Stripe 프로덕션 + 문서 동기화 | ✅ |
 
-### Phase 6 예정
-- Expo 발음 녹음 (expo-av)
-- 푸시 알림 (expo-notifications)
-- Stripe 실결제 키 프로덕션 배포
+### Phase 7 예정 (향후)
+- 실제 STT 연동 (모바일 음성 → 텍스트)
+- Stripe live 키 실운영 검증
+- CI/CD 파이프라인
 
 ---
 

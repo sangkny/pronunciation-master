@@ -13,7 +13,7 @@ const DOMAINS = [
   { id: 'automotive', name: 'Automotive', emoji: '🚗' },
 ];
 
-export default function HomeScreen({ user, onLogout }) {
+export default function HomeScreen({ user, onLogout, onSelectDomain }) {
   const [dashboard, setDashboard] = useState(null);
   const [greeting, setGreeting] = useState('');
   const [loading, setLoading] = useState(true);
@@ -75,7 +75,11 @@ export default function HomeScreen({ user, onLogout }) {
 
       <Text style={styles.sectionTitle}>Select Domain</Text>
       {DOMAINS.map((d) => (
-        <TouchableOpacity key={d.id} style={styles.domainCard}>
+        <TouchableOpacity
+          key={d.id}
+          style={styles.domainCard}
+          onPress={() => onSelectDomain?.(d)}
+        >
           <Text style={styles.domainEmoji}>{d.emoji}</Text>
           <Text style={styles.domainName}>{d.name}</Text>
           <Text style={styles.comingSoon}>Practice →</Text>

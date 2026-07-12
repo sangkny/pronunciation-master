@@ -71,11 +71,22 @@ class DBManager {
           UNIQUE(user_id, usage_date)
         );
 
+        CREATE TABLE IF NOT EXISTS push_tokens (
+          id SERIAL PRIMARY KEY,
+          user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+          expo_push_token VARCHAR(255) NOT NULL,
+          platform VARCHAR(20),
+          enabled BOOLEAN DEFAULT true,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          UNIQUE(user_id, expo_push_token)
+        );
+
         CREATE INDEX IF NOT EXISTS idx_user_progress_user ON user_progress(user_id);
         CREATE INDEX IF NOT EXISTS idx_user_scores_user ON user_scores(user_id);
         CREATE INDEX IF NOT EXISTS idx_user_scores_created ON user_scores(created_at);
         CREATE INDEX IF NOT EXISTS idx_subscriptions_user ON subscriptions(user_id);
         CREATE INDEX IF NOT EXISTS idx_daily_usage_user_date ON daily_usage(user_id, usage_date);
+        CREATE INDEX IF NOT EXISTS idx_push_tokens_user ON push_tokens(user_id);
       `);
 
       this.isConnected = true;
@@ -286,6 +297,33 @@ class DBManager {
       [limit]
     );
     return result.rows;
+  }
+
+  async savePushToken(userId, expoPushToken, platform = 'unknown') {
+    const result = await this.query(
+      `INSERT INTO push_tokens (user_id, expo_push_token, platform)
+       VALUES ($1, $2, $3)
+       ON CONFLICT (user_id, expo_push_token)
+       DO UPDATE SET platform = $3, enabled = true
+       RETURNING *`,
+      [userId, expoPushToken, platform]
+    );
+    return result.rows[0];
+  }
+
+  async getPushTokens(userId) {
+    const result = await this.query(
+      'SELECT * FROM push_tokens WHERE user_id = $1 AND enabled = true',
+      [userId]
+    );
+    return result.rows;
+  }
+
+  async setPushEnabled(userId, enabled) {
+    await this.query(
+      'UPDATE push_tokens SET enabled = $1 WHERE user_id = $2',
+      [enabled, userId]
+    );
   }
 }
 

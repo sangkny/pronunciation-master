@@ -3,7 +3,7 @@
 ## 📍 프로젝트 비전
 
 **목표:** AI 기반 영어 발음 교정 플랫폼 → SaaS 구독 서비스로 성장  
-**현재 단계:** Phase 3 완료 (Web MVP + Ontology/AOMD + SaaS 기반) ✅  
+**현재 단계:** Phase 6 완료 (프로덕션 배포 + 모바일 녹음/푸시) ✅  
 **최종 목표:** 멀티채널, 구독 기반, Ontology 기반 개인화 학습
 
 ---
@@ -24,9 +24,9 @@
 │  └──────────────────────────────────┘  │
 │                                         │
 │  ┌──────────────────────────────────┐  │
-│  │ Mobile App (미래)                │  │
+│  │ Mobile App (Expo)                │  │
 │  │ - iOS/Android                   │  │
-│  │ - 같은 기능                      │  │
+│  │ - 녹음 + AOMD + 푸시 알림       │  │
 │  └──────────────────────────────────┘  │
 │                                         │
 │  ┌──────────────────────────────────┐  │
@@ -109,8 +109,7 @@
 ✅ Analytics — 개인 대시보드, 주간 리포트, 약점 분석
 ✅ Leaderboard — 사용자 간 점수 랭킹
 ✅ i18n — 한국어/영어 UI 전환
-⏳ Stripe 실결제 — Phase 5 예정
-⏳ 모바일 앱 — Phase 5 예정
+커밋: 4aebfcc
 ```
 
 ### **Phase 5: 모바일 & 확장 (2026년 7월) — ✅ 100% 완료**
@@ -122,7 +121,19 @@
 ✅ i18n 확장 — ja, zh + 지역별 커리큘럼 API
 ✅ React Native Expo — mobile/ 로그인 + 홈 스캐폴드
 ✅ Stripe Webhook — POST /api/stripe/webhook
-⏳ 푸시 알림, 오프라인 녹음 — Phase 6 예정
+커밋: 5fd6548
+```
+
+### **Phase 6: 프로덕션 배포 (2026년 7월) — ✅ 100% 완료**
+
+**목표:** 프로덕션 환경 및 모바일 완성
+
+```
+✅ Expo 발음 녹음 — expo-av, MissionScreen, scoring/AOMD 연동
+✅ 푸시 알림 — expo-notifications, push_tokens DB, /api/notifications/*
+✅ 프로덕션 배포 — docker-compose.prod.yml, frontend/Dockerfile, nginx
+✅ Stripe 프로덕션 — isProduction()/getMode(), STRIPE_PRODUCTION.md
+✅ 문서 동기화 — DEPLOYMENT_GUIDE.md, .env.production.example
 ```
 
 ---
@@ -566,11 +577,11 @@ Ontology/AOMD 관련:
 Phase 1: Web MVP          📊 100% ✅  (커밋 5d7569f)
 Phase 2: Ontology/AOMD    📊 100% ✅  (커밋 2717f63)
 Phase 3: SaaS             📊 100% ✅  (커밋 cacba9d)
-Phase 4: 고급 기능        📊 100% ✅  (STT, Analytics, Leaderboard, i18n)
-Phase 5: 모바일 & 확장    📊 100% ✅  (PWA, i18n ja/zh, Expo, Stripe webhook)
-Phase 6: 프로덕션 배포    📊 0%   ⏳  (계획 단계)
+Phase 4: 고급 기능        📊 100% ✅  (커밋 4aebfcc)
+Phase 5: 모바일 & 확장    📊 100% ✅  (커밋 5fd6548)
+Phase 6: 프로덕션 배포    📊 100% ✅  (모바일 녹음, 푸시, prod Docker)
 
-다음 업데이트: Phase 4 시작 시
+다음 업데이트: Phase 7 계획 시
 ```
 
 ---
@@ -600,5 +611,5 @@ Phase 6: 프로덕션 배포    📊 0%   ⏳  (계획 단계)
 
 ---
 
-**Phase 1–3 완료! Phase 4 준비:** CURSOR_HANDOVER.md + PHASE3_FINAL_HANDOVER_PROMPTS.md 참고
+**Phase 1–3 완료! Phase 4–6 완료:** CURSOR_HANDOVER.md + PHASE6_CODE_LOOP_PROMPTS.md 참고
 

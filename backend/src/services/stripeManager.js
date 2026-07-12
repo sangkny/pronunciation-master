@@ -15,6 +15,17 @@ class StripeManager {
     return stripe !== null;
   }
 
+  isProduction() {
+    const key = process.env.STRIPE_SECRET_KEY || '';
+    return key.startsWith('sk_live_');
+  }
+
+  getMode() {
+    if (this.isProduction()) return 'production';
+    if (this.isConfigured()) return 'test';
+    return 'mock';
+  }
+
   async createPaymentIntent(userId, tier, amount) {
     if (!stripe) {
       return {

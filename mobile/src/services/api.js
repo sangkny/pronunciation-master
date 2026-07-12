@@ -52,4 +52,25 @@ export async function getDashboard() {
   return request('/api/analytics/dashboard');
 }
 
+export async function calculateScore(payload) {
+  return request('/api/scoring/calculate', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function getAomdFeedback(payload) {
+  return request('/api/aomd/feedback', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function registerPushToken(expoPushToken, platform) {
+  return request('/api/notifications/register-token', {
+    method: 'POST',
+    body: JSON.stringify({ expoPushToken, platform }),
+  });
+}
+
 export { API_URL };
