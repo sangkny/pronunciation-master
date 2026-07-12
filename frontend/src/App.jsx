@@ -9,6 +9,8 @@ import apiClient from './services/apiClient.js';
 import authService from './services/authService.js';
 import PronunciationMission from './components/PronunciationMission.jsx';
 import SubscriptionModal from './components/SubscriptionModal.jsx';
+import ProgressDashboard from './components/ProgressDashboard.jsx';
+import { useLanguage } from './hooks/useLanguage.js';
 
 const DIFFICULTY_OPTIONS = [
   { id: 'beginner', label: 'Beginner', labelKo: '초급', desc: '기초 개념부터 차근차근', emoji: '🌱' },
@@ -102,6 +104,7 @@ const SAMPLE_MISSIONS = {
 };
 
 export default function EnhancedPronunciationMasterApp() {
+  const { t, toggleLang } = useLanguage();
   // ==================== 상태 관리 ====================
   const [appState, setAppState] = useState('home');
   const [user, setUser] = useState(null);
@@ -399,7 +402,7 @@ export default function EnhancedPronunciationMasterApp() {
 
   // ==================== 미션 완료 및 스킵 ====================
 
-  const completeMission = () => {
+  const completeMission = async () => {
     const missionData = {
       categoryId: selectedCategory,
       sentence: currentMission.sentence,
@@ -414,6 +417,19 @@ export default function EnhancedPronunciationMasterApp() {
     if (currentMission?.id && !completedConcepts.includes(currentMission.id)) {
       setCompletedConcepts(prev => [...prev, currentMission.id]);
     }
+
+    if (currentMission?.id && selectedCategory) {
+      try {
+        await apiClient.post('/api/analytics/progress', {
+          domainId: selectedCategory,
+          conceptId: String(currentMission.id),
+          status: 'completed',
+        });
+      } catch (err) {
+        console.error('진도 저장 실패:', err);
+      }
+    }
+
     setDailyStats(prev => ({
       ...prev,
       completedToday: prev.completedToday + 1,
@@ -532,8 +548,8 @@ export default function EnhancedPronunciationMasterApp() {
         <div className="w-full max-w-md bg-white/5 border border-purple-500/30 rounded-2xl p-8 space-y-6">
           <div className="text-center space-y-2">
             <Zap className="w-10 h-10 text-purple-400 mx-auto" />
-            <h1 className="text-2xl font-bold">Pronunciation Master</h1>
-            <p className="text-gray-400 text-sm">로그인하여 발음 연습을 시작하세요</p>
+            <h1 className="text-2xl font-bold">{t('appTitle')}</h1>
+            <p className="text-gray-400 text-sm">{t('loginPrompt')}</p>
           </div>
 
           <div className="flex gap-2">
@@ -585,7 +601,7 @@ export default function EnhancedPronunciationMasterApp() {
               disabled={authLoading}
               className="w-full py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 rounded-lg font-semibold disabled:opacity-50"
             >
-              {authLoading ? '처리 중...' : authMode === 'login' ? '로그인' : '회원가입'}
+              {authLoading ? t('processing') : authMode === 'login' ? t('login') : t('register')}
             </button>
           </form>
         </div>
@@ -610,10 +626,17 @@ export default function EnhancedPronunciationMasterApp() {
             className="flex items-center gap-2 hover:text-purple-400 transition-colors"
           >
             <Zap className="w-6 h-6 text-purple-400" />
-            <span className="text-xl font-bold">Pronunciation Master</span>
+            <span className="text-xl font-bold">{t('appTitle')}</span>
           </button>
 
           <div className="flex items-center gap-2 sm:gap-4">
+            <button
+              onClick={toggleLang}
+              className="text-xs px-2 py-1 bg-white/10 hover:bg-white/20 rounded-lg font-semibold"
+              title="Language"
+            >
+              {t('langToggle')}
+            </button>
             <span className="hidden sm:flex items-center gap-1 text-sm bg-white/10 px-3 py-1.5 rounded-full">
               <User className="w-3.5 h-3.5" />
               {user.name}
@@ -1003,42 +1026,13 @@ export default function EnhancedPronunciationMasterApp() {
               completeMission();
             }}
             onSkip={skipMission}
+            t={t}
           />
         )}
 
         {/* ==================== STATS 화면 ==================== */}
         {appState === 'stats' && (
-          <div className="max-w-2xl mx-auto space-y-6">
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-              학습 통계
-            </h1>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-gradient-to-br from-white/10 to-white/5 border border-white/10 rounded-lg p-6 text-center">
-                <div className="text-3xl font-bold text-green-400">{completedMissions.length}</div>
-                <p className="text-sm text-gray-400 mt-2">완료한 미션</p>
-              </div>
-              <div className="bg-gradient-to-br from-white/10 to-white/5 border border-white/10 rounded-lg p-6 text-center">
-                <div className="text-3xl font-bold text-orange-400">{skippedMissions.length}</div>
-                <p className="text-sm text-gray-400 mt-2">스킵한 미션</p>
-              </div>
-              <div className="bg-gradient-to-br from-white/10 to-white/5 border border-white/10 rounded-lg p-6 text-center">
-                <div className="text-3xl font-bold text-purple-400">{dailyStats.accuracyScore}%</div>
-                <p className="text-sm text-gray-400 mt-2">평균 정확도</p>
-              </div>
-              <div className="bg-gradient-to-br from-white/10 to-white/5 border border-white/10 rounded-lg p-6 text-center">
-                <div className="text-3xl font-bold text-blue-400">{dailyStats.totalTime}</div>
-                <p className="text-sm text-gray-400 mt-2">총 학습 시간 (분)</p>
-              </div>
-            </div>
-
-            <button
-              onClick={() => setAppState('home')}
-              className="w-full py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 rounded-lg font-semibold transition-all"
-            >
-              홈으로 돌아가기
-            </button>
-          </div>
+          <ProgressDashboard t={t} onBack={() => setAppState('home')} />
         )}
       </div>
     </div>

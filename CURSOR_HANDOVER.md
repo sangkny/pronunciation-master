@@ -4,9 +4,9 @@
 
 **프로젝트명:** Pronunciation Master  
 **목적:** AI 기반 영어 발음 교정 및 상황별 동적 학습 앱  
-**현재 상태:** Phase 1–3 전체 완료 (100% ✅)  
-**최종 커밋:** `cacba9d` (Phase 3: PostgreSQL + 인증 + 구독 + AOMD Frontend)  
-**다음 단계:** Phase 4 — Stripe 실결제, STT 개선, 모바일 앱, 국제화  
+**현재 상태:** Phase 1–3 완료 (100% ✅) + **Phase 4 진행 중**  
+**Phase 4:** STT + Analytics 대시보드 + Leaderboard + i18n  
+**최종 커밋:** `b4abefd` (Phase 3 문서 정리)  
 **장기 전략:** `LONG_TERM_STRATEGY_ONTOLOGY_AOMD_SAAS.md` 참고
 
 ---
@@ -36,7 +36,32 @@
 
 ---
 
-## Phase 4 계획 (향후)
+## Phase 4 진행 현황 (STT + Analytics + Leaderboard + i18n)
+
+### Part 1: STT ✅
+- `STT_SYSTEM.md`, `frontend/src/services/sttService.js`
+- PronunciationMission — Web Speech API 병렬 인식
+
+### Part 2: Analytics ✅
+- `ANALYTICS_SYSTEM.md`, `analyticsEngine.js`, `/api/analytics/*`
+- `ProgressDashboard.jsx` — DB 기반 통계
+
+### Part 3: Leaderboard ✅
+- `GET /api/analytics/leaderboard`
+- `Leaderboard.jsx`
+
+### Part 4: i18n ✅
+- `frontend/src/i18n/translations.js` (ko/en)
+- `useLanguage.js` — 헤더 언어 토글
+
+### Phase 4 남은 작업
+- Stripe 실결제 webhook
+- React Native 모바일 앱
+- 전체 UI i18n 확장
+
+---
+
+## Phase 4 계획 (향후 확장)
 - Stripe 실제 결제 통합 (현재 테스트/mock 키)
 - 음성 인식(STT) 개선 — 더 정확한 IPA 인식
 - 모바일 앱 (React Native)

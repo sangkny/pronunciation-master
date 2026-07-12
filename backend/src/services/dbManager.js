@@ -213,6 +213,80 @@ class DBManager {
       [userId, daysToKeep]
     );
   }
+
+  async getUserScoreStats(userId) {
+    const result = await this.query(
+      `SELECT
+         COUNT(*)::int AS total_practices,
+         COALESCE(ROUND(AVG(score)), 0)::int AS avg_score,
+         COALESCE(MAX(score), 0)::int AS best_score
+       FROM user_scores WHERE user_id = $1`,
+      [userId]
+    );
+    return result.rows[0];
+  }
+
+  async getCompletedConceptCount(userId) {
+    const result = await this.query(
+      `SELECT COUNT(*)::int AS count FROM user_progress
+       WHERE user_id = $1 AND status = 'completed'`,
+      [userId]
+    );
+    return result.rows[0].count;
+  }
+
+  async getWeeklyScoreSummary(userId) {
+    const result = await this.query(
+      `SELECT DATE(created_at) AS day,
+              COUNT(*)::int AS practices,
+              COALESCE(ROUND(AVG(score)), 0)::int AS avg_score
+       FROM user_scores
+       WHERE user_id = $1 AND created_at >= NOW() - INTERVAL '7 days'
+       GROUP BY DATE(created_at)
+       ORDER BY day`,
+      [userId]
+    );
+    return result.rows;
+  }
+
+  async getWeakWords(userId, limit = 5) {
+    const result = await this.query(
+      `SELECT word,
+              COUNT(*)::int AS attempts,
+              COALESCE(ROUND(AVG(score)), 0)::int AS avg_score
+       FROM user_scores WHERE user_id = $1
+       GROUP BY word
+       HAVING COUNT(*) >= 1
+       ORDER BY avg_score ASC, attempts DESC
+       LIMIT $2`,
+      [userId, limit]
+    );
+    return result.rows;
+  }
+
+  async getAllUserProgress(userId) {
+    const result = await this.query(
+      `SELECT * FROM user_progress WHERE user_id = $1 ORDER BY completed_at DESC NULLS LAST`,
+      [userId]
+    );
+    return result.rows;
+  }
+
+  async getLeaderboard(limit = 10) {
+    const result = await this.query(
+      `SELECT u.id AS user_id, u.name, u.tier,
+              COUNT(s.id)::int AS total_practices,
+              COALESCE(ROUND(AVG(s.score)), 0)::int AS avg_score
+       FROM users u
+       LEFT JOIN user_scores s ON u.id = s.user_id
+       GROUP BY u.id, u.name, u.tier
+       HAVING COUNT(s.id) > 0
+       ORDER BY avg_score DESC, total_practices DESC
+       LIMIT $1`,
+      [limit]
+    );
+    return result.rows;
+  }
 }
 
 export const dbManager = new DBManager();

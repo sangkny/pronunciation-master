@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Mic, Volume2, Play, Pause, Repeat2, CheckCircle, SkipForward } from 'lucide-react';
 import apiClient from '../services/apiClient.js';
 import aomdService from '../services/aomdService.js';
+import sttService from '../services/sttService.js';
 import AOMDFeedbackPanel from './AOMDFeedbackPanel.jsx';
 
 export default function PronunciationMission({
@@ -15,11 +16,13 @@ export default function PronunciationMission({
   onUpgrade,
   speakText,
   speakTextWithSpeed,
+  t = (key) => key,
 }) {
   const [recordingState, setRecordingState] = useState('idle');
   const [recordedAudio, setRecordedAudio] = useState(null);
-  const [isPlayingAI, setIsPlayingAI] = useState(false);
   const [isPlayingUser, setIsPlayingUser] = useState(false);
+  const [transcript, setTranscript] = useState('');
+  const [sttNote, setSttNote] = useState('');
   const [feedback, setFeedback] = useState(null);
   const [aomdFeedback, setAomdFeedback] = useState(null);
   const [isLoadingAomd, setIsLoadingAomd] = useState(false);
@@ -30,8 +33,9 @@ export default function PronunciationMission({
     status: 'in-progress',
   });
 
-  const mediaRecorderRef = React.useRef(null);
-  const audioChunksRef = React.useRef([]);
+  const mediaRecorderRef = useRef(null);
+  const audioChunksRef = useRef([]);
+  const sttPromiseRef = useRef(null);
 
   const playUserRecording = () => {
     if (recordedAudio) {
@@ -49,6 +53,15 @@ export default function PronunciationMission({
       const mediaRecorder = new MediaRecorder(stream);
       mediaRecorderRef.current = mediaRecorder;
       audioChunksRef.current = [];
+      setTranscript('');
+      setSttNote('');
+
+      if (sttService.isSupported()) {
+        sttPromiseRef.current = sttService.recognizeSpeech({ lang: 'en-US' });
+      } else {
+        sttPromiseRef.current = null;
+        setSttNote(t('sttFallback'));
+      }
 
       mediaRecorder.ondataavailable = (event) => {
         audioChunksRef.current.push(event.data);
@@ -80,7 +93,18 @@ export default function PronunciationMission({
     const vocab = conceptDetail?.vocabulary?.find(v => v.word === focusWord)
       || conceptDetail?.vocabulary?.[0];
     const correctPronunciation = vocab?.pronunciation || focusWord;
-    const userPronunciation = focusWord;
+
+    let userPronunciation = focusWord;
+    if (sttPromiseRef.current) {
+      try {
+        const sttResult = await sttPromiseRef.current;
+        userPronunciation = sttResult.transcript || focusWord;
+        setTranscript(userPronunciation);
+      } catch {
+        setSttNote(t('sttFallback'));
+        userPronunciation = focusWord;
+      }
+    }
 
     try {
       const scoreResult = await apiClient.calculateScore({
@@ -90,7 +114,7 @@ export default function PronunciationMission({
         difficulty: mission.difficulty || userLevel,
       });
 
-      const totalScore = scoreResult.totalScore || scoreResult.breakdown?.totalScore || 50;
+      const totalScore = scoreResult.totalScore || 50;
       const newProgress = missionProgress.attempts + 1;
       const isCompleted = newProgress >= 2 || totalScore >= 70;
 
@@ -98,7 +122,7 @@ export default function PronunciationMission({
         overallScore: totalScore,
         completedPoints: mission.focusPoints.slice(0, Math.ceil(totalScore / 40)),
         remainingPoints: mission.focusPoints.filter((_, i) => i >= Math.ceil(totalScore / 40)),
-        suggestions: [`점수: ${totalScore}/100`, '계속 연습하면 더 좋아집니다'],
+        suggestions: [`${t('recognizedText')}: "${userPronunciation}"`, `Score: ${totalScore}/100`],
         isPerfect: isCompleted,
       });
 
@@ -130,6 +154,7 @@ export default function PronunciationMission({
     } finally {
       setIsLoadingAomd(false);
       setRecordingState('complete');
+      sttPromiseRef.current = null;
     }
   };
 
@@ -155,37 +180,22 @@ export default function PronunciationMission({
       <div className="bg-gradient-to-br from-white/10 to-white/5 border border-purple-400/30 rounded-lg p-6 space-y-4">
         <h2 className="text-lg font-bold">읽어야 할 문장</h2>
         <p className="text-2xl font-semibold text-purple-200 leading-relaxed">{mission.sentence}</p>
-
         <div className="flex gap-2 flex-wrap">
-          <button
-            onClick={() => speakText(mission.sentence, 'en-US', 1.0)}
-            disabled={isPlayingAI}
-            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 px-4 py-2 rounded-lg text-sm"
-          >
-            <Volume2 className="w-4 h-4" />
-            {isPlayingAI ? '재생 중...' : '정상 속도'}
+          <button onClick={() => speakText(mission.sentence)} className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg text-sm">
+            <Volume2 className="w-4 h-4" /> TTS
           </button>
-          <button
-            onClick={() => speakTextWithSpeed(mission.sentence, 'slow')}
-            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg text-sm"
-          >
-            <Volume2 className="w-4 h-4" /> 느리게
+          <button onClick={() => speakTextWithSpeed(mission.sentence, 'slow')} className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg text-sm">
+            <Volume2 className="w-4 h-4" /> Slow
           </button>
         </div>
-
         <div className="flex flex-wrap gap-2">
           {mission.focusPoints.map((point, idx) => (
-            <button
-              key={idx}
-              onClick={() => speakText(point)}
+            <button key={idx} onClick={() => speakText(point)}
               className={`px-3 py-1 rounded-full text-sm font-medium ${
                 missionProgress.focusPointsCompleted.includes(point)
                   ? 'bg-green-500/30 border border-green-500/50 text-green-200'
                   : 'bg-orange-500/20 border border-orange-500/30 text-orange-200'
-              }`}
-            >
-              {point}
-            </button>
+              }`}>{point}</button>
           ))}
         </div>
       </div>
@@ -198,11 +208,9 @@ export default function PronunciationMission({
             onClick={recordingState === 'recording' ? stopRecording : startRecording}
             disabled={recordingState === 'processing'}
             className={`w-full py-4 rounded-lg font-semibold flex items-center justify-center gap-3 ${
-              recordingState === 'recording'
-                ? 'bg-red-500 hover:bg-red-600 animate-pulse'
-                : recordingState === 'processing'
-                ? 'bg-gray-600 opacity-50'
-                : 'bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700'
+              recordingState === 'recording' ? 'bg-red-500 hover:bg-red-600 animate-pulse'
+              : recordingState === 'processing' ? 'bg-gray-600 opacity-50'
+              : 'bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700'
             }`}
           >
             <Mic className="w-5 h-5" />
@@ -211,14 +219,18 @@ export default function PronunciationMission({
               : '음성 녹음 시작'}
           </button>
         ) : (
-          <button
-            onClick={playUserRecording}
-            disabled={isPlayingUser}
-            className="w-full py-3 bg-white/10 hover:bg-white/20 rounded-lg flex items-center justify-center gap-2"
-          >
-            {isPlayingUser ? <><Pause className="w-4 h-4" /> 재생 중...</> : <><Play className="w-4 h-4" /> 녹음된 음성 재생</>}
+          <button onClick={playUserRecording} disabled={isPlayingUser}
+            className="w-full py-3 bg-white/10 hover:bg-white/20 rounded-lg flex items-center justify-center gap-2">
+            {isPlayingUser ? <><Pause className="w-4 h-4" /> 재생 중...</> : <><Play className="w-4 h-4" /> 녹음 재생</>}
           </button>
         )}
+
+        {transcript && (
+          <p className="text-sm text-purple-200 bg-black/20 rounded-lg px-3 py-2">
+            {t('recognizedText')}: <strong>"{transcript}"</strong>
+          </p>
+        )}
+        {sttNote && <p className="text-xs text-gray-500">{sttNote}</p>}
 
         {feedback && (
           <div className="bg-black/30 rounded-lg p-4 border border-white/10">
@@ -226,17 +238,11 @@ export default function PronunciationMission({
               <span className="font-semibold">발음 정확도</span>
               <span className="text-2xl font-bold text-green-400">{feedback.overallScore}%</span>
             </div>
-            {feedback.isPerfect && (
-              <p className="text-green-200 font-semibold">🎉 목표 점수 달성!</p>
-            )}
+            {feedback.isPerfect && <p className="text-green-200 font-semibold">🎉 목표 점수 달성!</p>}
           </div>
         )}
 
-        {isLoadingAomd && (
-          <div className="text-center text-purple-300 animate-pulse py-4">
-            AOMD 피드백 생성 중...
-          </div>
-        )}
+        {isLoadingAomd && <div className="text-center text-purple-300 animate-pulse py-4">AOMD 피드백 생성 중...</div>}
 
         {aomdFeedback && !isLoadingAomd && (
           <AOMDFeedbackPanel
@@ -254,25 +260,19 @@ export default function PronunciationMission({
 
       <div className="flex gap-3">
         {missionProgress.status === 'completed' ? (
-          <button
-            onClick={() => onComplete(feedback)}
-            className="flex-1 py-3 bg-gradient-to-r from-green-600 to-green-700 rounded-lg font-semibold flex items-center justify-center gap-2"
-          >
+          <button onClick={() => onComplete(feedback)}
+            className="flex-1 py-3 bg-gradient-to-r from-green-600 to-green-700 rounded-lg font-semibold flex items-center justify-center gap-2">
             <CheckCircle className="w-5 h-5" /> 완료 후 다음
           </button>
         ) : (
           <>
-            <button
-              onClick={() => { setRecordedAudio(null); setFeedback(null); setAomdFeedback(null); setRecordingState('idle'); }}
+            <button onClick={() => { setRecordedAudio(null); setFeedback(null); setAomdFeedback(null); setTranscript(''); setRecordingState('idle'); }}
               disabled={!recordedAudio}
-              className="flex-1 py-3 bg-purple-600 hover:bg-purple-700 disabled:bg-gray-600 rounded-lg font-semibold flex items-center justify-center gap-2"
-            >
+              className="flex-1 py-3 bg-purple-600 hover:bg-purple-700 disabled:bg-gray-600 rounded-lg font-semibold flex items-center justify-center gap-2">
               <Repeat2 className="w-4 h-4" /> 다시 시도
             </button>
-            <button
-              onClick={onSkip}
-              className="flex-1 py-3 bg-orange-600/50 hover:bg-orange-600/70 rounded-lg font-semibold flex items-center justify-center gap-2"
-            >
+            <button onClick={onSkip}
+              className="flex-1 py-3 bg-orange-600/50 hover:bg-orange-600/70 rounded-lg font-semibold flex items-center justify-center gap-2">
               <SkipForward className="w-4 h-4" /> 스킵
             </button>
           </>

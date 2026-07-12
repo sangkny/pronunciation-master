@@ -9,6 +9,7 @@ import aomdRouter from './routes/aomd.js';
 import scoringRouter from './routes/scoring.js';
 import authRouter from './routes/auth.js';
 import subscriptionRouter from './routes/subscription.js';
+import analyticsRouter from './routes/analytics.js';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -30,6 +31,7 @@ app.use('/api/ontology', ontologyRouter);
 app.use('/api/aomd', aomdRouter);
 app.use('/api/scoring', scoringRouter);
 app.use('/api/subscription', subscriptionRouter);
+app.use('/api/analytics', analyticsRouter);
 
 app.post('/api/mission/generate-by-scenario', async (req, res) => {
   try {
