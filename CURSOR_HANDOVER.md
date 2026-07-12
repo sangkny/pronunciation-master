@@ -6,7 +6,7 @@
 **목적:** AI 기반 영어 발음 교정 및 상황별 동적 학습 앱  
 **현재 상태:** Phase 1–8 완료 (100% ✅)  
 **Phase 8:** Enterprise SSO + 맞춤 Ontology + 모니터링  
-**최종 커밋:** `fc62750` (Phase 7) → Phase 8 커밋 예정  
+**최종 커밋:** `69380cd` (Phase 8)  
 **장기 전략:** `LONG_TERM_STRATEGY_ONTOLOGY_AOMD_SAAS.md` 참고
 
 ---
@@ -65,6 +65,7 @@
 - Part 2: 맞춤 Ontology — `/api/custom-ontology/*` (Enterprise 전용)
 - Part 3: 모니터링 — `monitoringService`, Sentry/Datadog 훅
 - Part 4: 문서 — `SSO_GUIDE.md`, `MONITORING_GUIDE.md`
+- 최종 커밋: `69380cd`
 
 ---
 
