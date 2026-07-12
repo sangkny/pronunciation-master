@@ -81,12 +81,35 @@ class DBManager {
           UNIQUE(user_id, expo_push_token)
         );
 
+        CREATE TABLE IF NOT EXISTS sso_identities (
+          id SERIAL PRIMARY KEY,
+          user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+          provider VARCHAR(50) NOT NULL,
+          external_id VARCHAR(255) NOT NULL,
+          email VARCHAR(255) NOT NULL,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          UNIQUE(provider, external_id)
+        );
+
+        CREATE TABLE IF NOT EXISTS custom_ontologies (
+          id SERIAL PRIMARY KEY,
+          user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+          domain_id VARCHAR(100) NOT NULL,
+          name VARCHAR(200) NOT NULL,
+          ontology_data JSONB NOT NULL DEFAULT '{}',
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          UNIQUE(user_id, domain_id)
+        );
+
         CREATE INDEX IF NOT EXISTS idx_user_progress_user ON user_progress(user_id);
         CREATE INDEX IF NOT EXISTS idx_user_scores_user ON user_scores(user_id);
         CREATE INDEX IF NOT EXISTS idx_user_scores_created ON user_scores(created_at);
         CREATE INDEX IF NOT EXISTS idx_subscriptions_user ON subscriptions(user_id);
         CREATE INDEX IF NOT EXISTS idx_daily_usage_user_date ON daily_usage(user_id, usage_date);
         CREATE INDEX IF NOT EXISTS idx_push_tokens_user ON push_tokens(user_id);
+        CREATE INDEX IF NOT EXISTS idx_sso_identities_user ON sso_identities(user_id);
+        CREATE INDEX IF NOT EXISTS idx_custom_ontologies_user ON custom_ontologies(user_id);
       `);
 
       this.isConnected = true;
@@ -324,6 +347,62 @@ class DBManager {
       'UPDATE push_tokens SET enabled = $1 WHERE user_id = $2',
       [enabled, userId]
     );
+  }
+
+  async linkSsoIdentity(userId, provider, externalId, email) {
+    const result = await this.query(
+      `INSERT INTO sso_identities (user_id, provider, external_id, email)
+       VALUES ($1, $2, $3, $4)
+       ON CONFLICT (provider, external_id)
+       DO UPDATE SET user_id = $1, email = $4
+       RETURNING *`,
+      [userId, provider, externalId, email]
+    );
+    return result.rows[0];
+  }
+
+  async getSsoIdentity(provider, externalId) {
+    const result = await this.query(
+      'SELECT * FROM sso_identities WHERE provider = $1 AND external_id = $2',
+      [provider, externalId]
+    );
+    return result.rows[0] || null;
+  }
+
+  async saveCustomOntology(userId, domainId, name, ontologyData) {
+    const result = await this.query(
+      `INSERT INTO custom_ontologies (user_id, domain_id, name, ontology_data)
+       VALUES ($1, $2, $3, $4)
+       ON CONFLICT (user_id, domain_id)
+       DO UPDATE SET name = $3, ontology_data = $4, updated_at = CURRENT_TIMESTAMP
+       RETURNING *`,
+      [userId, domainId, name, JSON.stringify(ontologyData)]
+    );
+    return result.rows[0];
+  }
+
+  async getCustomOntologies(userId) {
+    const result = await this.query(
+      'SELECT * FROM custom_ontologies WHERE user_id = $1 ORDER BY updated_at DESC',
+      [userId]
+    );
+    return result.rows;
+  }
+
+  async getCustomOntology(userId, domainId) {
+    const result = await this.query(
+      'SELECT * FROM custom_ontologies WHERE user_id = $1 AND domain_id = $2',
+      [userId, domainId]
+    );
+    return result.rows[0] || null;
+  }
+
+  async deleteCustomOntology(userId, domainId) {
+    const result = await this.query(
+      'DELETE FROM custom_ontologies WHERE user_id = $1 AND domain_id = $2 RETURNING *',
+      [userId, domainId]
+    );
+    return result.rows[0] || null;
   }
 }
 

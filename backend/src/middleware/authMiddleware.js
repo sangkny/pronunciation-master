@@ -7,6 +7,8 @@ const PUBLIC_PATHS = [
   '/api/health',
   '/api/stripe/webhook',
   '/api/i18n',
+  '/api/sso',
+  '/api/monitoring',
   '/health',
 ];
 

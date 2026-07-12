@@ -3,7 +3,9 @@ import express from 'express';
 import cors from 'cors';
 import { llmManager } from './services/llmManager.js';
 import { dbManager } from './services/dbManager.js';
+import { monitoringService } from './services/monitoringService.js';
 import { verifyToken } from './middleware/authMiddleware.js';
+import { monitoringMiddleware } from './middleware/monitoringMiddleware.js';
 import ontologyRouter from './routes/ontology.js';
 import aomdRouter from './routes/aomd.js';
 import scoringRouter from './routes/scoring.js';
@@ -15,11 +17,15 @@ import stripeRouter from './routes/stripe.js';
 import stripeStatusRouter from './routes/stripeStatus.js';
 import notificationsRouter from './routes/notifications.js';
 import sttRouter from './routes/stt.js';
+import ssoRouter from './routes/sso.js';
+import customOntologyRouter from './routes/customOntology.js';
+import monitoringRouter from './routes/monitoring.js';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(cors());
+app.use(monitoringMiddleware);
 
 app.use('/api/stripe/webhook', express.raw({ type: 'application/json' }), stripeRouter);
 
@@ -40,8 +46,11 @@ app.get('/api/health', (req, res) => {
 app.use('/api/auth', authRouter);
 app.use('/api/i18n', i18nRouter);
 app.use('/api/stripe', stripeStatusRouter);
+app.use('/api/sso', ssoRouter);
+app.use('/api/monitoring', monitoringRouter);
 app.use(verifyToken);
 app.use('/api/ontology', ontologyRouter);
+app.use('/api/custom-ontology', customOntologyRouter);
 app.use('/api/aomd', aomdRouter);
 app.use('/api/scoring', scoringRouter);
 app.use('/api/stt', sttRouter);
@@ -70,6 +79,7 @@ async function startServer() {
   }
 
   app.use((err, req, res, next) => {
+    monitoringService.captureError(err, { path: req.path, method: req.method });
     console.error('Unhandled error:', err);
     res.status(500).json({ success: false, error: 'Internal server error' });
   });

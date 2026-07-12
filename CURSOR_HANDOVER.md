@@ -4,9 +4,9 @@
 
 **프로젝트명:** Pronunciation Master  
 **목적:** AI 기반 영어 발음 교정 및 상황별 동적 학습 앱  
-**현재 상태:** Phase 1–7 완료 (100% ✅)  
-**Phase 7:** 모바일 STT + Stripe live 검증 + CI/CD  
-**최종 커밋:** `fc62750` (Phase 7)  
+**현재 상태:** Phase 1–8 완료 (100% ✅)  
+**Phase 8:** Enterprise SSO + 맞춤 Ontology + 모니터링  
+**최종 커밋:** `fc62750` (Phase 7) → Phase 8 커밋 예정  
 **장기 전략:** `LONG_TERM_STRATEGY_ONTOLOGY_AOMD_SAAS.md` 참고
 
 ---
@@ -60,21 +60,27 @@
 - Part 4: 문서 — `CI_CD_GUIDE.md`, `PHASE7_CODE_LOOP_PROMPTS.md`
 - 최종 커밋: `fc62750`
 
+### Phase 8: Enterprise SSO + 맞춤 Ontology + 모니터링 (100% ✅)
+- Part 1: SSO — `ssoManager.js`, `/api/sso/*`, `sso_identities` DB
+- Part 2: 맞춤 Ontology — `/api/custom-ontology/*` (Enterprise 전용)
+- Part 3: 모니터링 — `monitoringService`, Sentry/Datadog 훅
+- Part 4: 문서 — `SSO_GUIDE.md`, `MONITORING_GUIDE.md`
+
 ---
 
-## Phase 7 진행 현황
+## Phase 8 진행 현황
 
 | Part | 내용 | 상태 |
 |------|------|------|
-| 1 | 모바일 STT (Whisper/mock) | ✅ |
-| 2 | Stripe live 검증 API | ✅ |
-| 3 | GitHub Actions CI | ✅ |
+| 1 | Enterprise SSO | ✅ |
+| 2 | 맞춤 Ontology API | ✅ |
+| 3 | 모니터링 (Sentry/Datadog) | ✅ |
 | 4 | 문서 동기화 | ✅ |
 
-### Phase 8 예정 (향후)
-- Enterprise SSO
-- 맞춤형 Ontology API
-- 성능 모니터링 (Datadog/Sentry)
+### Phase 9 예정 (향후)
+- 팀/그룹 관리 UI
+- B2B API 키 발급
+- 글로벌 CDN 배포
 
 ---
 

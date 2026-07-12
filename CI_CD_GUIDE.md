@@ -9,16 +9,16 @@ GitHub Actions: `.github/workflows/ci.yml`
 | Trigger | `main` push / PR |
 | Services | PostgreSQL 16 |
 | Build | `frontend` npm build |
-| Test | `scripts/test-phase7.sh` smoke test |
+| Test | `scripts/test-phase8.sh` smoke test |
 
 ## 로컬 테스트
 
 ```bash
 # Docker dev 환경 실행 후
-bash scripts/test-phase7.sh
+bash scripts/test-phase8.sh
 
 # 또는 API URL 지정
-API_URL=http://localhost:5000 bash scripts/test-phase7.sh
+API_URL=http://localhost:5000 bash scripts/test-phase8.sh
 ```
 
 ## 검증 항목
