@@ -22,6 +22,7 @@ import customOntologyRouter from './routes/customOntology.js';
 import monitoringRouter from './routes/monitoring.js';
 import teamsRouter from './routes/teams.js';
 import apiKeysRouter from './routes/apiKeys.js';
+import audioAnalysisRouter from './routes/audio-analysis.js';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -56,6 +57,7 @@ app.use('/api/custom-ontology', customOntologyRouter);
 app.use('/api/aomd', aomdRouter);
 app.use('/api/scoring', scoringRouter);
 app.use('/api/stt', sttRouter);
+app.use('/api/audio', audioAnalysisRouter);
 app.use('/api/subscription', subscriptionRouter);
 app.use('/api/analytics', analyticsRouter);
 app.use('/api/notifications', notificationsRouter);

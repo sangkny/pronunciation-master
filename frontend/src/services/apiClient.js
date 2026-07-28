@@ -119,6 +119,18 @@ class APIClient {
   async revokeApiKey(keyId) {
     return this.delete(`/api/api-keys/${keyId}`);
   }
+
+  async analyzeAudio(payload) {
+    return this.post('/api/audio/analyze', payload);
+  }
+
+  async transcribeAudioGemma(payload) {
+    return this.post('/api/audio/transcribe', payload);
+  }
+
+  async getAudioStatus() {
+    return this.get('/api/audio/status');
+  }
 }
 
 const apiClient = new APIClient();

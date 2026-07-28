@@ -4,6 +4,7 @@ import apiClient from '../services/apiClient.js';
 import aomdService from '../services/aomdService.js';
 import sttService from '../services/sttService.js';
 import AOMDFeedbackPanel from './AOMDFeedbackPanel.jsx';
+import PronunciationMissionWithGemma from './PronunciationMissionWithGemma.jsx';
 
 export default function PronunciationMission({
   mission,
@@ -256,6 +257,15 @@ export default function PronunciationMission({
             onUpgrade={onUpgrade}
           />
         )}
+
+        <PronunciationMissionWithGemma
+          word={mission.focusPoints[0] || 'word'}
+          correctPronunciation={
+            conceptDetail?.vocabulary?.find(v => v.word === mission.focusPoints[0])?.pronunciation
+            || mission.focusPoints[0]
+          }
+          userLevel={userLevel}
+        />
       </div>
 
       <div className="flex gap-3">
