@@ -4,9 +4,10 @@
 
 **프로젝트명:** Pronunciation Master  
 **목적:** AI 기반 영어 발음 교정 및 상황별 동적 학습 앱  
-**현재 상태:** Phase 1–9 완료 (100% ✅)  
+**현재 상태:** Phase 1–9 완료 (100% ✅), Phase 10 Part 1-D 골격 구축 (⚠️)  
 **Phase 9:** 팀 관리 + B2B API 키 + CDN + Book Chapter  
-**최종 커밋:** `4a4e4ba` (Phase 9)  
+**Phase 10 Part 1-D:** Gemma 4 오디오 + WebGPU (골격 구축, 네이티브 오디오 미연동)  
+**최종 커밋:** `97d7c81` (Phase 10 Part 1-D)  
 **장기 전략:** `LONG_TERM_STRATEGY_ONTOLOGY_AOMD_SAAS.md` 참고  
 **Book:** `book/README.md` (Ch0–12)
 
@@ -86,10 +87,123 @@
 | 3 | 글로벌 CDN | ✅ |
 | 4 | Book Chapter + 문서 | ✅ |
 
-### Phase 10 예정 (향후)
-- Cloud CDN 실연동 (CloudFront/Cloudflare)
-- API Rate limit & 사용량 과금
-- Kubernetes 배포 옵션
+## Phase 10 진행 현황
+
+| Part | 내용 | 상태 | 커밋 |
+|------|------|------|------|
+| **1-D** | **Gemma 4 오디오 + WebGPU** | **⚠️ 골격 구축** | **97d7c81** |
+| 2 | Rate Limiting (Redis) | 🔲 예정 | — |
+| 3 | Kubernetes (K8s + Helm) | 🔲 예정 | — |
+| 4 | Monitoring (Prometheus + Grafana) | 🔲 예정 | — |
+
+> **중요:** Part 1-D는 UI·API·폴백 파이프라인은 구현됐지만, Gemma 4 **네이티브 오디오 인코더**는 아직 연동되지 않았습니다. "100% 완료"가 아닌 **골격 구축** 상태입니다.
+
+### Part 1-D 구현 상태 (정확한 진단)
+
+**Gemma 4 공식 스펙 (Google AI for Developers)**
+- ✅ 모델에는 오디오 지원 추가됨 (E2B/E4B/12B)
+- ✅ 오디오 인코더: ~305M Conformer
+- ✅ 지원 형식: 16kHz WAV, 최대 30초
+- ✅ 타입: 텍스트 + 이미지 + 오디오 (멀티모달)
+
+**이 프로젝트 구현 현황**
+
+| 기능 | 계획 | 실제 | 상태 |
+|------|------|------|------|
+| Backend 오디오 처리 | 음성 → Gemma 4 분석 | 오디오를 텍스트 메타데이터로만 전달 | ⚠️ 미완성 |
+| WebGPU 브라우저 | Gemma 4 E4B 네이티브 | 스펙트로그램 우회 (이미지 변환) | ⚠️ 미완성 |
+| 텍스트 + 이미지 | 기본 지원 | `gemma4AudioService.js` 구현 | ✅ 동작 |
+| 음성 → 텍스트 (ASR) | Gemma 4 네이티브 | Whisper STT 폴백 | ⚠️ 폴백 사용 중 |
+| 전체 파이프라인 | 음성 입력 → AOMD 피드백 | UI 골격 + 텍스트 기반 분석 | ⚠️ 부분 구현 |
+
+**왜 "완전 연동"이 아닌가?**
+
+1. **Backend (LMStudio)**
+   - 문제: LMStudio가 `input_audio` 타입 지원 안 함
+   - 현재: 오디오를 텍스트 메타데이터 `[Audio data provided: XXkB]`로만 전송
+   - `gemma4AudioService.js` lines 9-33에서 `input_audio` 제거됨
+   - 결과: Gemma 4의 오디오 인코더를 사용하지 않음 (이미지 + 텍스트만)
+
+2. **WebGPU (브라우저)**
+   - 계획: Gemma 4 E4B ONNX의 native 오디오 인코더 사용
+   - 실제: 음성 → 스펙트로그램 (이미지) → vit-gpt2 / gemma-3-2b로 우회
+   - 문제: `onnx-community/gemma-4-E4B-it-ONNX`에 오디오 입력 파이프라인 미통합
+   - 결과: Transformers.js에서 native multimodal 지원 부족
+
+3. **STT 대체 경로**
+   - 오디오 → Whisper/mock 텍스트 변환 (기존 방식)
+   - Gemma 4 E4B의 ASR 기능 미사용
+
+**현재 실제 동작**
+- ✅ 음성 녹음 (16kHz, 10초)
+- ✅ WebGPU: 스펙트로그램 생성 후 image-to-text 추론 (2-3초)
+- ✅ Backend: 오디오 데이터 수신 → 텍스트 기반 Gemma 4 분석 (5-10초)
+- ✅ 폴백: Whisper STT / Mock
+- ⚠️ Gemma 4의 **네이티브 오디오 인코더** 사용 안 함
+
+**코드 근거**
+
+```javascript
+// gemma4AudioService.js (lines 9-33)
+// input_audio 타입은 제거됨 (LMStudio 미지원)
+${audioBase64 ? `[Audio data provided: ${Math.round(audioBase64.length / 1024)}KB base64 WAV]` : ''}
+// 실제 전송되는 것: text + image_url만 (오디오 바이트 X)
+```
+
+**관련 파일**
+- `GEMMA4_AUDIO_IMPLEMENTATION.md` — 아키텍처·API 명세
+- `backend/src/services/gemma4AudioService.js` — LMStudio 멀티모달 (텍스트+이미지)
+- `backend/src/routes/audio-analysis.js` — `/api/audio/*`
+- `frontend/src/services/audioService.js` — WebGPU + 백엔드 폴백
+- `frontend/src/components/PronunciationMissionWithGemma.jsx` — Gemma 4 UI
+- `scripts/test-gemma4-audio.sh` — 통합 테스트
+
+### 남은 작업 (Phase 10)
+
+**현재 진행 중**
+- [ ] Part 2: Rate Limiting (Redis) — 다음 작업
+- [ ] Part 3: Kubernetes (K8s Manifest + Helm)
+- [ ] Part 4: Monitoring (Prometheus + Grafana)
+
+**Part 1-D 후속 작업 (선택사항)**
+
+"Gemma 4 오디오 완전 연동"을 위해 필요한 작업:
+
+1. **Backend Gemma 4 오디오 지원 버전 확인**
+   - LMStudio 업그레이드 (`input_audio` 타입 지원 여부)
+   - 또는 vLLM / HuggingFace Inference Server로 대체
+   - 또는 Google Generative AI (공식 Gemma 4 API)에서 오디오 지원 확인
+
+2. **WebGPU 오디오 인코더 통합**
+   - Gemma 4 E4B + 오디오 인코더 (Conformer) ONNX 모델 통합
+   - `google/gemma-4-E4B-it-ONNX`에서 native multimodal 파이프라인 지원 여부 확인
+   - Transformers.js v4.1+ 오디오 파이프라인 업데이트 대기
+
+3. **Mel-Spectrogram 표준 형식 연동**
+   - Gemma 4 공식 mel-spectrogram 토큰 형식으로 오디오 인코딩
+   - WAV/MP3 → mel-spec → Gemma 4 토큰 변환
+
+4. **테스트 및 벤치마크**
+   - 현재 (텍스트 + 이미지): 정확도·응답 시간 측정 필요
+   - 예상 (native 오디오): 정확도 개선, 응답 시간 단축 예상
+
+**우선순위**
+1. ✅ Part 2, 3, 4 완료 (프로덕션 기본 기능)
+2. 🔲 Part 1-D 후속: Gemma 4 완전 연동 (고급 기능)
+
+### 기술 스택 (Part 1-D)
+
+**구현됨**
+- Frontend: Transformers.js (gemma-3-2b/vit-gpt2) + WebGPU + Vite
+- Backend: LMStudio Gemma 4 E4B (텍스트 + 이미지)
+- 음성: WAV 16kHz, 스펙트로그램 변환
+- 폴백: 3단계 (WebGPU 이미지 → Backend 텍스트 → Whisper STT)
+
+**미완성 (Gemma 4 완전 연동 대기)**
+- Gemma 4 E4B native 오디오 입력 (모델 지원 O, 프레임워크 미준비)
+- Backend: `input_audio` 타입 (LMStudio 미지원, 대체 필요)
+- WebGPU: Gemma 4 E4B 오디오 인코더 ONNX (파이프라인 미통합)
+- 음성 → 텍스트 (ASR): Gemma 4 네이티브 미사용
 
 ---
 
@@ -128,11 +242,12 @@
 ---
 
 ## 마지막 업데이트
-- **날짜:** 2026-07-12
-- **상태:** 전체 기능 100% 완료 (Phase 1–3)
+- **날짜:** 2026-07-28
+- **상태:** Phase 1–9 완료, Phase 10 Part 1-D 골격 구축 (Gemma 4 네이티브 오디오 미연동)
+- **최종 커밋:** `97d7c81`
 - **브랜치:** `main`
 - **Docker:** postgres:5432, backend:5000, frontend:5173 (LMStudio는 호스트:1234)
-- **테스트:** docker compose 정상 작동, API/DB/Frontend 검증 완료
+- **테스트:** `scripts/test-gemma4-audio.sh` — LMStudio 텍스트 분석 OK, `input_audio` 미지원 확인
 
 ---
 
@@ -593,4 +708,4 @@ Phase 4 시작 전:
 **Cursor와 함께 효율적으로 개발하세요! 🚀**
 
 이 문서는 지속적으로 업데이트됩니다.
-마지막 업데이트: 2026-07-12 (Phase 1–3 전체 100% ✅ 완료, 커밋 cacba9d)
+마지막 업데이트: 2026-07-28 (Phase 10 Part 1-D 골격 구축 ⚠️, 커밋 97d7c81)
