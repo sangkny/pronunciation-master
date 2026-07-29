@@ -13,7 +13,7 @@ const DOMAINS = [
   { id: 'automotive', name: 'Automotive', emoji: '🚗' },
 ];
 
-export default function HomeScreen({ user, onLogout, onSelectDomain }) {
+export default function HomeScreen({ user, onLogout, navigation }) {
   const [dashboard, setDashboard] = useState(null);
   const [greeting, setGreeting] = useState('');
   const [loading, setLoading] = useState(true);
@@ -37,7 +37,7 @@ export default function HomeScreen({ user, onLogout, onSelectDomain }) {
   const handleLogout = async () => {
     await AsyncStorage.removeItem('pm_token');
     api.setToken(null);
-    onLogout();
+    onLogout?.();
   };
 
   if (loading) {
@@ -78,13 +78,33 @@ export default function HomeScreen({ user, onLogout, onSelectDomain }) {
         <TouchableOpacity
           key={d.id}
           style={styles.domainCard}
-          onPress={() => onSelectDomain?.(d)}
+          onPress={() => navigation.navigate('Mission', { domain: d })}
         >
           <Text style={styles.domainEmoji}>{d.emoji}</Text>
           <Text style={styles.domainName}>{d.name}</Text>
-          <Text style={styles.comingSoon}>Practice →</Text>
+          <Text style={styles.comingSoon}>STT Practice →</Text>
         </TouchableOpacity>
       ))}
+
+      <Text style={styles.sectionTitle}>Gemma 4 Native Audio</Text>
+      <TouchableOpacity
+        style={styles.gemmaCard}
+        onPress={() => navigation.navigate('GemmaAudio', { domain: DOMAINS[0] })}
+      >
+        <Text style={styles.domainEmoji}>🤖</Text>
+        <View style={{ flex: 1 }}>
+          <Text style={styles.domainName}>Native Audio Analysis</Text>
+          <Text style={styles.gemmaSub}>vLLM input_audio + Whisper fallback</Text>
+        </View>
+        <Text style={styles.comingSoon}>Try →</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={styles.profileLink}
+        onPress={() => navigation.navigate('Profile')}
+      >
+        <Text style={styles.profileText}>👤 Profile & Server Status</Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 }
@@ -107,4 +127,8 @@ const styles = StyleSheet.create({
   domainEmoji: { fontSize: 28, marginRight: 12 },
   domainName: { flex: 1, fontSize: 16, fontWeight: '600', color: '#e2e8f0' },
   comingSoon: { fontSize: 12, color: '#7c3aed' },
+  gemmaCard: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#312e81', borderRadius: 12, padding: 16, marginBottom: 10, borderWidth: 1, borderColor: '#7c3aed' },
+  gemmaSub: { fontSize: 12, color: '#94a3b8', marginTop: 2 },
+  profileLink: { marginTop: 24, padding: 16, alignItems: 'center' },
+  profileText: { color: '#c084fc', fontSize: 16 },
 });

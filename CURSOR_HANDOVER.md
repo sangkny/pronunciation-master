@@ -5,6 +5,47 @@
 **프로젝트명:** Pronunciation Master  
 **목적:** AI 기반 영어 발음 교정 및 상황별 동적 학습 앱  
 
+---
+
+## 🔄 현재 진행 현황 (최신 — **매 Handover 갱신**)
+
+> **이 섹션(§1)에 항상 “지금 어디까지”를 기록합니다.**
+
+| 항목 | 값 |
+|------|-----|
+| **현재 Phase** | **Phase 11 — 모바일 앱 (Expo)** |
+| **진행 Part** | **11-1: Expo + Navigation + Native Audio** ✅ |
+| **직전 완료** | Phase 10 100% — Part 1-D Native Audio E2E (`4a4d7d1`) |
+| **Handover 커밋** | `914aff8` (Part 1-D handover) |
+| **브랜치** | `origin/main` |
+| **다음 작업** | Part 11-2: 녹음 UX + WAV 16kHz — `PHASE11_CODE_LOOP_PROMPTS.md` |
+
+### Phase 11 진행률
+
+| Part | 내용 | 상태 |
+|------|------|------|
+| **11-1** | Expo + React Navigation + GemmaAudioScreen | **✅ 완료** |
+| 11-2 | 녹음 UX (타이머, replay, WAV) | 🔲 |
+| 11-3 | API + Zustand 상태관리 | 🔲 |
+| 11-4 | 오프라인 캐시 (WatermelonDB) | 🔲 |
+| 11-5 | FCM 푸시 | 🔲 |
+| 11-6 | App Store / Play Store | 🔲 |
+
+### Phase 11-1 이번 세션 산출물
+
+- ✅ `mobile/src/navigation/AppNavigator.js` — Native Stack
+- ✅ `mobile/src/screens/GemmaAudioScreen.js` — `/api/audio/analyze-native`
+- ✅ `mobile/src/screens/ProfileScreen.js` — 구독 + 서버 audio info
+- ✅ `mobile/src/services/audioService.js` — native audio 클라이언트
+- ✅ `PHASE11_CODE_LOOP_PROMPTS.md` — Part 11-1~11-6 Cursor 프롬프트
+- ✅ `PHASE11_START_NOW.md` — 시작 가이드
+- ✅ `scripts/test-phase11.sh` — smoke test
+- ✅ `book/14_PHASE11_MOBILE_APP.md` — Book Ch14
+
+**실행:** `cd mobile && npm install && npx expo start`
+
+---
+
 **Phase 10: 프로덕션 SaaS 완성** ✅
 ```
 ├─ Part 1-D: ✅ 완전 연동 (Gemma 4 Native Audio E2E) — 4a4d7d1
@@ -13,10 +54,8 @@
 └─ Part 4:   ✅ Prometheus + Grafana — 251681d
 ```
 
-**최신 커밋:** `4a4d7d1` (Part 1-D Native Audio E2E) | **브랜치:** `origin/main`  
-**다음:** Phase 11 — `PHASE11_ROADMAP.md`  
 **장기 전략:** `LONG_TERM_STRATEGY_ONTOLOGY_AOMD_SAAS.md`  
-**Book:** `book/README.md` (Ch0–13)
+**Book:** `book/README.md` (Ch0–14)
 
 ---
 
@@ -104,6 +143,19 @@
 | **4** | **Monitoring (Prometheus + Grafana)** | **✅ 완료** | **251681d** |
 
 > **Phase 10 전체 완료:** Part 1-D Native Audio E2E + Part 2–4 프로덕션 SaaS 인프라. 전체 아키텍처 완성.
+
+## Phase 11 진행 현황
+
+| Part | 내용 | 상태 | 비고 |
+|------|------|------|------|
+| **11-1** | **Expo + Navigation + Native Audio** | **✅ 완료** | `mobile/` |
+| 11-2 | 녹음 UX + WAV 16kHz | 🔲 | |
+| 11-3 | Zustand + API interceptors | 🔲 | |
+| 11-4 | 오프라인 캐시 | 🔲 | |
+| 11-5 | FCM 푸시 | 🔲 | |
+| 11-6 | 스토어 배포 | 🔲 | |
+
+> **프롬프트:** `PHASE11_CODE_LOOP_PROMPTS.md` | **시작:** `PHASE11_START_NOW.md` | **Book:** Ch14
 
 ## Phase 10 최종 현황
 
@@ -210,13 +262,15 @@
 - [x] Part 2–4: Rate Limiting, K8s, Monitoring
 - [x] 문서: `PHASE10_FINAL_SUMMARY.md`, `GEMMA4_NATIVE_AUDIO_IMPLEMENTATION.md`, Book Ch13
 
-**Phase 11 — 다음**
-- [ ] 모바일 앱 고도화 — `PHASE11_ROADMAP.md`
-- [ ] Book Ch14 (Phase 11 완료 시)
+**Phase 11 — 진행 중 (Part 11-1)**
+- [x] React Navigation + GemmaAudioScreen + ProfileScreen
+- [ ] Part 11-2~11-6 — `PHASE11_ROADMAP.md`
+- [ ] Book Ch14 완료 시 Ch12·Handover 동기화
 
 **우선순위**
-1. 🔲 Phase 11: 모바일 앱 (`PHASE11_ROADMAP.md`)
-2. 🔲 Phase 14: 공식 Gemma 4 Conformer ONNX (Transformers.js v4.1+)
+1. 🚀 Phase 11: 모바일 앱 (`PHASE11_CODE_LOOP_PROMPTS.md`)
+2. 🔲 Phase 12: 고급 분석
+3. 🔲 Phase 14: Advanced STT/TTS
 
 ### 기술 스택 (Part 1-D)
 
@@ -268,12 +322,12 @@
 
 ## 마지막 업데이트
 - **날짜:** 2026-07-29
-- **상태:** Phase 1–10 **100% 완료** — Part 1-D Native Audio E2E 완전 연동
-- **최종 커밋:** `4a4d7d1`
+- **상태:** Phase 10 **100% 완료** | Phase 11 Part 11-1 **✅ 완료**
+- **현재 작업:** Part 11-2 준비 (녹음 UX + WAV)
+- **Handover 커밋:** `914aff8` (Part 1-D) → Phase 11 커밋 예정
 - **브랜치:** `main`
-- **Docker:** postgres:5432, backend:5000, frontend:5173, prometheus:9090, grafana:3000
-- **Native Audio:** vLLM optional (`--profile vllm`), Whisper fallback
-- **테스트:** `scripts/test-gemma4-native-audio.sh` — E2E native audio + fallback
+- **Mobile:** `cd mobile && npx expo start`
+- **테스트:** `scripts/test-phase11.sh`
 
 ---
 
@@ -734,4 +788,4 @@ Phase 4 시작 전:
 **Cursor와 함께 효율적으로 개발하세요! 🚀**
 
 이 문서는 지속적으로 업데이트됩니다.
-마지막 업데이트: 2026-07-29 (Phase 10 **100% 완료**, Part 1-D Native Audio E2E, 커밋 4a4d7d1)
+마지막 업데이트: 2026-07-29 (Phase 11 Part 11-1 시작 — Expo + Native Audio Mobile)

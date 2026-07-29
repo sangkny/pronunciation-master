@@ -1,31 +1,34 @@
 # Phase 11–15 로드맵
 
 **기준일:** 2026-07-29  
-**전제:** Phase 10 Part 2–4 완료 (프로덕션 SaaS 인프라), Part 1-D Gemma 4 오디오 미완성
+**전제:** Phase 10 **100% 완료** (Part 1-D Native Audio E2E `4a4d7d1`, Handover `914aff8`)
 
 ---
 
-## Phase 11: 모바일 앱 (React Native + Expo)
+## Phase 11: 모바일 앱 (React Native + Expo) 🚀
 
-**목표:** iOS/Android 네이티브 앱 출시
+**목표:** iOS/Android 네이티브 앱 출시  
+**상태:** Part 11-1 ✅ 완료 → Part 11-2 다음
 
 **구현:**
-- Expo 프로젝트 고도화 (`mobile/` 기존 스캐폴드 확장)
-- 발음 녹음 + AOMD 피드백 UI
+- Expo 프로젝트 고도화 (`mobile/` — Phase 5–6 스캐폴드 확장)
+- React Navigation + Gemma 4 Native Audio 모바일
 - Backend API 연동 (JWT + 오프라인 큐)
 - 오프라인 모드 (로컬 SQLite/WatermelonDB)
 - 푸시 알림 (Firebase Cloud Messaging)
 - App Store / Play Store 배포
 
 **세부 파트:**
-| Part | 내용 |
-|------|------|
-| 11-1 | Expo 프로젝트 + 기본 UI |
-| 11-2 | 음성 녹음 (expo-av 확장) |
-| 11-3 | API 연동 (axios + 상태관리) |
-| 11-4 | 오프라인 캐시 |
-| 11-5 | 푸시 알림 (FCM) |
-| 11-6 | 스토어 배포 |
+| Part | 내용 | 상태 |
+|------|------|------|
+| **11-1** | Expo + Navigation + GemmaAudioScreen | **✅ 완료** |
+| 11-2 | 음성 녹음 UX (expo-av 확장) | 🔲 |
+| 11-3 | API 연동 (axios + 상태관리) | 🔲 |
+| 11-4 | 오프라인 캐시 | 🔲 |
+| 11-5 | 푸시 알림 (FCM) | 🔲 |
+| 11-6 | 스토어 배포 | 🔲 |
+
+**Cursor:** `PHASE11_CODE_LOOP_PROMPTS.md` | **시작:** `PHASE11_START_NOW.md`
 
 | 항목 | 값 |
 |------|-----|
@@ -125,7 +128,7 @@
    ↓ B2B 가치
 
 3️⃣ Phase 14 (Advanced STT/TTS) — 3–4주
-   ↓ 핵심 경쟁력 (+ Part 1-D 완전 연동)
+   ↓ 핵심 경쟁력 (Gemma 4 Conformer ONNX v4.1+)
 
 4️⃣ Phase 13 (국제화) — 2–3주
    ↓ 시장 확대

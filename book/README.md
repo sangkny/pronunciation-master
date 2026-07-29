@@ -3,8 +3,8 @@
 AI 기반 영어 발음 교정 SaaS를 **Phase 1부터 Phase 10**까지 구축한 실전 기록.
 
 **기준 문서:** `LONG_TERM_STRATEGY_ONTOLOGY_AOMD_SAAS.md`  
-**최종 Phase:** 10 Part 2–4 완료 (프로덕션 인프라) | Part 1-D Gemma 4 ⚠️  
-**다음:** Phase 11 — `PHASE11_ROADMAP.md`
+**최종 Phase:** 10 **100% 완료** | **현재:** Phase 11 Part 11-1 🚀  
+**다음:** `PHASE11_CODE_LOOP_PROMPTS.md`
 
 ---
 
@@ -42,11 +42,12 @@ AI 기반 영어 발음 교정 SaaS를 **Phase 1부터 Phase 10**까지 구축�
 |----|------|------|------|
 | 13 | [13_PHASE10_PRODUCTION_SAAS.md](./13_PHASE10_PRODUCTION_SAAS.md) | Redis · K8s · Prometheus/Grafana | 251681d |
 
-### Part 6: 회고 & 미래
+### Part 6: Phase 11+ & 회고
 | Ch | 파일 | 내용 | 커밋 |
 |----|------|------|------|
 | 11 | [11_LESSONS_LEARNED.md](./11_LESSONS_LEARNED.md) | 배운 점 & 최적화 | — |
 | 12 | [12_FUTURE_ROADMAP.md](./12_FUTURE_ROADMAP.md) | Phase 11–15 계획 | — |
+| 14 | [14_PHASE11_MOBILE_APP.md](./14_PHASE11_MOBILE_APP.md) | Expo 모바일 앱 | 🚀 |
 
 ---
 
@@ -61,8 +62,9 @@ AI 기반 영어 발음 교정 SaaS를 **Phase 1부터 Phase 10**까지 구축�
 3. Ch6–8: Ontology/AOMD/SaaS 심화
 4. Ch9–10: 확장 & Enterprise
 5. Ch13: Phase 10 프로덕션 인프라
-6. Ch11–12: 회고 & Phase 11+ 로드맵
+6. Ch14: Phase 11 모바일 앱
+7. Ch11–12: 회고 & 로드맵
 
 ---
 
-Generated: 2026-07-29 | Book README (Ch0–13)
+Generated: 2026-07-29 | Book README (Ch0–14)

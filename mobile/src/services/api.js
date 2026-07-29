@@ -84,4 +84,19 @@ export async function getSttStatus() {
   return request('/api/stt/status');
 }
 
+export async function getAudioInfo() {
+  return request('/api/audio/info');
+}
+
+export async function analyzeNativeAudio(payload) {
+  return request('/api/audio/analyze-native', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function getSubscriptionStatus() {
+  return request('/api/subscription/status');
+}
+
 export { API_URL };

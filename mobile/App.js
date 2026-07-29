@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { StatusBar } from 'expo-status-bar';
+import { View, ActivityIndicator, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import LoginScreen from './src/screens/LoginScreen';
-import HomeScreen from './src/screens/HomeScreen';
-import MissionScreen from './src/screens/MissionScreen';
+import AppNavigator from './src/navigation/AppNavigator';
 import * as api from './src/services/api';
 import * as notificationService from './src/services/notificationService';
+import { colors } from './src/constants/theme';
 
 export default function App() {
   const [user, setUser] = useState(null);
   const [booting, setBooting] = useState(true);
-  const [selectedDomain, setSelectedDomain] = useState(null);
 
   useEffect(() => {
     AsyncStorage.getItem('pm_token').then((token) => {
@@ -24,31 +22,27 @@ export default function App() {
     });
   }, []);
 
-  if (booting) return null;
+  const handleLogin = (u) => {
+    setUser(u);
+    notificationService.registerForPushNotifications().catch(() => {});
+    notificationService.scheduleDailyReminder(9, 0).catch(() => {});
+  };
+
+  const handleLogout = () => setUser(null);
+
+  if (booting) {
+    return (
+      <View style={styles.boot}>
+        <ActivityIndicator size="large" color={colors.primary} />
+      </View>
+    );
+  }
 
   return (
-    <>
-      <StatusBar style="light" />
-      {user ? (
-        selectedDomain ? (
-          <MissionScreen
-            domain={selectedDomain}
-            onBack={() => setSelectedDomain(null)}
-          />
-        ) : (
-          <HomeScreen
-            user={user}
-            onLogout={() => setUser(null)}
-            onSelectDomain={setSelectedDomain}
-          />
-        )
-      ) : (
-        <LoginScreen onLogin={(u) => {
-          setUser(u);
-          notificationService.registerForPushNotifications().catch(() => {});
-          notificationService.scheduleDailyReminder(9, 0).catch(() => {});
-        }} />
-      )}
-    </>
+    <AppNavigator user={user} onLogin={handleLogin} onLogout={handleLogout} />
   );
 }
+
+const styles = StyleSheet.create({
+  boot: { flex: 1, backgroundColor: colors.background, justifyContent: 'center', alignItems: 'center' },
+});

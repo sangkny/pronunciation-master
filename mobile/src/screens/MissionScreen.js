@@ -6,7 +6,8 @@ import * as recordingService from '../services/recordingService';
 import * as sttService from '../services/sttService';
 import * as api from '../services/api';
 
-export default function MissionScreen({ domain, onBack }) {
+export default function MissionScreen({ route, navigation }) {
+  const domain = route.params?.domain;
   const [recording, setRecording] = useState(false);
   const [processing, setProcessing] = useState(false);
   const [result, setResult] = useState(null);
@@ -63,7 +64,7 @@ export default function MissionScreen({ domain, onBack }) {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <TouchableOpacity onPress={onBack} style={styles.backBtn}>
+      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
         <Text style={styles.backText}>← Back</Text>
       </TouchableOpacity>
 
