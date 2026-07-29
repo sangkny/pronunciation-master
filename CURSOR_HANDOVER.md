@@ -16,7 +16,7 @@
 | **현재 Phase** | **Phase 11 — 모바일 앱 (Expo)** |
 | **진행 Part** | **11-1: Expo + Navigation + Native Audio** ✅ |
 | **직전 완료** | Phase 10 100% — Part 1-D Native Audio E2E (`4a4d7d1`) |
-| **Handover 커밋** | `914aff8` (Part 1-D handover) |
+| **Handover 커밋** | `ed89ca5` (Phase 11 Part 11-1) |
 | **브랜치** | `origin/main` |
 | **다음 작업** | Part 11-2: 녹음 UX + WAV 16kHz — `PHASE11_CODE_LOOP_PROMPTS.md` |
 
@@ -324,7 +324,7 @@
 - **날짜:** 2026-07-29
 - **상태:** Phase 10 **100% 완료** | Phase 11 Part 11-1 **✅ 완료**
 - **현재 작업:** Part 11-2 준비 (녹음 UX + WAV)
-- **Handover 커밋:** `914aff8` (Part 1-D) → Phase 11 커밋 예정
+- **Handover 커밋:** `ed89ca5` (Phase 11 Part 11-1)
 - **브랜치:** `main`
 - **Mobile:** `cd mobile && npx expo start`
 - **테스트:** `scripts/test-phase11.sh`
