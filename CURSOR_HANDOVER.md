@@ -13,7 +13,7 @@
 └─ Part 4:   ✅ Prometheus + Grafana — 251681d
 ```
 
-**최신 커밋:** `251681d` (Phase 10 Part 3–4) | **브랜치:** `origin/main`  
+**최신 커밋:** `20984b5` (Phase 10 정리 + Phase 11 로드맵) | **브랜치:** `origin/main`  
 **다음:** Phase 11 — `PHASE11_ROADMAP.md`  
 **장기 전략:** `LONG_TERM_STRATEGY_ONTOLOGY_AOMD_SAAS.md`  
 **Book:** `book/README.md` (Ch0–13)
