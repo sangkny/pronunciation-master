@@ -4,10 +4,10 @@
 
 **프로젝트명:** Pronunciation Master  
 **목적:** AI 기반 영어 발음 교정 및 상황별 동적 학습 앱  
-**현재 상태:** Phase 1–9 완료 (100% ✅), Phase 10 Part 1-D 골격 구축 (⚠️)  
+**현재 상태:** Phase 1–9 완료 (100% ✅), Phase 10 Part 1-D 골격 구축 (⚠️), Part 2 Rate Limiting (✅)  
 **Phase 9:** 팀 관리 + B2B API 키 + CDN + Book Chapter  
-**Phase 10 Part 1-D:** Gemma 4 오디오 + WebGPU (골격 구축, 네이티브 오디오 미연동)  
-**최종 커밋:** `97d7c81` (Phase 10 Part 1-D)  
+**Phase 10 Part 2:** Redis API Rate Limiting (Tier별 + IP)  
+**최종 커밋:** Phase 10 Part 2 (Rate Limiting)
 **장기 전략:** `LONG_TERM_STRATEGY_ONTOLOGY_AOMD_SAAS.md` 참고  
 **Book:** `book/README.md` (Ch0–12)
 
@@ -92,7 +92,7 @@
 | Part | 내용 | 상태 | 커밋 |
 |------|------|------|------|
 | **1-D** | **Gemma 4 오디오 + WebGPU** | **⚠️ 골격 구축** | **97d7c81** |
-| 2 | Rate Limiting (Redis) | 🔲 예정 | — |
+| **2** | **Rate Limiting (Redis)** | **✅ 완료** | — |
 | 3 | Kubernetes (K8s + Helm) | 🔲 예정 | — |
 | 4 | Monitoring (Prometheus + Grafana) | 🔲 예정 | — |
 
@@ -161,8 +161,8 @@ ${audioBase64 ? `[Audio data provided: ${Math.round(audioBase64.length / 1024)}K
 ### 남은 작업 (Phase 10)
 
 **현재 진행 중**
-- [ ] Part 2: Rate Limiting (Redis) — 다음 작업
-- [ ] Part 3: Kubernetes (K8s Manifest + Helm)
+- [x] Part 2: Rate Limiting (Redis) — `RATE_LIMITING_STRATEGY.md`, `scripts/test-rate-limit.sh`
+- [ ] Part 3: Kubernetes (K8s Manifest + Helm) — 다음 작업
 - [ ] Part 4: Monitoring (Prometheus + Grafana)
 
 **Part 1-D 후속 작업 (선택사항)**

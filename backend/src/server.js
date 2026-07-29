@@ -6,6 +6,8 @@ import { dbManager } from './services/dbManager.js';
 import { monitoringService } from './services/monitoringService.js';
 import { verifyToken } from './middleware/authMiddleware.js';
 import { monitoringMiddleware } from './middleware/monitoringMiddleware.js';
+import { tierRateLimiter } from './middleware/tierRateLimiter.js';
+import { initRateLimitRedis } from './middleware/rateLimitMiddleware.js';
 import ontologyRouter from './routes/ontology.js';
 import aomdRouter from './routes/aomd.js';
 import scoringRouter from './routes/scoring.js';
@@ -46,12 +48,14 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+app.use(verifyToken);
+app.use('/api', tierRateLimiter);
+
 app.use('/api/auth', authRouter);
 app.use('/api/i18n', i18nRouter);
 app.use('/api/stripe', stripeStatusRouter);
 app.use('/api/sso', ssoRouter);
 app.use('/api/monitoring', monitoringRouter);
-app.use(verifyToken);
 app.use('/api/ontology', ontologyRouter);
 app.use('/api/custom-ontology', customOntologyRouter);
 app.use('/api/aomd', aomdRouter);
@@ -79,6 +83,7 @@ app.post('/api/mission/generate-by-scenario', async (req, res) => {
 async function startServer() {
   try {
     await dbManager.initializeDatabase();
+    await initRateLimitRedis();
   } catch (error) {
     console.error('Database initialization failed:', error.message);
     process.exit(1);
