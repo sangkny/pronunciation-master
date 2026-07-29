@@ -26,6 +26,7 @@ import monitoringRouter from './routes/monitoring.js';
 import teamsRouter from './routes/teams.js';
 import apiKeysRouter from './routes/apiKeys.js';
 import audioAnalysisRouter from './routes/audio-analysis.js';
+import { gemma4NativeAudioService } from './services/gemma4NativeAudioService.js';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -99,8 +100,16 @@ async function startServer() {
     res.status(500).json({ success: false, error: 'Internal server error' });
   });
 
-  app.listen(PORT, () => {
+  app.listen(PORT, async () => {
     console.log(`Server running on port ${PORT}`);
+    try {
+      const audioInfo = await gemma4NativeAudioService.getInfo();
+      console.log(
+        `Native audio: enabled=${audioInfo.enableAudio} vLLM=${audioInfo.vllm.available} whisper=${audioInfo.whisper.configured}`
+      );
+    } catch (err) {
+      console.warn('Native audio health check skipped:', err.message);
+    }
   });
 }
 

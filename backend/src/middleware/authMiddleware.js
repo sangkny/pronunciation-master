@@ -10,6 +10,7 @@ const PUBLIC_PATHS = [
   '/api/i18n',
   '/api/sso',
   '/api/monitoring',
+  '/api/audio/info',
   '/health',
   '/metrics',
 ];

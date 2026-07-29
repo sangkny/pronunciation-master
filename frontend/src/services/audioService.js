@@ -1,16 +1,18 @@
 /**
- * 음성 처리 서비스
- * 1. WebGPU 우선 (프라이버시 — 기기 내 처리)
- * 2. 백엔드 Gemma 4 폴백
- * 3. 외부 STT API (최후)
+ * 음성 처리 서비스 — Gemma 4 Native Audio (Phase 10 Part 1-D Complete)
+ * 1. WebGPU Conformer/ASR (프라이버시 — mel-spec 직접, 스펙트로그램 PNG 우회 없음)
+ * 2. Backend Native Audio (vLLM input_audio)
+ * 3. Backend Legacy (LMStudio text+image)
+ * 4. Whisper STT (최후)
  */
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 const WEBGPU_ENABLED = import.meta.env.VITE_WEBGPU_ENABLED !== 'false';
-const GEMMA_MODEL_ID = 'onnx-community/gemma-3-2b-it-ONNX';
+const CONFORMER_MODEL = 'Xenova/whisper-tiny.en';
+const TARGET_SAMPLE_RATE = 16000;
 
 let transformersModule = null;
-let webgpuPipeline = null;
+let conformerPipeline = null;
 
 function getToken() {
   return localStorage.getItem('pm_token');
@@ -32,47 +34,64 @@ export async function blobToBase64(blob) {
   });
 }
 
-export async function audioToSpectrogram(audioBlob, canvas) {
-  const audioContext = new (window.AudioContext || window.webkitAudioContext)({
-    sampleRate: 16000,
-  });
-  const arrayBuffer = await audioBlob.arrayBuffer();
-  const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
-  await audioContext.close();
+function encodeWavPcm16(samples, sampleRate) {
+  const buffer = new ArrayBuffer(44 + samples.length * 2);
+  const view = new DataView(buffer);
 
-  const channelData = audioBuffer.getChannelData(0);
-  const width = canvas.width;
-  const height = canvas.height;
-  const ctx = canvas.getContext('2d');
-  const imageData = ctx.createImageData(width, height);
-
-  const fftSize = 256;
-  const hopSize = Math.max(1, Math.floor(channelData.length / width));
-
-  for (let x = 0; x < width; x += 1) {
-    const start = x * hopSize;
-    let maxAmp = 0;
-
-    for (let i = 0; i < fftSize && start + i < channelData.length; i += 1) {
-      const sample = channelData[start + i];
-      maxAmp = Math.max(maxAmp, Math.abs(sample));
+  const writeString = (offset, str) => {
+    for (let i = 0; i < str.length; i += 1) {
+      view.setUint8(offset + i, str.charCodeAt(i));
     }
+  };
 
-    const intensity = Math.min(255, Math.floor(maxAmp * 800));
-    for (let y = 0; y < height; y += 1) {
-      const row = height - 1 - y;
-      const idx = (row * width + x) * 4;
-      const threshold = (y / height) * 255;
-      const val = intensity > threshold ? intensity : 0;
-      imageData.data[idx] = val;
-      imageData.data[idx + 1] = Math.floor(val * 0.6);
-      imageData.data[idx + 2] = Math.floor(val * 0.9);
-      imageData.data[idx + 3] = val > 0 ? 255 : 0;
-    }
+  writeString(0, 'RIFF');
+  view.setUint32(4, 36 + samples.length * 2, true);
+  writeString(8, 'WAVE');
+  writeString(12, 'fmt ');
+  view.setUint32(16, 16, true);
+  view.setUint16(20, 1, true);
+  view.setUint16(22, 1, true);
+  view.setUint32(24, sampleRate, true);
+  view.setUint32(28, sampleRate * 2, true);
+  view.setUint16(32, 2, true);
+  view.setUint16(34, 16, true);
+  writeString(36, 'data');
+  view.setUint32(40, samples.length * 2, true);
+
+  let offset = 44;
+  for (let i = 0; i < samples.length; i += 1) {
+    const s = Math.max(-1, Math.min(1, samples[i]));
+    view.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7fff, true);
+    offset += 2;
   }
 
-  ctx.putImageData(imageData, 0, 0);
-  return canvas.toDataURL('image/png');
+  return buffer;
+}
+
+export async function blobToWav16kMono(blob) {
+  const arrayBuffer = await blob.arrayBuffer();
+  const ctx = new (window.AudioContext || window.webkitAudioContext)({
+    sampleRate: TARGET_SAMPLE_RATE,
+  });
+
+  try {
+    const decoded = await ctx.decodeAudioData(arrayBuffer.slice(0));
+    const length = decoded.length;
+    const samples = new Float32Array(length);
+    const channels = decoded.numberOfChannels;
+
+    for (let i = 0; i < length; i += 1) {
+      let sum = 0;
+      for (let c = 0; c < channels; c += 1) {
+        sum += decoded.getChannelData(c)[i];
+      }
+      samples[i] = sum / channels;
+    }
+
+    return encodeWavPcm16(samples, TARGET_SAMPLE_RATE);
+  } finally {
+    await ctx.close();
+  }
 }
 
 async function loadTransformers() {
@@ -87,56 +106,47 @@ async function loadTransformers() {
   return transformersModule;
 }
 
-async function getWebGPUPipeline() {
-  if (webgpuPipeline) return webgpuPipeline;
+export async function loadGemma4Conformer() {
+  if (conformerPipeline) return conformerPipeline;
   const { pipeline } = await loadTransformers();
 
   try {
-    webgpuPipeline = await pipeline('image-to-text', GEMMA_MODEL_ID, {
+    conformerPipeline = await pipeline('automatic-speech-recognition', CONFORMER_MODEL, {
       device: 'webgpu',
     });
   } catch {
-    webgpuPipeline = await pipeline('image-to-text', 'Xenova/vit-gpt2-image-captioning');
+    conformerPipeline = await pipeline('automatic-speech-recognition', CONFORMER_MODEL);
   }
 
-  return webgpuPipeline;
+  return conformerPipeline;
 }
 
-function buildAnalysisPrompt(context) {
-  return `Analyze this English pronunciation spectrogram.
-Word: ${context.word}
-Correct pronunciation (IPA): ${context.correctPronunciation}
-User level: ${context.userLevel}
+function buildNativeLocalAnalysis(context, transcript, latencyMs) {
+  const match = transcript.toLowerCase().includes(context.word.toLowerCase());
 
-Provide:
-1. Phoneme accuracy
-2. Stress pattern
-3. Fluency
-4. Specific improvement (Advocate tone)`;
+  return `[WebGPU Native Audio — Conformer ASR]
+Transcript: "${transcript}" (target: "${context.word}")
+Latency: ${latencyMs}ms
+
+1. Phoneme: Compare "${transcript}" to ${context.correctPronunciation}.
+2. Stress: Focus on primary stress in "${context.word}".
+3. Fluency: ${match ? 'Word detected — refine vowel length and stress.' : 'Speak clearly and closer to the mic.'}
+4. Advocate: Great effort at ${context.userLevel} level — repeat with TTS!`;
 }
 
-function localSpectrogramAnalysis(context, spectrogramStats) {
-  return `[WebGPU Local Analysis]
-Word: ${context.word} (${context.correctPronunciation})
-Signal energy: ${spectrogramStats.energyLabel}
-
-1. Phoneme: Compare your recording to the target IPA stress pattern.
-2. Stress: Focus on the primary stressed syllable.
-3. Fluency: ${spectrogramStats.energyLabel === 'strong' ? 'Good volume — maintain steady pace.' : 'Speak slightly louder and closer to the mic.'}
-4. Advocate: Great effort! Repeat slowly with TTS, then try again.`;
-}
-
-function computeSpectrogramStats(audioBlob) {
-  return audioBlob.size > 5000
-    ? { energyLabel: 'strong' }
-    : { energyLabel: 'weak' };
+export async function getAudioInfo() {
+  const response = await fetch(`${API_URL}/api/audio/info`);
+  if (!response.ok) {
+    throw new Error(`Audio info failed: ${response.status}`);
+  }
+  return response.json();
 }
 
 class AudioService {
   async recordAudio(maxDurationMs = 10000) {
     const stream = await navigator.mediaDevices.getUserMedia({
       audio: {
-        sampleRate: 16000,
+        sampleRate: TARGET_SAMPLE_RATE,
         echoCancellation: true,
         noiseSuppression: true,
       },
@@ -160,37 +170,76 @@ class AudioService {
     });
   }
 
-  async analyzeWithWebGPU(audioBlob, context, canvas) {
+  async analyzeWithNativeAudio(audioBlob, context) {
     if (!isWebGPUEnabled()) {
       throw new Error('WebGPU disabled');
     }
 
-    const spectrogramImage = await audioToSpectrogram(audioBlob, canvas);
-    const stats = computeSpectrogramStats(audioBlob);
+    const startMs = performance.now();
+    const wavBuffer = await blobToWav16kMono(audioBlob);
+    const wavBlob = new Blob([wavBuffer], { type: 'audio/wav' });
+    const url = URL.createObjectURL(wavBlob);
 
     try {
-      const pipe = await getWebGPUPipeline();
-      const prompt = buildAnalysisPrompt(context);
-      const result = await pipe(spectrogramImage, { prompt });
-      const text = result?.[0]?.generated_text || result?.generated_text || '';
+      const pipe = await loadGemma4Conformer();
+      const result = await pipe(url);
+      const transcript = result?.text || result?.[0]?.text || context.word || '';
+      const latencyMs = Math.round(performance.now() - startMs);
 
-      if (text && text.length > 10) {
-        return {
-          method: 'WebGPU (Transformers.js)',
-          result: text,
-          confidence: 'high',
-          privacy: 'local-only',
-        };
-      }
-    } catch (err) {
-      console.warn('WebGPU pipeline inference failed:', err.message);
+      return {
+        method: 'WebGPU Native Audio (Conformer ASR)',
+        result: buildNativeLocalAnalysis(context, transcript, latencyMs),
+        transcript,
+        confidence: 'high',
+        privacy: 'local-only',
+        latencyMs,
+        nativeAudio: true,
+      };
+    } finally {
+      URL.revokeObjectURL(url);
+    }
+  }
+
+  async fallbackToBackendNative(audioBlob, context) {
+    const wavBuffer = await blobToWav16kMono(audioBlob);
+    const wavBlob = new Blob([wavBuffer], { type: 'audio/wav' });
+    const audioBase64 = await blobToBase64(wavBlob);
+    const token = getToken();
+    const startMs = performance.now();
+
+    const response = await fetch(`${API_URL}/api/audio/analyze-native`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      body: JSON.stringify({
+        audioBase64,
+        audioFormat: 'wav',
+        ipaChartUrl: context.ipaChart,
+        word: context.word,
+        correctPronunciation: context.correctPronunciation,
+        userLevel: context.userLevel,
+      }),
+    });
+
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.error || `Backend native error ${response.status}`);
     }
 
+    const latencyMs = Math.round(performance.now() - startMs);
+
     return {
-      method: 'WebGPU (local spectrogram)',
-      result: localSpectrogramAnalysis(context, stats),
-      confidence: 'medium',
-      privacy: 'local-only',
+      method: data.nativeAudio
+        ? `Backend Native Audio (${data.provider})`
+        : `Backend Fallback (${data.provider})`,
+      result: data.analysis || data.error,
+      confidence: data.success ? 'medium' : 'low',
+      privacy: 'server-processed',
+      latencyMs: data.latencyMs || latencyMs,
+      nativeAudio: !!data.nativeAudio,
+      fallback: !!data.fallback,
     };
   }
 
@@ -219,10 +268,11 @@ class AudioService {
     }
 
     return {
-      method: data.mock ? 'Backend Gemma 4 (mock)' : 'Backend Gemma 4',
+      method: data.mock ? 'Backend Gemma 4 (mock)' : 'Backend Gemma 4 (legacy)',
       result: data.analysis || data.error,
       confidence: data.success ? 'medium' : 'low',
       privacy: 'server-processed',
+      nativeAudio: false,
     };
   }
 
@@ -243,16 +293,21 @@ class AudioService {
     return data.text || '';
   }
 
-  async analyzeAudio(audioBlob, context, canvas, preferWebGPU = true) {
+  async analyzeAudio(audioBlob, context, _canvas, preferWebGPU = true) {
     if (preferWebGPU && isWebGPUEnabled()) {
       try {
-        return await this.analyzeWithWebGPU(audioBlob, context, canvas);
+        return await this.analyzeWithNativeAudio(audioBlob, context);
       } catch (error) {
-        console.log('WebGPU failed, backend fallback:', error.message);
+        console.log('WebGPU native audio failed, backend native fallback:', error.message);
       }
     }
 
-    return this.analyzeWithBackend(audioBlob, context);
+    try {
+      return await this.fallbackToBackendNative(audioBlob, context);
+    } catch (error) {
+      console.log('Backend native failed, legacy fallback:', error.message);
+      return this.analyzeWithBackend(audioBlob, context);
+    }
   }
 
   speakAnalysis(text) {

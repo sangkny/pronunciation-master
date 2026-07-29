@@ -1,11 +1,12 @@
-import React, { useState, useRef, useCallback } from 'react';
-import { Mic, Volume2, Cpu, Cloud } from 'lucide-react';
-import audioService, { isWebGPUEnabled } from '../services/audioService.js';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
+import { Mic, Volume2, Cpu, Cloud, Radio } from 'lucide-react';
+import audioService, { isWebGPUEnabled, getAudioInfo } from '../services/audioService.js';
 
 /**
- * 발음 미션 (Gemma 4 오디오 분석)
- * 1. WebGPU 브라우저 추론 (선호) → 프라이버시 + 빠름
- * 2. 백엔드 폴백 (네트워크 불안정) → 안정성
+ * 발음 미션 (Gemma 4 Native Audio)
+ * 1. WebGPU Conformer ASR (mel-spec 직접, 스펙트로그램 PNG 우회 없음)
+ * 2. Backend vLLM input_audio 폴백
+ * 3. Legacy LMStudio / Whisper 폴백
  */
 export default function PronunciationMissionWithGemma({
   word = 'equipment',
@@ -20,11 +21,17 @@ export default function PronunciationMissionWithGemma({
   const [analysis, setAnalysis] = useState(null);
   const [useWebGPU, setUseWebGPU] = useState(isWebGPUEnabled());
   const [error, setError] = useState('');
+  const [serverInfo, setServerInfo] = useState(null);
 
   const mediaRecorderRef = useRef(null);
   const streamRef = useRef(null);
   const chunksRef = useRef([]);
-  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    getAudioInfo()
+      .then(setServerInfo)
+      .catch(() => setServerInfo(null));
+  }, []);
 
   const analyzeWithGemma = useCallback(async (audioBlob) => {
     setIsAnalyzing(true);
@@ -37,17 +44,11 @@ export default function PronunciationMissionWithGemma({
       ipaChart,
     };
 
-    const canvas = canvasRef.current || document.createElement('canvas');
-    if (!canvasRef.current) {
-      canvas.width = 400;
-      canvas.height = 100;
-    }
-
     try {
       const result = await audioService.analyzeAudio(
         audioBlob,
         context,
-        canvas,
+        null,
         useWebGPU
       );
       setAnalysis(result);
@@ -57,11 +58,17 @@ export default function PronunciationMissionWithGemma({
       if (useWebGPU) {
         setUseWebGPU(false);
         try {
-          const fallback = await audioService.analyzeWithBackend(audioBlob, context);
+          const fallback = await audioService.fallbackToBackendNative(audioBlob, context);
           setAnalysis(fallback);
           onAnalysisComplete?.(fallback);
         } catch (fallbackErr) {
-          setError(fallbackErr.message);
+          try {
+            const legacy = await audioService.analyzeWithBackend(audioBlob, context);
+            setAnalysis(legacy);
+            onAnalysisComplete?.(legacy);
+          } catch (legacyErr) {
+            setError(legacyErr.message);
+          }
         }
       }
     } finally {
@@ -116,16 +123,30 @@ export default function PronunciationMissionWithGemma({
     }
   };
 
+  const vllmBadge = serverInfo?.vllm?.available
+    ? 'vLLM Native ✅'
+    : serverInfo?.whisper?.configured
+      ? 'Whisper Fallback'
+      : 'Mock Fallback';
+
   return (
     <div className="pronunciation-mission-gemma bg-gradient-to-br from-indigo-900/40 to-purple-900/40 border border-purple-400/30 rounded-xl p-5 space-y-4 mt-4">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-2">
         <h3 className="text-lg font-bold text-purple-200 flex items-center gap-2">
           <Cpu className="w-5 h-5" />
-          Gemma 4 오디오 분석
+          Gemma 4 Native Audio
         </h3>
-        <span className="text-xs px-2 py-1 rounded-full bg-purple-600/30 text-purple-200">
-          {useWebGPU ? 'WebGPU 우선' : 'Backend 폴백'}
-        </span>
+        <div className="flex items-center gap-2 flex-wrap">
+          <span className="text-xs px-2 py-1 rounded-full bg-purple-600/30 text-purple-200">
+            {useWebGPU ? 'WebGPU Conformer' : 'Backend 폴백'}
+          </span>
+          {serverInfo && (
+            <span className="text-xs px-2 py-1 rounded-full bg-indigo-600/30 text-indigo-200 flex items-center gap-1">
+              <Radio className="w-3 h-3" />
+              {vllmBadge}
+            </span>
+          )}
+        </div>
       </div>
 
       <div className="text-sm space-y-1">
@@ -155,7 +176,7 @@ export default function PronunciationMissionWithGemma({
       {isAnalyzing && (
         <div className="analyzing text-center py-3">
           <p className="text-purple-200 animate-pulse">
-            🤖 {useWebGPU ? 'WebGPU' : '백엔드'}에서 Gemma 4로 분석 중...
+            🤖 {useWebGPU ? 'WebGPU Conformer' : 'Backend Native Audio'} 분석 중...
           </p>
           <div className="w-full bg-white/10 rounded-full h-1.5 mt-2 overflow-hidden">
             <div className="bg-purple-500 h-full animate-pulse w-2/3" />
@@ -169,7 +190,7 @@ export default function PronunciationMissionWithGemma({
 
       {analysis && !isAnalyzing && (
         <div className="analysis-result bg-black/30 rounded-lg p-4 border border-white/10 space-y-3">
-          <div className="flex items-center justify-between text-sm">
+          <div className="flex items-center justify-between text-sm flex-wrap gap-2">
             <span className="flex items-center gap-1 text-purple-300">
               {analysis.privacy === 'local-only' ? (
                 <><Cpu className="w-4 h-4" /> {analysis.method}</>
@@ -179,6 +200,7 @@ export default function PronunciationMissionWithGemma({
             </span>
             <span className="text-xs text-gray-400">
               {analysis.privacy === 'local-only' ? '🔒 기기 내 처리' : '☁️ 서버 처리'}
+              {analysis.latencyMs ? ` · ${analysis.latencyMs}ms` : ''}
             </span>
           </div>
           <div className="aomd-feedback text-sm text-gray-200 whitespace-pre-wrap leading-relaxed">
@@ -194,8 +216,6 @@ export default function PronunciationMissionWithGemma({
           </button>
         </div>
       )}
-
-      <canvas ref={canvasRef} width={400} height={100} className="hidden" aria-hidden="true" />
     </div>
   );
 }

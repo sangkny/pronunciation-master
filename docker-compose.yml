@@ -48,6 +48,10 @@ services:
       - AUDIO_SAMPLE_RATE=16000
       - AUDIO_MAX_DURATION=30000
       - WEBGPU_ENABLED=true
+      - ENABLE_AUDIO=true
+      - AUDIO_PROVIDER=vllm
+      - VLLM_API_URL=http://host.docker.internal:8000/v1
+      - VLLM_MODEL=google/gemma-4-e4b
       - PORT=5000
       - DB_HOST=postgres
       - DB_PORT=5432
@@ -116,6 +120,33 @@ services:
       - pronunciation-network
     depends_on:
       - prometheus
+
+  # Optional: vLLM with native input_audio (NVIDIA GPU required)
+  # docker compose --profile vllm up -d
+  vllm:
+    image: vllm/vllm-openai:latest
+    container_name: pronunciation-vllm
+    profiles:
+      - vllm
+    ports:
+      - "8000:8000"
+    environment:
+      - HUGGING_FACE_HUB_TOKEN=${HF_TOKEN:-}
+    command: >
+      --model google/gemma-3-4b-it
+      --host 0.0.0.0
+      --port 8000
+      --max-model-len 8192
+      --enable-chunked-prefill
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    networks:
+      - pronunciation-network
 
   # Optional: LMStudio Gemma 4 E4B (host LMStudio 권장)
   # docker compose --profile lmstudio up -d
