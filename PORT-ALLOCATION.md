@@ -1,6 +1,6 @@
 # 개발 PC 전체 Docker 포트 배정표
 
-> **자동 생성**: 2026-07-15 — `bash scripts/update_port_allocation.sh`
+> **자동 생성**: 2026-07-29 — pronunciation 포트 충돌 해결 반영  
 > **SSOT**: 각 프로젝트 `docker-compose.yml` (실제 포트 기준)
 > **수정 방법**: docker-compose.yml 수정 후 이 스크립트 재실행
 > **마스터 위치**: `projects/PORT-ALLOCATION.md`
@@ -12,6 +12,13 @@
 | 포트 | 충돌 프로젝트 |
 |------|-------------|
 | **8501** | tacr-eval vs SVG-Stock |
+
+### ✅ 최근 해결 (2026-07-29)
+
+| 서비스 | 이전 | 변경 | 이유 |
+|--------|------|------|------|
+| pronunciation **Grafana** | 3000 | **3030** | MEDI-IOT 3000과 충돌 |
+| pronunciation **vLLM** | 8000 | **8010** | SVG-Stock / MEDI-IOT 8000과 충돌 |
 
 ## 외부 서비스 (Docker 외부)
 
@@ -27,6 +34,8 @@
 |----------|------|------|
 | SVG-Stock 실행 중 + LM Studio **8000** | ❌ LM Studio 접근 불가 | LM Studio **1234** 사용 |
 | SVG-Stock + MEDI-IOT 동시 실행 | ⚠️ 호스트 **8000** 점유 | SVG-Stock **단독 실행** 원칙 |
+| MEDI-IOT + pronunciation Grafana | ✅ 해결 | pronunciation Grafana **3030** 사용 |
+| SVG-Stock/MEDI-IOT + pronunciation vLLM | ✅ 해결 | pronunciation vLLM **8010** 사용 |
 
 ### LM Studio 설정 (필수)
 
@@ -101,14 +110,21 @@
 | **26379** | 6379 |
 
 ### pronunciation
-> 발음 교정 앱  
+> 발음 교정 앱 (Pronunciation Master)  
 > 경로: `/mnt/d/sangkny/work/doc/external_activity/Learning-Languages/pronunciation-master/`
 
-| 호스트 포트 | 컨테이너 포트 |
-|------------|-------------|
-| **5000** | 5000 |
-| **5173** | 5173 |
-| **5432** | 5432 |
+| 호스트 포트 | 컨테이너 포트 | 서비스 |
+|------------|-------------|--------|
+| **5000** | 5000 | backend |
+| **5173** | 5173 | frontend |
+| **5432** | 5432 | postgres |
+| **6379** | 6379 | redis |
+| **9090** | 9090 | prometheus |
+| **3030** | 3000 | grafana |
+| **8010** | 8000 | vLLM (optional, `--profile vllm`) |
+| **1234** | 1234 | lmstudio (optional, `--profile lmstudio`) |
+
+> **접근 URL:** Grafana `http://localhost:3030` · vLLM `http://localhost:8010/v1`
 
 ### fin-stat
 > 재무 분석  
@@ -151,10 +167,11 @@
 | 조합 | 가능 여부 | 비고 |
 |------|----------|------|
 | MEDI-IOT + SVG-New-Bot | ✅ 가능 | 포트 분리됨 |
-| MEDI-IOT + pronunciation | ✅ 가능 | — |
+| MEDI-IOT + pronunciation | ✅ 가능 | Grafana 3030 / vLLM 8010으로 분리 |
 | MEDI-IOT + paperclip | ✅ 가능 | — |
 | MEDI-IOT + proposal | ✅ 가능 | — |
 | MEDI-IOT + tacr-eval | ✅ 가능 | 포트 분리됨 |
+| pronunciation + SVG-Stock | ✅ 가능 | vLLM 8010 (SVG-Stock 8000과 분리) |
 | SVG-Stock + 다른 프로젝트 | ⚠️ 주의 | 80/9000/8000 점유 — 단독 실행 권장 |
 | SVG-Stock + tacr-eval | ❌ 불가 | 둘 다 **8501** 사용 — 동시 실행 금지, 한쪽을 내리고 실행 |
 | LM Studio + SVG-Stock | ⚠️ 주의 | LM Studio는 **1234** (SVG-Stock이 8000 점유) |

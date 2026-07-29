@@ -20,7 +20,8 @@ docker compose up -d --build
 | Frontend (dev) | http://localhost:5173 |
 | Backend API | http://localhost:5000 |
 | Prometheus | http://localhost:9090 |
-| Grafana | http://localhost:3000 (admin/admin) |
+| Grafana | http://localhost:3030 (admin/admin) |
+| vLLM (optional, `--profile vllm`) | http://localhost:8010 |
 | PostgreSQL | localhost:5432 |
 | Redis | localhost:6379 |
 | LMStudio | http://localhost:1234 (호스트) |
