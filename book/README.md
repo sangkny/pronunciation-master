@@ -1,9 +1,10 @@
 # Pronunciation Master — Technical Book
 
-AI 기반 영어 발음 교정 SaaS를 **Phase 1부터 Phase 9**까지 구축한 실전 기록.
+AI 기반 영어 발음 교정 SaaS를 **Phase 1부터 Phase 10**까지 구축한 실전 기록.
 
 **기준 문서:** `LONG_TERM_STRATEGY_ONTOLOGY_AOMD_SAAS.md`  
-**최종 Phase:** 9 (팀 관리 · B2B API · CDN · Book 동기화)
+**최종 Phase:** 10 Part 2–4 완료 (프로덕션 인프라) | Part 1-D Gemma 4 ⚠️  
+**다음:** Phase 11 — `PHASE11_ROADMAP.md`
 
 ---
 
@@ -34,9 +35,18 @@ AI 기반 영어 발음 교정 SaaS를 **Phase 1부터 Phase 9**까지 구축한
 ### Part 4: Phase 8–9 (Enterprise · B2B)
 | Ch | 파일 | 내용 | 커밋 |
 |----|------|------|------|
-| 10 | [10_PHASE8_TO_9_ENTERPRISE.md](./10_PHASE8_TO_9_ENTERPRISE.md) | SSO · 팀 · API키 · CDN | 69380cd–Phase9 |
+| 10 | [10_PHASE8_TO_9_ENTERPRISE.md](./10_PHASE8_TO_9_ENTERPRISE.md) | SSO · 팀 · API키 · CDN | 69380cd–4a4e4ba |
+
+### Part 5: Phase 10 (프로덕션 SaaS 인프라)
+| Ch | 파일 | 내용 | 커밋 |
+|----|------|------|------|
+| 13 | [13_PHASE10_PRODUCTION_SAAS.md](./13_PHASE10_PRODUCTION_SAAS.md) | Redis · K8s · Prometheus/Grafana | 251681d |
+
+### Part 6: 회고 & 미래
+| Ch | 파일 | 내용 | 커밋 |
+|----|------|------|------|
 | 11 | [11_LESSONS_LEARNED.md](./11_LESSONS_LEARNED.md) | 배운 점 & 최적화 | — |
-| 12 | [12_FUTURE_ROADMAP.md](./12_FUTURE_ROADMAP.md) | Phase 10+ 계획 | — |
+| 12 | [12_FUTURE_ROADMAP.md](./12_FUTURE_ROADMAP.md) | Phase 11–15 계획 | — |
 
 ---
 
@@ -50,8 +60,9 @@ AI 기반 영어 발음 교정 SaaS를 **Phase 1부터 Phase 9**까지 구축한
 2. Ch2–5: Phase 1 따라하기
 3. Ch6–8: Ontology/AOMD/SaaS 심화
 4. Ch9–10: 확장 & Enterprise
-5. Ch11–12: 회고 & 미래
+5. Ch13: Phase 10 프로덕션 인프라
+6. Ch11–12: 회고 & Phase 11+ 로드맵
 
 ---
 
-Generated: 2026-07-13 | Book README
+Generated: 2026-07-29 | Book README (Ch0–13)

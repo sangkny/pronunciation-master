@@ -25,8 +25,8 @@ Learning-Languages/pronunciation-master/
 │   ├── DEVELOPMENT_LOG.md                        ← NEW: 개발 진행 로그
 │   └── NEXT_PHASE_PLAN.md                        ← NEW: Phase 2 계획
 │
-├── 📚 book/ (기술 서적 — Phase 1–9 완료 ✅)
-│   ├── README.md                                 ← Book 목차 (Ch0–12)
+├── 📚 book/ (기술 서적 — Phase 1–10 ✅)
+│   ├── README.md                                 ← Book 목차 (Ch0–13)
 │   ├── 00_INTRODUCTION.md                        ← Ch0: 서론
 │   ├── 01_ARCHITECTURE_OVERVIEW.md               ← Ch1: 아키텍처
 │   ├── 02_PHASE1_ENVIRONMENT_SETUP.md            ← Ch2: 환경 구성
@@ -39,7 +39,8 @@ Learning-Languages/pronunciation-master/
 │   ├── 09_PHASE4_TO_7_PLATFORM_EXPANSION.md   ← Ch9: Phase 4–7
 │   ├── 10_PHASE8_TO_9_ENTERPRISE.md             ← Ch10: Enterprise
 │   ├── 11_LESSONS_LEARNED.md                    ← Ch11: 배운 점
-│   └── 12_FUTURE_ROADMAP.md                     ← Ch12: 미래 계획
+│   ├── 12_FUTURE_ROADMAP.md                     ← Ch12: Phase 11+ 계획
+│   └── 13_PHASE10_PRODUCTION_SAAS.md            ← Ch13: Phase 10 인프라
 │
 ├── backend/
 │   ├── src/
@@ -92,7 +93,8 @@ Part 3: Phase 2 계획 (Ontology & AOMD)
 Part 4: Phase 8–9 (Enterprise & B2B)
 ├─ Ch10: Phase 8–9 Enterprise (SSO, 팀, API, CDN)
 ├─ Ch11: 배운 점 & 최적화
-└─ Ch12: 미래 로드맵 (Phase 10+)
+└─ Ch12: 미래 로드맵 (Phase 11+)
+└─ Ch13: Phase 10 프로덕션 SaaS (Redis · K8s · Prometheus)
 ```
 
 **SSOT:** 루트 `LONG_TERM_STRATEGY_ONTOLOGY_AOMD_SAAS.md` — Book·Handover·Phase 프롬프트는 이 문서와 동기화

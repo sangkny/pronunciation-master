@@ -4,11 +4,19 @@
 
 **프로젝트명:** Pronunciation Master  
 **목적:** AI 기반 영어 발음 교정 및 상황별 동적 학습 앱  
-**현재 상태:** Phase 1–9 완료, Phase 10 Part 1-D 골격 구축, **Part 2–4 완료**  
-**Phase 10 Part 4:** Prometheus + Grafana 모니터링  
-**최종 커밋:** `251681d` (Phase 10 Part 4)
-**장기 전략:** `LONG_TERM_STRATEGY_ONTOLOGY_AOMD_SAAS.md` 참고  
-**Book:** `book/README.md` (Ch0–12)
+
+**Phase 10: 프로덕션 SaaS 완성**
+```
+├─ Part 1-D: ⚠️ 골격 구축 (Gemma 4 오디오, 후속 작업) — 97d7c81
+├─ Part 2:   ✅ Rate Limiting + Redis — 49503db
+├─ Part 3:   ✅ Kubernetes + Helm + minikube — 251681d
+└─ Part 4:   ✅ Prometheus + Grafana — 251681d
+```
+
+**최신 커밋:** `251681d` (Phase 10 Part 3–4) | **브랜치:** `origin/main`  
+**다음:** Phase 11 — `PHASE11_ROADMAP.md`  
+**장기 전략:** `LONG_TERM_STRATEGY_ONTOLOGY_AOMD_SAAS.md`  
+**Book:** `book/README.md` (Ch0–13)
 
 ---
 
@@ -95,9 +103,56 @@
 | **3** | **Kubernetes (K8s + Helm)** | **✅ 완료** | **251681d** |
 | **4** | **Monitoring (Prometheus + Grafana)** | **✅ 완료** | **251681d** |
 
-> **중요:** Part 1-D는 UI·API·폴백 파이프라인은 구현됐지만, Gemma 4 **네이티브 오디오 인코더**는 아직 연동되지 않았습니다. "100% 완료"가 아닌 **골격 구축** 상태입니다.
+> **중요:** Part 1-D는 UI·API·폴백 파이프라인은 구현됐지만, Gemma 4 **네이티브 오디오 인코더**는 아직 연동되지 않았습니다. Part 2–4는 **프로덕션 SaaS 인프라 완성** 상태입니다.
 
-### Part 1-D 구현 상태 (정확한 진단)
+## Phase 10 최종 현황
+
+### Part 2: Rate Limiting (Redis) — `49503db`
+- ✅ Free: 100 req/h | Pro: 1,000 req/h | Enterprise: 10,000 req/h
+- ✅ IP 기반: 1,000 req/h
+- ✅ Redis 분산 저장소 (`express-rate-limit`, `rate-limit-redis`)
+- ✅ `scripts/test-rate-limit.sh`
+
+### Part 3: Kubernetes 배포 — `251681d`
+- ✅ Namespace, ConfigMap, Secret
+- ✅ Deployment: Backend (3), Frontend (2)
+- ✅ StatefulSet: PostgreSQL (10Gi), Redis (2Gi)
+- ✅ Service + Ingress (`pronunciation-master.local`)
+- ✅ HPA: Backend CPU 70% (2–5), Frontend CPU 80% (1–3)
+- ✅ Helm Chart + `scripts/deploy-k8s.sh` + minikube 테스트
+
+### Part 4: Prometheus + Grafana — `251681d`
+- ✅ Backend `GET /metrics` (prom-client)
+- ✅ 메트릭: HTTP RPS, 지연, 5xx, DB 연결, active requests
+- ✅ Prometheus :9090 | Grafana :3000 (admin/admin)
+- ✅ K8s + Docker Compose + `scripts/test-monitoring.sh`
+
+### Part 1-D: Gemma 4 오디오 — `97d7c81` ⚠️ (후속)
+- ✅ UI/API 골격 | ✅ 스펙트로그램 우회 | ✅ Whisper STT 폴백
+- ❌ LMStudio `input_audio` 미지원 → vLLM/HuggingFace 대체 필요
+- ❌ WebGPU Conformer ONNX 미통합
+- 🔲 완전 연동: 별도 작업 (Phase 14 연계 가능)
+
+## 기술 스택 (Phase 10)
+
+### Backend
+- `express-rate-limit` + `rate-limit-redis` (Rate Limiting)
+- `prom-client` (Prometheus 메트릭)
+
+### 인프라
+- Redis 7-alpine | Kubernetes (K8s + Helm) | Prometheus | Grafana
+
+### 배포
+- Docker Compose (로컬/프로덕션)
+- K8s Manifest (`k8s/`) | Helm Chart (`helm/`) | minikube (로컬 테스트)
+
+### 다음 Phase
+- **Phase 11:** 모바일 앱 — `PHASE11_ROADMAP.md`
+- **Part 1-D 후속:** Gemma 4 native 오디오 완전 연동
+
+---
+
+### Part 1-D 상세 진단 (Gemma 4 오디오)
 
 **Gemma 4 공식 스펙 (Google AI for Developers)**
 - ✅ 모델에는 오디오 지원 추가됨 (E2B/E4B/12B)
@@ -157,14 +212,17 @@ ${audioBase64 ? `[Audio data provided: ${Math.round(audioBase64.length / 1024)}K
 - `frontend/src/components/PronunciationMissionWithGemma.jsx` — Gemma 4 UI
 - `scripts/test-gemma4-audio.sh` — 통합 테스트
 
-### 남은 작업 (Phase 10)
+### Phase 10 완료 · Phase 11 예정
 
-**현재 진행 중**
-- [x] Part 2: Rate Limiting (Redis) — `RATE_LIMITING_STRATEGY.md`, `scripts/test-rate-limit.sh`
-- [x] Part 3: Kubernetes — `KUBERNETES_DEPLOYMENT.md`, `k8s/`, `helm/`, `scripts/deploy-k8s.sh`
-- [x] Part 4: Monitoring — `PROMETHEUS_GRAFANA_MONITORING.md`, `/metrics`, Prometheus, Grafana
+**Phase 10 — 완료**
+- [x] Part 2–4: Rate Limiting, K8s, Monitoring
+- [x] 문서: `PHASE10_FINAL_SUMMARY.md`, Book Ch13
 
-**Part 1-D 후속 작업 (선택사항)**
+**Phase 11 — 다음**
+- [ ] 모바일 앱 고도화 — `PHASE11_ROADMAP.md`
+- [ ] Book Ch14 (Phase 11 완료 시)
+
+**Part 1-D 후속 (선택)**
 
 "Gemma 4 오디오 완전 연동"을 위해 필요한 작업:
 
@@ -187,8 +245,8 @@ ${audioBase64 ? `[Audio data provided: ${Math.round(audioBase64.length / 1024)}K
    - 예상 (native 오디오): 정확도 개선, 응답 시간 단축 예상
 
 **우선순위**
-1. ✅ Part 2, 3, 4 완료 (프로덕션 기본 기능)
-2. 🔲 Part 1-D 후속: Gemma 4 완전 연동 (고급 기능)
+1. 🔲 Phase 11: 모바일 앱 (`PHASE11_ROADMAP.md`)
+2. 🔲 Part 1-D 후속: Gemma 4 완전 연동 (Phase 14 연계)
 
 ### 기술 스택 (Part 1-D)
 
@@ -707,4 +765,4 @@ Phase 4 시작 전:
 **Cursor와 함께 효율적으로 개발하세요! 🚀**
 
 이 문서는 지속적으로 업데이트됩니다.
-마지막 업데이트: 2026-07-28 (Phase 10 Part 1-D 골격 구축 ⚠️, 커밋 97d7c81)
+마지막 업데이트: 2026-07-29 (Phase 10 완료 정리, Phase 11 로드맵, 커밋 251681d)
