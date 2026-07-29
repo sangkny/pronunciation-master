@@ -6,7 +6,7 @@
 **목적:** AI 기반 영어 발음 교정 및 상황별 동적 학습 앱  
 **현재 상태:** Phase 1–9 완료, Phase 10 Part 1-D 골격 구축, **Part 2–4 완료**  
 **Phase 10 Part 4:** Prometheus + Grafana 모니터링  
-**최종 커밋:** Phase 10 Part 4
+**최종 커밋:** `251681d` (Phase 10 Part 4)
 **장기 전략:** `LONG_TERM_STRATEGY_ONTOLOGY_AOMD_SAAS.md` 참고  
 **Book:** `book/README.md` (Ch0–12)
 
@@ -92,8 +92,8 @@
 |------|------|------|------|
 | **1-D** | **Gemma 4 오디오 + WebGPU** | **⚠️ 골격 구축** | **97d7c81** |
 | **2** | **Rate Limiting (Redis)** | **✅ 완료** | **49503db** |
-| **3** | **Kubernetes (K8s + Helm)** | **✅ 완료** | — |
-| **4** | **Monitoring (Prometheus + Grafana)** | **✅ 완료** | — |
+| **3** | **Kubernetes (K8s + Helm)** | **✅ 완료** | **251681d** |
+| **4** | **Monitoring (Prometheus + Grafana)** | **✅ 완료** | **251681d** |
 
 > **중요:** Part 1-D는 UI·API·폴백 파이프라인은 구현됐지만, Gemma 4 **네이티브 오디오 인코더**는 아직 연동되지 않았습니다. "100% 완료"가 아닌 **골격 구축** 상태입니다.
 
