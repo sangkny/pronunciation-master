@@ -16,7 +16,7 @@
 | **현재 Phase** | **Phase 11 — 모바일 앱 (Expo)** |
 | **진행 Part** | **11-3: Zustand + Axios interceptors** ✅ |
 | **직전 완료** | Part 11-2 — 녹음 UX + WAV (`e8690d1`) |
-| **Handover 커밋** | (11-3 커밋 예정) |
+| **Handover 커밋** | `2f58acc` (Phase 11 Part 11-3) |
 | **다음 작업** | Part 11-4: 오프라인 캐시 — `PHASE11_CODE_LOOP_PROMPTS.md` |
 
 ### Phase 11 진행률
