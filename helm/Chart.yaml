@@ -1,0 +1,12 @@
+apiVersion: v2
+name: pronunciation-master
+description: Pronunciation Master - AI English pronunciation learning platform
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+keywords:
+  - pronunciation
+  - education
+  - saas
+maintainers:
+  - name: Pronunciation Master Team

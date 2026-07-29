@@ -4,10 +4,9 @@
 
 **프로젝트명:** Pronunciation Master  
 **목적:** AI 기반 영어 발음 교정 및 상황별 동적 학습 앱  
-**현재 상태:** Phase 1–9 완료 (100% ✅), Phase 10 Part 1-D 골격 구축 (⚠️), Part 2 Rate Limiting (✅)  
-**Phase 9:** 팀 관리 + B2B API 키 + CDN + Book Chapter  
-**Phase 10 Part 2:** Redis API Rate Limiting (Tier별 + IP)  
-**최종 커밋:** `49503db` (Phase 10 Part 2)
+**현재 상태:** Phase 1–9 완료, Phase 10 Part 1-D 골격 구축, Part 2–3 완료  
+**Phase 10 Part 3:** Kubernetes (K8s Manifest + Helm Chart)  
+**최종 커밋:** Phase 10 Part 3 (K8s + Helm)
 **장기 전략:** `LONG_TERM_STRATEGY_ONTOLOGY_AOMD_SAAS.md` 참고  
 **Book:** `book/README.md` (Ch0–12)
 
@@ -93,7 +92,7 @@
 |------|------|------|------|
 | **1-D** | **Gemma 4 오디오 + WebGPU** | **⚠️ 골격 구축** | **97d7c81** |
 | **2** | **Rate Limiting (Redis)** | **✅ 완료** | **49503db** |
-| 3 | Kubernetes (K8s + Helm) | 🔲 예정 | — |
+| **3** | **Kubernetes (K8s + Helm)** | **✅ 완료** | — |
 | 4 | Monitoring (Prometheus + Grafana) | 🔲 예정 | — |
 
 > **중요:** Part 1-D는 UI·API·폴백 파이프라인은 구현됐지만, Gemma 4 **네이티브 오디오 인코더**는 아직 연동되지 않았습니다. "100% 완료"가 아닌 **골격 구축** 상태입니다.
@@ -162,8 +161,8 @@ ${audioBase64 ? `[Audio data provided: ${Math.round(audioBase64.length / 1024)}K
 
 **현재 진행 중**
 - [x] Part 2: Rate Limiting (Redis) — `RATE_LIMITING_STRATEGY.md`, `scripts/test-rate-limit.sh`
-- [ ] Part 3: Kubernetes (K8s Manifest + Helm) — 다음 작업
-- [ ] Part 4: Monitoring (Prometheus + Grafana)
+- [x] Part 3: Kubernetes — `KUBERNETES_DEPLOYMENT.md`, `k8s/`, `helm/`, `scripts/deploy-k8s.sh`
+- [ ] Part 4: Monitoring (Prometheus + Grafana) — 다음 작업
 
 **Part 1-D 후속 작업 (선택사항)**
 

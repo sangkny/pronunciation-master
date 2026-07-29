@@ -1,0 +1,37 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: pronunciation-ingress
+  namespace: pronunciation-master
+  labels:
+    app.kubernetes.io/name: pronunciation-master
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "10m"
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    # 프로덕션 TLS (cert-manager):
+    # cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: pronunciation-master.local
+      http:
+        paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: backend
+                port:
+                  number: 5000
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: frontend
+                port:
+                  number: 80
+  # 프로덕션 TLS 예시:
+  # tls:
+  #   - hosts:
+  #       - pronunciation-master.local
+  #     secretName: pronunciation-master-tls

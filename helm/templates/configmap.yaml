@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pronunciation-config
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "pronunciation-master.labels" . | nindent 4 }}
+data:
+  NODE_ENV: {{ .Values.config.nodeEnv | quote }}
+  PORT: "5000"
+  DB_HOST: {{ .Values.config.dbHost | quote }}
+  DB_PORT: {{ .Values.config.dbPort | quote }}
+  DB_NAME: {{ .Values.config.dbName | quote }}
+  DB_USER: {{ .Values.config.dbUser | quote }}
+  REDIS_HOST: {{ .Values.config.redisHost | quote }}
+  REDIS_PORT: {{ .Values.config.redisPort | quote }}
+  REDIS_DB: {{ .Values.config.redisDb | quote }}
+  JWT_EXPIRES_IN: {{ .Values.config.jwtExpiresIn | quote }}
+  LLM_PROVIDER: {{ .Values.config.llmProvider | quote }}
+  LMSTUDIO_API_URL: {{ .Values.config.lmstudioApiUrl | quote }}
+  LMSTUDIO_MODEL: {{ .Values.config.lmstudioModel | quote }}
+  GEMMA4_MODEL: {{ .Values.config.gemma4Model | quote }}
+  RATE_LIMIT_WINDOW_MS: {{ .Values.config.rateLimitWindowMs | quote }}
+  RATE_LIMIT_FREE: {{ .Values.config.rateLimitFree | quote }}
+  RATE_LIMIT_PRO: {{ .Values.config.rateLimitPro | quote }}
+  RATE_LIMIT_ENTERPRISE: {{ .Values.config.rateLimitEnterprise | quote }}
+  RATE_LIMIT_IP: {{ .Values.config.rateLimitIp | quote }}
+  VITE_API_URL: {{ .Values.config.viteApiUrl | quote }}
