@@ -14,33 +14,34 @@
 | 항목 | 값 |
 |------|-----|
 | **현재 Phase** | **Phase 11 — 모바일 앱 (Expo)** |
-| **진행 Part** | **11-1: Expo + Navigation + Native Audio** ✅ |
-| **직전 완료** | Phase 10 100% — Part 1-D Native Audio E2E (`4a4d7d1`) |
-| **Handover 커밋** | `ed89ca5` (Phase 11 Part 11-1) |
+| **진행 Part** | **11-2: 녹음 UX + WAV 16kHz** ✅ |
+| **직전 완료** | Part 11-1 — Navigation + GemmaAudioScreen (`ed89ca5`) |
+| **Handover 커밋** | (Phase 11-2 커밋 예정) |
 | **브랜치** | `origin/main` |
-| **다음 작업** | Part 11-2: 녹음 UX + WAV 16kHz — `PHASE11_CODE_LOOP_PROMPTS.md` |
+| **다음 작업** | Part 11-3: Zustand + API interceptors — `PHASE11_CODE_LOOP_PROMPTS.md` |
 
 ### Phase 11 진행률
 
 | Part | 내용 | 상태 |
 |------|------|------|
 | **11-1** | Expo + React Navigation + GemmaAudioScreen | **✅ 완료** |
-| 11-2 | 녹음 UX (타이머, replay, WAV) | 🔲 |
+| **11-2** | 녹음 UX (타이머, replay, WAV 16kHz) | **✅ 완료** |
+| 11-3 | API + Zustand 상태관리 | 🔲 |
 | 11-3 | API + Zustand 상태관리 | 🔲 |
 | 11-4 | 오프라인 캐시 (WatermelonDB) | 🔲 |
 | 11-5 | FCM 푸시 | 🔲 |
 | 11-6 | App Store / Play Store | 🔲 |
 
-### Phase 11-1 이번 세션 산출물
+### Phase 11-2 이번 세션 산출물
 
-- ✅ `mobile/src/navigation/AppNavigator.js` — Native Stack
-- ✅ `mobile/src/screens/GemmaAudioScreen.js` — `/api/audio/analyze-native`
-- ✅ `mobile/src/screens/ProfileScreen.js` — 구독 + 서버 audio info
-- ✅ `mobile/src/services/audioService.js` — native audio 클라이언트
-- ✅ `PHASE11_CODE_LOOP_PROMPTS.md` — Part 11-1~11-6 Cursor 프롬프트
-- ✅ `PHASE11_START_NOW.md` — 시작 가이드
-- ✅ `scripts/test-phase11.sh` — smoke test
-- ✅ `book/14_PHASE11_MOBILE_APP.md` — Book Ch14
+- ✅ `RecordingUI.js` — 타이머, 녹음/재생/취소/분석 버튼
+- ✅ `audioService.js` — 16kHz WAV 녹음, base64, 재생, analyze-native
+- ✅ `wavEncoder.js` / `audioConfig.js` — WAV 검증 + env 설정
+- ✅ `GemmaAudioScreen.js` — idle → recording → stopped → playing → analyze
+
+### Phase 11-1 산출물 (완료)
+
+- ✅ `AppNavigator.js`, `ProfileScreen.js`, `mobile/README.md`
 
 **실행:** `cd mobile && npm install && npx expo start`
 
@@ -149,7 +150,7 @@
 | Part | 내용 | 상태 | 비고 |
 |------|------|------|------|
 | **11-1** | **Expo + Navigation + Native Audio** | **✅ 완료** | `mobile/` |
-| 11-2 | 녹음 UX + WAV 16kHz | 🔲 | |
+| **11-2** | **녹음 UX + WAV 16kHz** | **✅ 완료** | `RecordingUI` |
 | 11-3 | Zustand + API interceptors | 🔲 | |
 | 11-4 | 오프라인 캐시 | 🔲 | |
 | 11-5 | FCM 푸시 | 🔲 | |
@@ -322,8 +323,8 @@
 
 ## 마지막 업데이트
 - **날짜:** 2026-07-29
-- **상태:** Phase 10 **100% 완료** | Phase 11 Part 11-1 **✅ 완료**
-- **현재 작업:** Part 11-2 준비 (녹음 UX + WAV)
+- **상태:** Phase 11 Part 11-2 **✅ 완료** | Part 11-3 다음
+- **현재 작업:** Zustand + API interceptors
 - **Handover 커밋:** `ed89ca5` (Phase 11 Part 11-1)
 - **브랜치:** `main`
 - **Mobile:** `cd mobile && npx expo start`

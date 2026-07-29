@@ -1,53 +1,34 @@
 # Phase 11 Code Loop 프롬프트
 
-**상태:** Phase 11 Part 11-1 시작 🚀  
+**상태:** Phase 11 Part 11-2 완료 ✅ | Part 11-3 다음  
 **목표:** React Native + Expo 모바일 앱 iOS/Android 출시  
 **로드맵:** `PHASE11_ROADMAP.md`  
 **장기 전략:** `LONG_TERM_STRATEGY_ONTOLOGY_AOMD_SAAS.md`
 
 ---
 
-## Part 11-1: Expo 프로젝트 + 기본 UI 🚀
+## Part 11-1: Expo 프로젝트 + 기본 UI ✅
 
 ```
-프로젝트: Pronunciation Master - Phase 11 Part 11-1
-현재 상태:
-- Phase 10 100% 완료 (Part 1-D Native Audio E2E — 4a4d7d1)
-- mobile/ Phase 5–6 스캐폴드 존재 (Login, Home, Mission)
-
-작업 목표: Expo 앱 Phase 11-1 고도화
-
-구현:
-1. React Navigation Native Stack (`AppNavigator.js`)
-2. GemmaAudioScreen — POST /api/audio/analyze-native
-3. ProfileScreen — subscription + /api/audio/info
-4. theme.js 공통 스타일
-5. mobile/README.md + .env.example
-6. scripts/test-phase11.sh
-7. CURSOR_HANDOVER.md Phase 11 진행 현황 갱신
-
-완료 기준:
-✓ Navigation (Login → Home → Mission/GemmaAudio/Profile)
-✓ Native Audio 모바일 연동
-✓ Profile 서버 상태 표시
-✓ git commit & push
+완료 (ed89ca5):
+- React Navigation Native Stack
+- GemmaAudioScreen — /api/audio/analyze-native
+- ProfileScreen — subscription + audio info
+- mobile/README.md, scripts/test-phase11.sh
+- Book Ch14, CURSOR_HANDOVER §1 진행 현황
 ```
 
 ---
 
-## Part 11-2: 음성 녹음 UX 확장 🔲
+## Part 11-2: 음성 녹음 UX + WAV 16kHz ✅
 
 ```
-작업:
-- expo-av 녹음 UI 개선 (파형/타이머/재생)
-- WAV 16kHz 변환 (백엔드 native audio 호환)
-- 녹음 권한 처리 (iOS/Android)
-- MissionScreen + GemmaAudioScreen UX 통합
-
-완료 기준:
-✓ 10초 녹음 + 미리듣기
-✓ analyze-native에 WAV 전송
-✓ 에러/권한 안내 UI
+완료:
+- RecordingUI.js — 타이머 00:00/10:00, 녹음/중지/재생/취소/분석
+- audioService.js — initializeRecorder, start/stop, play, analyzeNativeAudio
+- expo-av 16kHz mono WAV + base64 → /api/audio/analyze-native
+- wavEncoder.js — RIFF 헤더 검증
+- EXPO_PUBLIC_AUDIO_SAMPLE_RATE, EXPO_PUBLIC_MAX_RECORDING_SEC
 ```
 
 ---

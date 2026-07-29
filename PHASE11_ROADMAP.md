@@ -8,7 +8,7 @@
 ## Phase 11: 모바일 앱 (React Native + Expo) 🚀
 
 **목표:** iOS/Android 네이티브 앱 출시  
-**상태:** Part 11-1 ✅ 완료 → Part 11-2 다음
+**상태:** Part 11-2 ✅ 완료 → Part 11-3 다음
 
 **구현:**
 - Expo 프로젝트 고도화 (`mobile/` — Phase 5–6 스캐폴드 확장)
@@ -22,7 +22,7 @@
 | Part | 내용 | 상태 |
 |------|------|------|
 | **11-1** | Expo + Navigation + GemmaAudioScreen | **✅ 완료** |
-| 11-2 | 음성 녹음 UX (expo-av 확장) | 🔲 |
+| **11-2** | 음성 녹음 UX + WAV 16kHz | **✅ 완료** |
 | 11-3 | API 연동 (axios + 상태관리) | 🔲 |
 | 11-4 | 오프라인 캐시 | 🔲 |
 | 11-5 | 푸시 알림 (FCM) | 🔲 |

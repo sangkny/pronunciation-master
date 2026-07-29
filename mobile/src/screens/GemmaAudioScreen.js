@@ -1,57 +1,140 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
-  View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, ScrollView,
+  Text, TouchableOpacity, StyleSheet, ScrollView,
 } from 'react-native';
-import * as recordingService from '../services/recordingService';
+import RecordingUI from '../components/RecordingUI';
 import * as audioService from '../services/audioService';
+import { MAX_RECORDING_SEC } from '../utils/audioConfig';
 import { colors, spacing } from '../constants/theme';
 
 export default function GemmaAudioScreen({ route, navigation }) {
   const domain = route.params?.domain;
-  const [recording, setRecording] = useState(false);
-  const [processing, setProcessing] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [recordedAudio, setRecordedAudio] = useState(null);
+  const [duration, setDuration] = useState(0);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState('');
   const [serverInfo, setServerInfo] = useState(null);
+  const durationRef = useRef(0);
 
   const word = 'equipment';
   const correctPronunciation = 'ih-KWIP-muhnt';
 
   useEffect(() => {
     audioService.getServerAudioInfo().then(setServerInfo).catch(() => null);
+    audioService.setDurationCallback((sec) => {
+      durationRef.current = sec;
+      setDuration(sec);
+    });
+    audioService.setRecordingStoppedCallback((recording) => {
+      if (recording) {
+        setRecordedAudio(recording);
+        setIsRecording(false);
+        setDuration(recording.duration || durationRef.current);
+      }
+    });
+    audioService.setPlaybackFinishedCallback(() => {
+      setIsPlaying(false);
+    });
+
+    return () => {
+      audioService.setDurationCallback(null);
+      audioService.setRecordingStoppedCallback(null);
+      audioService.setPlaybackFinishedCallback(null);
+      audioService.cancelRecording().catch(() => {});
+    };
   }, []);
 
-  const handleRecord = async () => {
+  const resetSession = useCallback(() => {
+    setRecordedAudio(null);
+    setDuration(0);
+    durationRef.current = 0;
+    setResult(null);
+    setError('');
+    setIsPlaying(false);
+  }, []);
+
+  const startRecording = async () => {
+    setError('');
+    resetSession();
+    try {
+      await audioService.startRecording();
+      setIsRecording(true);
+    } catch (err) {
+      setError(err.message);
+      setIsRecording(false);
+    }
+  };
+
+  const stopRecording = async () => {
     setError('');
     try {
-      if (!recording) {
-        await recordingService.startRecording();
-        setRecording(true);
-        setResult(null);
-      } else {
-        setRecording(false);
-        setProcessing(true);
-
-        const audioUri = await recordingService.stopRecording();
-        const data = await audioService.analyzeNativeAudio(audioUri, {
-          word,
-          correctPronunciation,
-          userLevel: 'beginner',
-        });
-
-        setResult({
-          analysis: data.analysis,
-          provider: data.provider,
-          nativeAudio: data.nativeAudio,
-          latencyMs: data.latencyMs,
-          fallback: data.fallback,
-        });
+      const recording = await audioService.stopRecording();
+      setIsRecording(false);
+      if (recording) {
+        setRecordedAudio(recording);
+        setDuration(recording.duration || durationRef.current);
       }
     } catch (err) {
       setError(err.message);
-      setRecording(false);
+      setIsRecording(false);
+    }
+  };
+
+  const playRecording = async () => {
+    if (!recordedAudio?.audioUri) return;
+    setError('');
+    try {
+      await audioService.playRecording(recordedAudio.audioUri);
+      setIsPlaying(true);
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const stopPlayback = async () => {
+    await audioService.stopPlayback();
+    setIsPlaying(false);
+  };
+
+  const handleCancel = async () => {
+    await audioService.cancelRecording();
+    resetSession();
+    setIsRecording(false);
+  };
+
+  const analyzeAudio = async () => {
+    if (!recordedAudio?.audioBase64) {
+      setError('먼저 녹음을 완료해주세요');
+      return;
+    }
+
+    setError('');
+    setIsAnalyzing(true);
+    setResult(null);
+
+    try {
+      await audioService.stopPlayback();
+      setIsPlaying(false);
+
+      const data = await audioService.analyzeNativeAudio(
+        recordedAudio.audioBase64,
+        { word, correctPronunciation, userLevel: 'beginner' }
+      );
+
+      setResult({
+        analysis: data.analysis,
+        provider: data.provider,
+        nativeAudio: data.nativeAudio,
+        latencyMs: data.latencyMs,
+        fallback: data.fallback,
+      });
+    } catch (err) {
+      setError(err.message);
     } finally {
-      setProcessing(false);
+      setIsAnalyzing(false);
     }
   };
 
@@ -82,19 +165,20 @@ export default function GemmaAudioScreen({ route, navigation }) {
       <Text style={styles.word}>{word}</Text>
       <Text style={styles.ipa}>{correctPronunciation}</Text>
 
-      <TouchableOpacity
-        style={[styles.recordBtn, recording && styles.recording]}
-        onPress={handleRecord}
-        disabled={processing}
-      >
-        {processing ? (
-          <ActivityIndicator color="#fff" />
-        ) : (
-          <Text style={styles.recordText}>
-            {recording ? '⏹ Stop & Analyze' : '🎤 Gemma 4 Record'}
-          </Text>
-        )}
-      </TouchableOpacity>
+      <RecordingUI
+        isRecording={isRecording}
+        isPlaying={isPlaying}
+        isAnalyzing={isAnalyzing}
+        duration={duration}
+        maxDuration={MAX_RECORDING_SEC}
+        recordedAudio={recordedAudio}
+        onStartRecording={startRecording}
+        onStopRecording={stopRecording}
+        onPlayRecording={playRecording}
+        onStopPlayback={stopPlayback}
+        onCancel={handleCancel}
+        onAnalyze={analyzeAudio}
+      />
 
       {error ? <Text style={styles.error}>{error}</Text> : null}
 
@@ -121,11 +205,8 @@ const styles = StyleSheet.create({
   badge: { backgroundColor: '#312e81', paddingHorizontal: 10, paddingVertical: 4, borderRadius: 12 },
   badgeText: { color: colors.primaryLight, fontSize: 11 },
   domain: { fontSize: 16, color: colors.textMuted, marginBottom: 8 },
-  word: { fontSize: 32, fontWeight: 'bold', color: colors.text },
+  word: { fontSize: 32, fontWeight: 'bold', color: colors.text, marginBottom: 4 },
   ipa: { fontSize: 16, color: colors.primary, marginBottom: spacing.lg },
-  recordBtn: { backgroundColor: colors.primary, borderRadius: 12, padding: 20, alignItems: 'center' },
-  recording: { backgroundColor: colors.error },
-  recordText: { color: '#fff', fontSize: 18, fontWeight: 'bold' },
   error: { color: colors.error, marginTop: spacing.md, textAlign: 'center' },
   resultCard: { marginTop: spacing.lg, backgroundColor: colors.surface, borderRadius: 12, padding: spacing.md },
   provider: { color: colors.textMuted, fontSize: 12, marginBottom: spacing.sm },

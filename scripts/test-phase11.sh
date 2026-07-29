@@ -17,7 +17,9 @@ for f in \
   src/screens/GemmaAudioScreen.js \
   src/screens/ProfileScreen.js \
   src/services/audioService.js \
-  src/constants/theme.js \
+  src/components/RecordingUI.js \
+  src/utils/audioConfig.js \
+  src/utils/wavEncoder.js \
   README.md; do
   if [ -f "$MOBILE_DIR/$f" ]; then
     echo "OK $f"
