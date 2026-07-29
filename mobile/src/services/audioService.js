@@ -1,8 +1,28 @@
 import { Audio } from 'expo-av';
 import * as FileSystem from 'expo-file-system';
-import { SAMPLE_RATE, MAX_RECORDING_SEC } from '../utils/audioConfig';
+import {
+  SAMPLE_RATE,
+  MAX_RECORDING_SEC,
+  AUDIO_FORMAT,
+  AUDIO_QUALITY,
+} from '../utils/audioConfig';
 import { isWavBase64 } from '../utils/wavEncoder';
 import * as api from './api';
+
+const IOS_QUALITY_MAP = {
+  LOW: Audio.IOSAudioQuality.LOW,
+  MEDIUM: Audio.IOSAudioQuality.MEDIUM,
+  HIGH: Audio.IOSAudioQuality.HIGH,
+  MAX: Audio.IOSAudioQuality.MAX,
+};
+
+function getIosAudioQuality() {
+  return IOS_QUALITY_MAP[AUDIO_QUALITY] || Audio.IOSAudioQuality.HIGH;
+}
+
+function getRecordingExtension() {
+  return AUDIO_FORMAT === 'WAV' ? '.wav' : '.m4a';
+}
 
 let recordingInstance = null;
 let playbackSound = null;
@@ -14,7 +34,7 @@ let statusSubscription = null;
 export const RECORDING_OPTIONS = {
   isMeteringEnabled: true,
   android: {
-    extension: '.wav',
+    extension: getRecordingExtension(),
     outputFormat: Audio.AndroidOutputFormat.DEFAULT,
     audioEncoder: Audio.AndroidAudioEncoder.DEFAULT,
     sampleRate: SAMPLE_RATE,
@@ -22,8 +42,8 @@ export const RECORDING_OPTIONS = {
     bitRate: 128000,
   },
   ios: {
-    extension: '.wav',
-    audioQuality: Audio.IOSAudioQuality.HIGH,
+    extension: getRecordingExtension(),
+    audioQuality: getIosAudioQuality(),
     sampleRate: SAMPLE_RATE,
     numberOfChannels: 1,
     bitRate: 128000,
@@ -32,7 +52,7 @@ export const RECORDING_OPTIONS = {
     linearPCMIsFloat: false,
   },
   web: {
-    mimeType: 'audio/wav',
+    mimeType: AUDIO_FORMAT === 'WAV' ? 'audio/wav' : 'audio/webm',
     bitsPerSecond: 128000,
   },
 };
@@ -74,7 +94,12 @@ export async function initializeRecorder() {
     playThroughEarpieceAndroid: false,
   });
 
-  return { sampleRate: SAMPLE_RATE, format: 'wav', maxDurationSec: MAX_RECORDING_SEC };
+  return {
+    sampleRate: SAMPLE_RATE,
+    format: AUDIO_FORMAT,
+    quality: AUDIO_QUALITY,
+    maxDurationSec: MAX_RECORDING_SEC,
+  };
 }
 
 export async function startRecording() {

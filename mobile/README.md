@@ -63,6 +63,30 @@ mobile/
 └── app.json
 ```
 
+## Environment Variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `EXPO_PUBLIC_API_URL` | `http://localhost:5000` | Backend API |
+| `EXPO_PUBLIC_AUDIO_SAMPLE_RATE` | `16000` | Recording sample rate (Hz) |
+| `EXPO_PUBLIC_AUDIO_MAX_DURATION` | `10000` | Max duration (ms) |
+| `EXPO_PUBLIC_AUDIO_FORMAT` | `WAV` | Output format |
+| `EXPO_PUBLIC_AUDIO_QUALITY` | `HIGH` | iOS recording quality |
+
+## Emulator Test (GemmaAudioScreen)
+
+```bash
+npx expo start
+# a = Android emulator | i = iOS simulator
+```
+
+1. Login → Home → **Native Audio Analysis**
+2. **녹음 시작** → 타이머 `00:00 / 00:10` 증가 확인
+3. **녹음 중지** → `⏸️ Stopped` + 검수 카드 표시
+4. **▶️ 재생** → 녹음 검수
+5. **✅ 분석** → `POST /api/audio/analyze-native` (base64 WAV)
+6. **AOMD 피드백** 결과 카드 표시
+
 ## Test
 
 ```bash

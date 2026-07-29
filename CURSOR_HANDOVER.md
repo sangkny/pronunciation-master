@@ -27,17 +27,16 @@
 | **11-1** | Expo + React Navigation + GemmaAudioScreen | **✅ 완료** |
 | **11-2** | 녹음 UX (타이머, replay, WAV 16kHz) | **✅ 완료** |
 | 11-3 | API + Zustand 상태관리 | 🔲 |
-| 11-3 | API + Zustand 상태관리 | 🔲 |
 | 11-4 | 오프라인 캐시 (WatermelonDB) | 🔲 |
 | 11-5 | FCM 푸시 | 🔲 |
 | 11-6 | App Store / Play Store | 🔲 |
 
-### Phase 11-2 이번 세션 산출물
+### Phase 11-2 산출물 (완료)
 
-- ✅ `RecordingUI.js` — 타이머, 녹음/재생/취소/분석 버튼
-- ✅ `audioService.js` — 16kHz WAV 녹음, base64, 재생, analyze-native
-- ✅ `wavEncoder.js` / `audioConfig.js` — WAV 검증 + env 설정
-- ✅ `GemmaAudioScreen.js` — idle → recording → stopped → playing → analyze
+- ✅ `RecordingUI.js` — 2-card UI (녹음 / 검수·분석)
+- ✅ `GemmaAudioScreen.js` — 발음 분석 헤더 + AOMD 피드백
+- ✅ `audioConfig.js` — SAMPLE_RATE, MAX_DURATION(ms), FORMAT, QUALITY
+- ✅ expo-av 16kHz WAV + base64 → analyze-native
 
 ### Phase 11-1 산출물 (완료)
 
