@@ -2,34 +2,36 @@ import React, { useState } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator,
 } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as api from '../services/api';
+import { useAppStore } from '../store/useAppStore';
 
-export default function LoginScreen({ onLogin }) {
+export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [mode, setMode] = useState('login');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [localError, setLocalError] = useState('');
+
+  const login = useAppStore((s) => s.login);
+  const registerUser = useAppStore((s) => s.registerUser);
+  const isLoading = useAppStore((s) => s.isLoading);
+  const storeError = useAppStore((s) => s.error);
+  const setError = useAppStore((s) => s.setError);
 
   const handleSubmit = async () => {
-    setError('');
-    setLoading(true);
+    setLocalError('');
+    setError(null);
     try {
-      const data = mode === 'login'
-        ? await api.login(email, password)
-        : await api.register(email, name, password);
-
-      await AsyncStorage.setItem('pm_token', data.token);
-      api.setToken(data.token);
-      onLogin(data.user || { email, name: name || email });
+      if (mode === 'login') {
+        await login(email, password);
+      } else {
+        await registerUser(email, password, name);
+      }
     } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
+      setLocalError(err.response?.data?.error || storeError || '로그인 실패');
     }
   };
+
+  const displayError = localError || storeError;
 
   return (
     <View style={styles.container}>
@@ -37,24 +39,55 @@ export default function LoginScreen({ onLogin }) {
       <Text style={styles.subtitle}>Mobile</Text>
 
       <View style={styles.tabs}>
-        <TouchableOpacity onPress={() => setMode('login')} style={[styles.tab, mode === 'login' && styles.tabActive]}>
+        <TouchableOpacity
+          onPress={() => { setMode('login'); setError(null); setLocalError(''); }}
+          style={[styles.tab, mode === 'login' && styles.tabActive]}
+        >
           <Text style={styles.tabText}>Login</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => setMode('register')} style={[styles.tab, mode === 'register' && styles.tabActive]}>
+        <TouchableOpacity
+          onPress={() => { setMode('register'); setError(null); setLocalError(''); }}
+          style={[styles.tab, mode === 'register' && styles.tabActive]}
+        >
           <Text style={styles.tabText}>Sign Up</Text>
         </TouchableOpacity>
       </View>
 
       {mode === 'register' && (
-        <TextInput style={styles.input} placeholder="Name" placeholderTextColor="#666" value={name} onChangeText={setName} />
+        <TextInput
+          style={styles.input}
+          placeholder="Name"
+          placeholderTextColor="#666"
+          value={name}
+          onChangeText={setName}
+        />
       )}
-      <TextInput style={styles.input} placeholder="Email" placeholderTextColor="#666" value={email} onChangeText={setEmail} autoCapitalize="none" keyboardType="email-address" />
-      <TextInput style={styles.input} placeholder="Password" placeholderTextColor="#666" value={password} onChangeText={setPassword} secureTextEntry />
+      <TextInput
+        style={styles.input}
+        placeholder="Email"
+        placeholderTextColor="#666"
+        value={email}
+        onChangeText={setEmail}
+        autoCapitalize="none"
+        keyboardType="email-address"
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Password"
+        placeholderTextColor="#666"
+        value={password}
+        onChangeText={setPassword}
+        secureTextEntry
+      />
 
-      {error ? <Text style={styles.error}>{error}</Text> : null}
+      {displayError ? <Text style={styles.error}>{displayError}</Text> : null}
 
-      <TouchableOpacity style={styles.button} onPress={handleSubmit} disabled={loading}>
-        {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.buttonText}>{mode === 'login' ? 'Login' : 'Register'}</Text>}
+      <TouchableOpacity style={styles.button} onPress={handleSubmit} disabled={isLoading}>
+        {isLoading ? (
+          <ActivityIndicator color="#fff" />
+        ) : (
+          <Text style={styles.buttonText}>{mode === 'login' ? 'Login' : 'Register'}</Text>
+        )}
       </TouchableOpacity>
     </View>
   );
@@ -68,8 +101,22 @@ const styles = StyleSheet.create({
   tab: { flex: 1, padding: 10, borderRadius: 8, backgroundColor: '#1e293b', alignItems: 'center' },
   tabActive: { backgroundColor: '#7c3aed' },
   tabText: { color: '#fff', fontWeight: '600' },
-  input: { backgroundColor: '#1e293b', color: '#fff', borderRadius: 8, padding: 14, marginBottom: 12, borderWidth: 1, borderColor: '#334155' },
-  button: { backgroundColor: '#7c3aed', borderRadius: 8, padding: 16, alignItems: 'center', marginTop: 8 },
+  input: {
+    backgroundColor: '#1e293b',
+    color: '#fff',
+    borderRadius: 8,
+    padding: 14,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: '#334155',
+  },
+  button: {
+    backgroundColor: '#7c3aed',
+    borderRadius: 8,
+    padding: 16,
+    alignItems: 'center',
+    marginTop: 8,
+  },
   buttonText: { color: '#fff', fontWeight: 'bold', fontSize: 16 },
   error: { color: '#f87171', marginBottom: 8, textAlign: 'center' },
 });

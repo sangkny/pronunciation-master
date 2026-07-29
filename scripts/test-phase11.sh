@@ -13,6 +13,11 @@ echo ""
 
 echo "=== 2. Required Phase 11 files ==="
 for f in \
+  src/store/useAppStore.js \
+  src/services/apiService.js \
+  src/services/authService.js \
+  src/hooks/useApi.js \
+  src/navigation/navigationRef.js \
   src/navigation/AppNavigator.js \
   src/screens/GemmaAudioScreen.js \
   src/screens/ProfileScreen.js \

@@ -1,6 +1,6 @@
 # Phase 11 Code Loop 프롬프트
 
-**상태:** Phase 11 Part 11-2 완료 ✅ | Part 11-3 다음  
+**상태:** Phase 11 Part 11-3 완료 ✅ | Part 11-4 다음  
 **목표:** React Native + Expo 모바일 앱 iOS/Android 출시  
 **로드맵:** `PHASE11_ROADMAP.md`  
 **장기 전략:** `LONG_TERM_STRATEGY_ONTOLOGY_AOMD_SAAS.md`
@@ -33,22 +33,16 @@
 
 ---
 
-## Part 11-3: API 연동 + 상태관리 🔲
+## Part 11-3: API 연동 + 상태관리 ✅
 
 ```
-작업:
-- Zustand 또는 React Context 전역 상태
-- axios interceptors (JWT refresh, 401 처리)
-- 오프라인 감지 (NetInfo)
-- API 재시도 큐 (기본)
-
-파일:
-- mobile/src/store/authStore.js
-- mobile/src/services/httpClient.js
-
-완료 기준:
-✓ 토큰 만료 시 자동 로그아웃
-✓ 네트워크 오류 Toast
+완료:
+- useAppStore.js (Zustand): user, token, tier, analysisHistory, isOnline
+- apiService.js: Axios + Bearer interceptor + 401/429/500/network
+- authService.js, useApi.js hook
+- GemmaAudioScreen → useApi + addAnalysis
+- LoginScreen / ProfileScreen Zustand 통합
+- NetInfo → isOnline
 ```
 
 ---

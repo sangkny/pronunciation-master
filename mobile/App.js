@@ -1,36 +1,36 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { View, ActivityIndicator, StyleSheet } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import NetInfo from '@react-native-community/netinfo';
 import AppNavigator from './src/navigation/AppNavigator';
-import * as api from './src/services/api';
+import { useAppStore } from './src/store/useAppStore';
 import * as notificationService from './src/services/notificationService';
 import { colors } from './src/constants/theme';
 
 export default function App() {
-  const [user, setUser] = useState(null);
-  const [booting, setBooting] = useState(true);
+  const isHydrated = useAppStore((s) => s.isHydrated);
+  const token = useAppStore((s) => s.token);
+  const setOnline = useAppStore((s) => s.setOnline);
+  const hydrate = useAppStore((s) => s.hydrate);
 
   useEffect(() => {
-    AsyncStorage.getItem('pm_token').then((token) => {
-      if (token) {
-        api.setToken(token);
-        setUser({ restored: true });
-        notificationService.registerForPushNotifications().catch(() => {});
-        notificationService.scheduleDailyReminder(9, 0).catch(() => {});
-      }
-      setBooting(false);
+    hydrate();
+  }, [hydrate]);
+
+  useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener((state) => {
+      setOnline(state.isConnected ?? true);
     });
-  }, []);
+    return () => unsubscribe();
+  }, [setOnline]);
 
-  const handleLogin = (u) => {
-    setUser(u);
-    notificationService.registerForPushNotifications().catch(() => {});
-    notificationService.scheduleDailyReminder(9, 0).catch(() => {});
-  };
+  useEffect(() => {
+    if (token) {
+      notificationService.registerForPushNotifications().catch(() => {});
+      notificationService.scheduleDailyReminder(9, 0).catch(() => {});
+    }
+  }, [token]);
 
-  const handleLogout = () => setUser(null);
-
-  if (booting) {
+  if (!isHydrated) {
     return (
       <View style={styles.boot}>
         <ActivityIndicator size="large" color={colors.primary} />
@@ -38,11 +38,14 @@ export default function App() {
     );
   }
 
-  return (
-    <AppNavigator user={user} onLogin={handleLogin} onLogout={handleLogout} />
-  );
+  return <AppNavigator />;
 }
 
 const styles = StyleSheet.create({
-  boot: { flex: 1, backgroundColor: colors.background, justifyContent: 'center', alignItems: 'center' },
+  boot: {
+    flex: 1,
+    backgroundColor: colors.background,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });

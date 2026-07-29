@@ -4,11 +4,19 @@ import {
 } from 'react-native';
 import RecordingUI from '../components/RecordingUI';
 import * as audioService from '../services/audioService';
+import { useApi } from '../hooks/useApi';
+import { useAppStore } from '../store/useAppStore';
 import { MAX_RECORDING_SEC, SAMPLE_RATE, AUDIO_FORMAT } from '../utils/audioConfig';
 import { colors, spacing } from '../constants/theme';
 
 export default function GemmaAudioScreen({ route, navigation }) {
   const domain = route.params?.domain;
+  const tier = useAppStore((s) => s.tier);
+  const isLoading = useAppStore((s) => s.isLoading);
+  const storeError = useAppStore((s) => s.error);
+  const isOnline = useAppStore((s) => s.isOnline);
+  const addAnalysis = useAppStore((s) => s.addAnalysis);
+  const { request } = useApi();
   const [isRecording, setIsRecording] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [recordedAudio, setRecordedAudio] = useState(null);
@@ -111,6 +119,11 @@ export default function GemmaAudioScreen({ route, navigation }) {
       return;
     }
 
+    if (!isOnline) {
+      setError('네트워크 연결을 확인해주세요.');
+      return;
+    }
+
     setError('');
     setIsAnalyzing(true);
     setResult(null);
@@ -119,20 +132,27 @@ export default function GemmaAudioScreen({ route, navigation }) {
       await audioService.stopPlayback();
       setIsPlaying(false);
 
-      const data = await audioService.analyzeNativeAudio(
-        recordedAudio.audioBase64,
-        { word, correctPronunciation, userLevel: 'beginner' }
-      );
+      const data = await request('post', '/api/audio/analyze-native', {
+        audioBase64: recordedAudio.audioBase64,
+        audioFormat: 'wav',
+        word,
+        correctPronunciation,
+        userLevel: (tier || 'Free').toLowerCase(),
+      });
 
-      setResult({
+      const analysisResult = {
         analysis: data.analysis,
         provider: data.provider,
         nativeAudio: data.nativeAudio,
         latencyMs: data.latencyMs,
         fallback: data.fallback,
-      });
+        word,
+      };
+
+      addAnalysis(analysisResult);
+      setResult(analysisResult);
     } catch (err) {
-      setError(err.message);
+      setError(storeError || err.response?.data?.error || err.message);
     } finally {
       setIsAnalyzing(false);
     }
@@ -176,7 +196,7 @@ export default function GemmaAudioScreen({ route, navigation }) {
       <RecordingUI
         isRecording={isRecording}
         isPlaying={isPlaying}
-        isAnalyzing={isAnalyzing}
+        isAnalyzing={isAnalyzing || isLoading}
         duration={duration}
         maxDuration={MAX_RECORDING_SEC}
         recordedAudio={recordedAudio}
@@ -188,7 +208,13 @@ export default function GemmaAudioScreen({ route, navigation }) {
         onAnalyze={analyzeAudio}
       />
 
-      {error ? <Text style={styles.error}>{error}</Text> : null}
+      {error || storeError ? (
+        <Text style={styles.error}>{error || storeError}</Text>
+      ) : null}
+
+      {!isOnline && (
+        <Text style={styles.offline}>📡 오프라인 — 분석 불가</Text>
+      )}
 
       {/* AOMD Feedback result */}
       {isAnalyzing && !result && (
@@ -249,6 +275,12 @@ const styles = StyleSheet.create({
     marginTop: spacing.md,
     textAlign: 'center',
     fontSize: 14,
+  },
+  offline: {
+    color: colors.warning,
+    textAlign: 'center',
+    marginTop: spacing.sm,
+    fontSize: 13,
   },
   resultCard: {
     marginTop: spacing.lg,

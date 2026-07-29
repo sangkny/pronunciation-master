@@ -14,11 +14,10 @@
 | 항목 | 값 |
 |------|-----|
 | **현재 Phase** | **Phase 11 — 모바일 앱 (Expo)** |
-| **진행 Part** | **11-2: 녹음 UX + WAV 16kHz** ✅ |
-| **직전 완료** | Part 11-1 — Navigation + GemmaAudioScreen (`ed89ca5`) |
-| **Handover 커밋** | `e8690d1` (Phase 11-2 UI polish) |
-| **브랜치** | `origin/main` |
-| **다음 작업** | Part 11-3: Zustand + API interceptors — `PHASE11_CODE_LOOP_PROMPTS.md` |
+| **진행 Part** | **11-3: Zustand + Axios interceptors** ✅ |
+| **직전 완료** | Part 11-2 — 녹음 UX + WAV (`e8690d1`) |
+| **Handover 커밋** | (11-3 커밋 예정) |
+| **다음 작업** | Part 11-4: 오프라인 캐시 — `PHASE11_CODE_LOOP_PROMPTS.md` |
 
 ### Phase 11 진행률
 
@@ -26,10 +25,18 @@
 |------|------|------|
 | **11-1** | Expo + React Navigation + GemmaAudioScreen | **✅ 완료** |
 | **11-2** | 녹음 UX (타이머, replay, WAV 16kHz) | **✅ 완료** |
-| 11-3 | API + Zustand 상태관리 | 🔲 |
+| **11-3** | Zustand + Axios interceptors | **✅ 완료** |
 | 11-4 | 오프라인 캐시 (WatermelonDB) | 🔲 |
 | 11-5 | FCM 푸시 | 🔲 |
 | 11-6 | App Store / Play Store | 🔲 |
+
+### Phase 11-3 산출물 (완료)
+
+- ✅ `useAppStore.js` — user, token, tier, analysisHistory, isOnline
+- ✅ `apiService.js` — Axios interceptors (401→logout, 429, 500, network)
+- ✅ `authService.js` — login, register, logout, refreshToken
+- ✅ `useApi.js` — request hook
+- ✅ LoginScreen / GemmaAudioScreen / ProfileScreen Zustand 통합
 
 ### Phase 11-2 산출물 (완료)
 
@@ -150,7 +157,7 @@
 |------|------|------|------|
 | **11-1** | **Expo + Navigation + Native Audio** | **✅ 완료** | `mobile/` |
 | **11-2** | **녹음 UX + WAV 16kHz** | **✅ 완료** | `RecordingUI` |
-| 11-3 | Zustand + API interceptors | 🔲 | |
+| **11-3** | **Zustand + Axios interceptors** | **✅ 완료** | `useAppStore` |
 | 11-4 | 오프라인 캐시 | 🔲 | |
 | 11-5 | FCM 푸시 | 🔲 | |
 | 11-6 | 스토어 배포 | 🔲 | |
@@ -322,8 +329,8 @@
 
 ## 마지막 업데이트
 - **날짜:** 2026-07-29
-- **상태:** Phase 11 Part 11-2 **✅ 완료** | Part 11-3 다음
-- **현재 작업:** Zustand + API interceptors
+- **상태:** Phase 11 Part 11-3 **✅ 완료** | Part 11-4 다음
+- **현재 작업:** 오프라인 캐시 (WatermelonDB)
 - **Handover 커밋:** `ed89ca5` (Phase 11 Part 11-1)
 - **브랜치:** `main`
 - **Mobile:** `cd mobile && npx expo start`

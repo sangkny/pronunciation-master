@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import {
   View, Text, TouchableOpacity, StyleSheet, ScrollView, ActivityIndicator,
 } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as api from '../services/api';
+import { useAppStore } from '../store/useAppStore';
 
 const DOMAINS = [
   { id: 'medical', name: 'Medical', emoji: '🏥' },
@@ -13,7 +13,12 @@ const DOMAINS = [
   { id: 'automotive', name: 'Automotive', emoji: '🚗' },
 ];
 
-export default function HomeScreen({ user, onLogout, navigation }) {
+export default function HomeScreen({ navigation }) {
+  const user = useAppStore((s) => s.user);
+  const tier = useAppStore((s) => s.tier);
+  const token = useAppStore((s) => s.token);
+  const isOnline = useAppStore((s) => s.isOnline);
+  const logout = useAppStore((s) => s.logout);
   const [dashboard, setDashboard] = useState(null);
   const [greeting, setGreeting] = useState('');
   const [loading, setLoading] = useState(true);
@@ -35,9 +40,7 @@ export default function HomeScreen({ user, onLogout, navigation }) {
   }, []);
 
   const handleLogout = async () => {
-    await AsyncStorage.removeItem('pm_token');
-    api.setToken(null);
-    onLogout?.();
+    await logout();
   };
 
   if (loading) {
@@ -53,7 +56,8 @@ export default function HomeScreen({ user, onLogout, navigation }) {
       <View style={styles.header}>
         <View>
           <Text style={styles.greeting}>{greeting || "Today's Practice"}</Text>
-          <Text style={styles.userName}>{user?.name || user?.email}</Text>
+          <Text style={styles.userName}>{user?.name || user?.email || 'Learner'}</Text>
+          <Text style={styles.meta}>{tier} · {isOnline ? '🟢 Online' : '🔴 Offline'}</Text>
         </View>
         <TouchableOpacity onPress={handleLogout} style={styles.logoutBtn}>
           <Text style={styles.logoutText}>Logout</Text>
@@ -116,6 +120,7 @@ const styles = StyleSheet.create({
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 24 },
   greeting: { fontSize: 22, fontWeight: 'bold', color: '#e2e8f0' },
   userName: { fontSize: 14, color: '#94a3b8', marginTop: 4 },
+  meta: { fontSize: 11, color: '#64748b', marginTop: 2 },
   logoutBtn: { padding: 8 },
   logoutText: { color: '#c084fc' },
   statsRow: { flexDirection: 'row', gap: 12, marginBottom: 24 },

@@ -1,11 +1,12 @@
 # Pronunciation Master — Mobile (Expo)
 
-**Phase:** 11 Part 11-2  
-**Stack:** React Native 0.74 + Expo SDK 51 + expo-av (16kHz WAV)
+**Phase:** 11 Part 11-3  
+**Stack:** React Native 0.74 + Expo SDK 51 + Zustand + Axios
 
 ## Features
 
-- JWT Login / Register
+- **Zustand** global state (`useAppStore`) — user, token, tier, analysis history
+- **Axios interceptors** — Bearer token auto-attach, 401/429/500/network errors
 - Domain selection → STT Mission (expo-av + `/api/stt/transcribe`)
 - **Gemma 4 Native Audio** — 녹음 UX (타이머, 재생, WAV 16kHz) → `/api/audio/analyze-native`
 - Profile — subscription tier + server audio status
@@ -53,10 +54,15 @@ mobile/
 │   ├── utils/
 │   │   audioConfig.js          # SAMPLE_RATE, MAX_RECORDING_SEC
 │   │   wavEncoder.js           # WAV 헤더 검증
+│   ├── store/
+│   │   useAppStore.js          # Zustand global state
+│   ├── hooks/
+│   │   useApi.js               # API request hook
 │   ├── services/
-│   │   api.js
-│   │   audioService.js         # 16kHz 녹음 + analyze-native
-│   │   recordingService.js
+│   │   apiService.js           # Axios + interceptors
+│   │   authService.js          # login/register/logout
+│   │   api.js                  # Legacy API wrappers (uses axios)
+│   │   audioService.js         # 16kHz 녹음
 │   │   sttService.js
 │   │   notificationService.js
 │   └── constants/theme.js
@@ -99,7 +105,7 @@ bash ../scripts/test-phase11.sh
 |------|--------|
 | 11-1 | ✅ Expo + Navigation + Native Audio screen |
 | 11-2 | ✅ Recording UX + WAV 16kHz |
-| 11-3 | 🔲 Zustand/Redux state |
+| 11-3 | ✅ Zustand + Axios interceptors |
 | 11-4 | 🔲 WatermelonDB offline |
 | 11-5 | 🔲 FCM push |
 | 11-6 | 🔲 App Store / Play Store |
