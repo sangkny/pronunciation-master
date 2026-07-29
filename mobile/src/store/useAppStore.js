@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as authService from '../services/authService';
+import { upsertLocalUser, upsertLocalSubscription } from '../services/localDbService';
 
 const TOKEN_KEY = 'pm_token';
 
@@ -27,6 +28,16 @@ export const useAppStore = create((set, get) => ({
       subscriptionTier: tier,
       error: null,
     });
+    if (user?.email || user?.id) {
+      const localId = await upsertLocalUser({
+        email: user.email,
+        name: user.name,
+        tier,
+        token,
+        serverUserId: user.id?.toString(),
+      });
+      await upsertLocalSubscription(localId, tier);
+    }
   },
 
   hydrate: async () => {

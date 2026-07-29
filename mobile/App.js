@@ -1,9 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { View, ActivityIndicator, StyleSheet } from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
+import { DatabaseProvider } from '@nozbe/watermelondb/react';
 import AppNavigator from './src/navigation/AppNavigator';
 import { useAppStore } from './src/store/useAppStore';
 import * as notificationService from './src/services/notificationService';
+import database from './src/database';
+import { syncData } from './src/services/syncService';
 import { colors } from './src/constants/theme';
 
 export default function App() {
@@ -11,6 +14,7 @@ export default function App() {
   const token = useAppStore((s) => s.token);
   const setOnline = useAppStore((s) => s.setOnline);
   const hydrate = useAppStore((s) => s.hydrate);
+  const wasOnlineRef = useRef(true);
 
   useEffect(() => {
     hydrate();
@@ -30,6 +34,28 @@ export default function App() {
     }
   }, [token]);
 
+  useEffect(() => {
+    if (!isHydrated || !token) {
+      return undefined;
+    }
+
+    const runSync = () => {
+      syncData().catch(() => {});
+    };
+
+    runSync();
+
+    const unsubscribe = useAppStore.subscribe((state, prevState) => {
+      const cameOnline = state.isOnline && !prevState.isOnline;
+      if (cameOnline && state.token) {
+        runSync();
+      }
+      wasOnlineRef.current = state.isOnline;
+    });
+
+    return unsubscribe;
+  }, [isHydrated, token]);
+
   if (!isHydrated) {
     return (
       <View style={styles.boot}>
@@ -38,7 +64,11 @@ export default function App() {
     );
   }
 
-  return <AppNavigator />;
+  return (
+    <DatabaseProvider database={database}>
+      <AppNavigator />
+    </DatabaseProvider>
+  );
 }
 
 const styles = StyleSheet.create({

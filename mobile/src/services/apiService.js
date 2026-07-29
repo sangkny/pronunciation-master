@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { useAppStore } from '../store/useAppStore';
 import { navigateToLogin } from '../navigation/navigationRef';
+import { getLocalUserId, saveAnalysisLocal } from './localDbService';
 
 export const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:5000';
 
@@ -39,5 +40,72 @@ apiClient.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+export async function analyzeNativeWithOffline({
+  word,
+  correctPronunciation,
+  userLevel,
+  audioBase64,
+  audioUri = '',
+  audioDuration = 0,
+}) {
+  const { isOnline, user, token } = useAppStore.getState();
+  const userId = getLocalUserId(user, token);
+  const payload = {
+    audioBase64,
+    audioFormat: 'wav',
+    word,
+    correctPronunciation,
+    userLevel,
+  };
+
+  const saveOffline = async (analysisPayload, synced = false) => {
+    await saveAnalysisLocal({
+      userId,
+      word,
+      audioUri,
+      audioDuration,
+      payload: analysisPayload,
+      synced,
+      confidence: analysisPayload.confidence || 0,
+    });
+    return {
+      ...analysisPayload,
+      offline: !synced,
+      word,
+    };
+  };
+
+  if (!isOnline) {
+    return saveOffline({
+      analysis: 'Offline - 나중에 동기화됩니다',
+      provider: 'local',
+      offline: true,
+    });
+  }
+
+  try {
+    const { data } = await apiClient.post('/api/audio/analyze-native', payload);
+    await saveAnalysisLocal({
+      userId,
+      word,
+      audioUri,
+      audioDuration,
+      payload: data,
+      synced: true,
+      confidence: data.confidence || 0,
+    });
+    return data;
+  } catch (error) {
+    if (!error.response) {
+      return saveOffline({
+        analysis: 'Offline - 나중에 동기화됩니다',
+        provider: 'local',
+        offline: true,
+      });
+    }
+    throw error;
+  }
+}
 
 export default apiClient;

@@ -1,10 +1,12 @@
 # Pronunciation Master — Mobile (Expo)
 
-**Phase:** 11 Part 11-3  
-**Stack:** React Native 0.74 + Expo SDK 51 + Zustand + Axios
+**Phase:** 11 Part 11-4  
+**Stack:** React Native 0.74 + Expo SDK 51 + Zustand + Axios + WatermelonDB
 
 ## Features
 
+- **WatermelonDB** offline-first cache — analyses, users, subscriptions
+- **Auto sync** — upload unsynced analyses on reconnect (`syncService.js`)
 - **Zustand** global state (`useAppStore`) — user, token, tier, analysis history
 - **Axios interceptors** — Bearer token auto-attach, 401/429/500/network errors
 - Domain selection → STT Mission (expo-av + `/api/stt/transcribe`)
@@ -58,8 +60,14 @@ mobile/
 │   │   useAppStore.js          # Zustand global state
 │   ├── hooks/
 │   │   useApi.js               # API request hook
+│   │   useOfflineData.js       # WatermelonDB live queries
+│   ├── database/
+│   │   index.js, schema.js
+│   │   models/User.js, Analysis.js, Subscription.js
 │   ├── services/
-│   │   apiService.js           # Axios + interceptors
+│   │   apiService.js           # Axios + analyzeNativeWithOffline
+│   │   syncService.js          # Upload/download sync engine
+│   │   localDbService.js       # Local DB helpers
 │   │   authService.js          # login/register/logout
 │   │   api.js                  # Legacy API wrappers (uses axios)
 │   │   audioService.js         # 16kHz 녹음

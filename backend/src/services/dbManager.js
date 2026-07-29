@@ -130,6 +130,18 @@ class DBManager {
           last_used_at TIMESTAMP
         );
 
+        CREATE TABLE IF NOT EXISTS mobile_analyses (
+          id SERIAL PRIMARY KEY,
+          user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+          client_id VARCHAR(64) NOT NULL,
+          word VARCHAR(100) NOT NULL,
+          analysis_json JSONB NOT NULL,
+          confidence NUMERIC(5,2) DEFAULT 0,
+          audio_duration INTEGER DEFAULT 0,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          UNIQUE(user_id, client_id)
+        );
+
         CREATE INDEX IF NOT EXISTS idx_user_progress_user ON user_progress(user_id);
         CREATE INDEX IF NOT EXISTS idx_user_scores_user ON user_scores(user_id);
         CREATE INDEX IF NOT EXISTS idx_user_scores_created ON user_scores(created_at);
@@ -141,6 +153,8 @@ class DBManager {
         CREATE INDEX IF NOT EXISTS idx_teams_owner ON teams(owner_id);
         CREATE INDEX IF NOT EXISTS idx_team_members_team ON team_members(team_id);
         CREATE INDEX IF NOT EXISTS idx_api_keys_user ON api_keys(user_id);
+        CREATE INDEX IF NOT EXISTS idx_mobile_analyses_user ON mobile_analyses(user_id);
+        CREATE INDEX IF NOT EXISTS idx_mobile_analyses_created ON mobile_analyses(created_at);
       `);
 
       this.isConnected = true;
@@ -222,6 +236,44 @@ class DBManager {
     const result = await this.query(
       `SELECT * FROM user_scores WHERE user_id = $1
        ORDER BY created_at DESC LIMIT $2`,
+      [userId, limit]
+    );
+    return result.rows;
+  }
+
+  async syncMobileAnalysis(userId, {
+    clientId,
+    word,
+    analysis,
+    confidence = 0,
+    createdAt,
+    audioDuration = 0,
+  }) {
+    const created = createdAt ? new Date(createdAt) : new Date();
+    const result = await this.query(
+      `INSERT INTO mobile_analyses
+         (user_id, client_id, word, analysis_json, confidence, audio_duration, created_at)
+       VALUES ($1, $2, $3, $4, $5, $6, $7)
+       ON CONFLICT (user_id, client_id)
+       DO UPDATE SET
+         word = EXCLUDED.word,
+         analysis_json = EXCLUDED.analysis_json,
+         confidence = EXCLUDED.confidence,
+         audio_duration = EXCLUDED.audio_duration,
+         created_at = GREATEST(mobile_analyses.created_at, EXCLUDED.created_at)
+       RETURNING *`,
+      [userId, clientId, word, JSON.stringify(analysis), confidence, audioDuration, created]
+    );
+    return result.rows[0];
+  }
+
+  async listMobileAnalyses(userId, limit = 100) {
+    const result = await this.query(
+      `SELECT id, client_id, word, analysis_json, confidence, audio_duration, created_at
+       FROM mobile_analyses
+       WHERE user_id = $1
+       ORDER BY created_at DESC
+       LIMIT $2`,
       [userId, limit]
     );
     return result.rows;

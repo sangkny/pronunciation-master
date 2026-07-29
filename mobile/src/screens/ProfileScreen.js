@@ -5,6 +5,9 @@ import {
 import { useAppStore } from '../store/useAppStore';
 import * as audioService from '../services/audioService';
 import { API_URL } from '../services/api';
+import { getLocalUserId } from '../services/localDbService';
+import { useSyncStats } from '../hooks/useOfflineData';
+import { syncData } from '../services/syncService';
 import { colors, spacing } from '../constants/theme';
 
 export default function ProfileScreen({ navigation }) {
@@ -17,8 +20,14 @@ export default function ProfileScreen({ navigation }) {
   const clearHistory = useAppStore((s) => s.clearHistory);
   const storeError = useAppStore((s) => s.error);
 
+  const userId = getLocalUserId(user, token);
+  const { unsyncedCount, totalCount } = useSyncStats(userId);
+
   const [audioInfo, setAudioInfo] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [syncing, setSyncing] = useState(false);
+  const [lastSync, setLastSync] = useState(null);
+  const [syncMessage, setSyncMessage] = useState('');
 
   useEffect(() => {
     audioService.getServerAudioInfo()
@@ -29,6 +38,24 @@ export default function ProfileScreen({ navigation }) {
 
   const handleLogout = async () => {
     await logout();
+  };
+
+  const handleSync = async () => {
+    if (!isOnline || !token) {
+      setSyncMessage('온라인 상태에서만 동기화할 수 있습니다.');
+      return;
+    }
+    setSyncing(true);
+    setSyncMessage('');
+    try {
+      const result = await syncData();
+      setLastSync(new Date());
+      setSyncMessage(`업로드 ${result.uploaded} · 다운로드 ${result.downloaded}`);
+    } catch (err) {
+      setSyncMessage(err.message || '동기화 실패');
+    } finally {
+      setSyncing(false);
+    }
   };
 
   if (loading) {
@@ -65,7 +92,34 @@ export default function ProfileScreen({ navigation }) {
       </View>
 
       <View style={styles.card}>
-        <Text style={styles.cardLabel}>Analysis History</Text>
+        <Text style={styles.cardLabel}>Offline Cache (WatermelonDB)</Text>
+        <Text style={styles.cardRow}>
+          Local analyses: {totalCount}
+        </Text>
+        <Text style={styles.cardRow}>
+          Unsynced: {unsyncedCount > 0 ? `⏳ ${unsyncedCount}` : '✅ 0'}
+        </Text>
+        <Text style={styles.cardRow}>
+          Last sync: {lastSync ? lastSync.toLocaleTimeString() : '—'}
+        </Text>
+        {syncMessage ? (
+          <Text style={styles.syncMsg}>{syncMessage}</Text>
+        ) : null}
+        <TouchableOpacity
+          style={[styles.syncBtn, (!isOnline || syncing) && styles.syncBtnDisabled]}
+          onPress={handleSync}
+          disabled={!isOnline || syncing}
+        >
+          {syncing ? (
+            <ActivityIndicator color={colors.primaryLight} size="small" />
+          ) : (
+            <Text style={styles.syncBtnText}>Sync now</Text>
+          )}
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.card}>
+        <Text style={styles.cardLabel}>Analysis History (memory)</Text>
         <Text style={styles.cardValue}>{analysisHistory.length}</Text>
         {analysisHistory.length > 0 && (
           <>
@@ -128,6 +182,16 @@ const styles = StyleSheet.create({
   cardHint: { fontSize: 11, color: colors.textMuted, marginTop: 4 },
   cardRow: { color: colors.text, fontSize: 14, marginBottom: 4 },
   clearLink: { color: colors.primaryLight, marginTop: 8, fontSize: 13 },
+  syncBtn: {
+    marginTop: spacing.sm,
+    backgroundColor: colors.primary,
+    borderRadius: 8,
+    paddingVertical: 10,
+    alignItems: 'center',
+  },
+  syncBtnDisabled: { opacity: 0.5 },
+  syncBtnText: { color: colors.text, fontWeight: 'bold' },
+  syncMsg: { color: colors.textMuted, fontSize: 12, marginTop: 6 },
   apiUrl: { color: colors.textMuted, fontSize: 12 },
   storeError: { color: colors.error, textAlign: 'center', marginBottom: spacing.sm },
   logoutBtn: {

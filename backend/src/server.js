@@ -26,6 +26,7 @@ import monitoringRouter from './routes/monitoring.js';
 import teamsRouter from './routes/teams.js';
 import apiKeysRouter from './routes/apiKeys.js';
 import audioAnalysisRouter from './routes/audio-analysis.js';
+import analysisRouter from './routes/analysis.js';
 import { gemma4NativeAudioService } from './services/gemma4NativeAudioService.js';
 
 const app = express();
@@ -66,6 +67,7 @@ app.use('/api/aomd', aomdRouter);
 app.use('/api/scoring', scoringRouter);
 app.use('/api/stt', sttRouter);
 app.use('/api/audio', audioAnalysisRouter);
+app.use('/api/analysis', analysisRouter);
 app.use('/api/subscription', subscriptionRouter);
 app.use('/api/analytics', analyticsRouter);
 app.use('/api/notifications', notificationsRouter);

@@ -4,7 +4,9 @@ import {
 } from 'react-native';
 import RecordingUI from '../components/RecordingUI';
 import * as audioService from '../services/audioService';
-import { useApi } from '../hooks/useApi';
+import { analyzeNativeWithOffline } from '../services/apiService';
+import { getLocalUserId } from '../services/localDbService';
+import { useOfflineAnalyses } from '../hooks/useOfflineData';
 import { useAppStore } from '../store/useAppStore';
 import { MAX_RECORDING_SEC, SAMPLE_RATE, AUDIO_FORMAT } from '../utils/audioConfig';
 import { colors, spacing } from '../constants/theme';
@@ -12,11 +14,14 @@ import { colors, spacing } from '../constants/theme';
 export default function GemmaAudioScreen({ route, navigation }) {
   const domain = route.params?.domain;
   const tier = useAppStore((s) => s.tier);
+  const user = useAppStore((s) => s.user);
+  const token = useAppStore((s) => s.token);
   const isLoading = useAppStore((s) => s.isLoading);
   const storeError = useAppStore((s) => s.error);
   const isOnline = useAppStore((s) => s.isOnline);
   const addAnalysis = useAppStore((s) => s.addAnalysis);
-  const { request } = useApi();
+  const userId = getLocalUserId(user, token);
+  const offlineAnalyses = useOfflineAnalyses(userId);
   const [isRecording, setIsRecording] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [recordedAudio, setRecordedAudio] = useState(null);
@@ -120,8 +125,7 @@ export default function GemmaAudioScreen({ route, navigation }) {
     }
 
     if (!isOnline) {
-      setError('네트워크 연결을 확인해주세요.');
-      return;
+      setError('');
     }
 
     setError('');
@@ -132,9 +136,10 @@ export default function GemmaAudioScreen({ route, navigation }) {
       await audioService.stopPlayback();
       setIsPlaying(false);
 
-      const data = await request('post', '/api/audio/analyze-native', {
+      const data = await analyzeNativeWithOffline({
         audioBase64: recordedAudio.audioBase64,
-        audioFormat: 'wav',
+        audioUri: recordedAudio.audioUri,
+        audioDuration: recordedAudio.duration || duration,
         word,
         correctPronunciation,
         userLevel: (tier || 'Free').toLowerCase(),
@@ -146,6 +151,7 @@ export default function GemmaAudioScreen({ route, navigation }) {
         nativeAudio: data.nativeAudio,
         latencyMs: data.latencyMs,
         fallback: data.fallback,
+        offline: data.offline,
         word,
       };
 
@@ -213,7 +219,20 @@ export default function GemmaAudioScreen({ route, navigation }) {
       ) : null}
 
       {!isOnline && (
-        <Text style={styles.offline}>📡 오프라인 — 분석 불가</Text>
+        <Text style={styles.offline}>📡 오프라인 — 로컬 저장 후 동기화됩니다</Text>
+      )}
+
+      {offlineAnalyses.length > 0 && (
+        <View style={styles.pendingCard}>
+          <Text style={styles.pendingTitle}>
+            동기화 대기 ({offlineAnalyses.length})
+          </Text>
+          {offlineAnalyses.slice(0, 5).map((item) => (
+            <Text key={item.id} style={styles.pendingRow}>
+              • {item.word} — {item.synced ? 'synced' : 'pending'}
+            </Text>
+          ))}
+        </View>
       )}
 
       {/* AOMD Feedback result */}
@@ -228,7 +247,7 @@ export default function GemmaAudioScreen({ route, navigation }) {
         <View style={styles.resultCard}>
           <Text style={styles.resultTitle}>AOMD 피드백</Text>
           <Text style={styles.provider}>
-            {result.nativeAudio ? '🟢 Native Audio' : '🟡 Fallback'} · {result.provider}
+            {result.offline ? '📦 Offline (로컬 저장)' : result.nativeAudio ? '🟢 Native Audio' : '🟡 Fallback'} · {result.provider}
             {result.latencyMs ? ` · ${result.latencyMs}ms` : ''}
           </Text>
           <View style={styles.feedbackBox}>
@@ -281,6 +300,24 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: spacing.sm,
     fontSize: 13,
+  },
+  pendingCard: {
+    marginTop: spacing.md,
+    backgroundColor: colors.surface,
+    borderRadius: 12,
+    padding: spacing.md,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  pendingTitle: {
+    color: colors.warning,
+    fontWeight: 'bold',
+    marginBottom: spacing.sm,
+  },
+  pendingRow: {
+    color: colors.textMuted,
+    fontSize: 13,
+    marginBottom: 4,
   },
   resultCard: {
     marginTop: spacing.lg,

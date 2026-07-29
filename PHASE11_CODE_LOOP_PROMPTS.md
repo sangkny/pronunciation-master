@@ -1,6 +1,6 @@
 # Phase 11 Code Loop 프롬프트
 
-**상태:** Phase 11 Part 11-3 완료 ✅ | Part 11-4 다음  
+**상태:** Phase 11 Part 11-4 완료 ✅ | Part 11-5 다음  
 **목표:** React Native + Expo 모바일 앱 iOS/Android 출시  
 **로드맵:** `PHASE11_ROADMAP.md`  
 **장기 전략:** `LONG_TERM_STRATEGY_ONTOLOGY_AOMD_SAAS.md`
@@ -47,17 +47,23 @@
 
 ---
 
-## Part 11-4: 오프라인 캐시 🔲
+## Part 11-4: 오프라인 캐시 ✅
 
 ```
-작업:
-- WatermelonDB 또는 AsyncStorage 미션 캐시
-- Ontology 도메인/개념 로컬 저장
-- 오프라인 녹음 → 온라인 시 동기화 큐
+완료:
+- WatermelonDB + expo-sqlite (users, analyses, subscriptions)
+- syncService.js — POST /api/analysis/sync, GET /api/analysis/list
+- analyzeNativeWithOffline — 오프라인 로컬 저장 (synced: false)
+- App.js DatabaseProvider + 온라인 복귀 자동 sync
+- GemmaAudioScreen useOfflineAnalyses() 동기화 대기 표시
+- ProfileScreen unsynced count + Sync now
+- Backend mobile_analyses 테이블 + analysis routes
+- 충돌 해결: created_at 기준 마지막 쓰기 우선 (LWW)
 
 완료 기준:
-✓ 비행기 모드에서 도메인 목록 표시
-✓ 재연결 시 점수/AOMD 동기화
+✓ 오프라인 분석 → 로컬 DB (synced: false)
+✓ 재연결 시 자동 동기화 → synced: true
+✓ ProfileScreen 동기화 상태 표시
 ```
 
 ---

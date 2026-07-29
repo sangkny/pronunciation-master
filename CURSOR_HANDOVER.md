@@ -14,10 +14,10 @@
 | 항목 | 값 |
 |------|-----|
 | **현재 Phase** | **Phase 11 — 모바일 앱 (Expo)** |
-| **진행 Part** | **11-3: Zustand + Axios interceptors** ✅ |
-| **직전 완료** | Part 11-2 — 녹음 UX + WAV (`e8690d1`) |
-| **Handover 커밋** | `2f58acc` (Phase 11 Part 11-3) |
-| **다음 작업** | Part 11-4: 오프라인 캐시 — `PHASE11_CODE_LOOP_PROMPTS.md` |
+| **진행 Part** | **11-4: 오프라인 캐시 (WatermelonDB)** ✅ |
+| **직전 완료** | Part 11-3 — Zustand + Axios (`2f58acc`) |
+| **Handover 커밋** | Phase 11 Part 11-4 (WatermelonDB) |
+| **다음 작업** | Part 11-5: FCM 푸시 — `PHASE11_CODE_LOOP_PROMPTS.md` |
 
 ### Phase 11 진행률
 
@@ -26,9 +26,21 @@
 | **11-1** | Expo + React Navigation + GemmaAudioScreen | **✅ 완료** |
 | **11-2** | 녹음 UX (타이머, replay, WAV 16kHz) | **✅ 완료** |
 | **11-3** | Zustand + Axios interceptors | **✅ 완료** |
-| 11-4 | 오프라인 캐시 (WatermelonDB) | 🔲 |
+| **11-4** | 오프라인 캐시 (WatermelonDB) | **✅ 완료** |
 | 11-5 | FCM 푸시 | 🔲 |
 | 11-6 | App Store / Play Store | 🔲 |
+
+### Phase 11-4 산출물 (완료)
+
+- ✅ `database/` — WatermelonDB schema + User/Analysis/Subscription models
+- ✅ `syncService.js` — 업로드(unsynced) + 다운로드(list), LWW 충돌 해결
+- ✅ `localDbService.js` — 로컬 저장/사용자 upsert
+- ✅ `useOfflineData.js` — useAnalysisHistory, useOfflineAnalyses, useSyncStats
+- ✅ `apiService.analyzeNativeWithOffline` — 오프라인 시 로컬 저장
+- ✅ `App.js` — DatabaseProvider + NetInfo 복귀 시 자동 sync
+- ✅ Backend `/api/analysis/sync`, `/api/analysis/list` + `mobile_analyses` 테이블
+- ✅ GemmaAudioScreen — 동기화 대기 목록 표시
+- ✅ ProfileScreen — unsynced count + Sync now
 
 ### Phase 11-3 산출물 (완료)
 
@@ -158,7 +170,7 @@
 | **11-1** | **Expo + Navigation + Native Audio** | **✅ 완료** | `mobile/` |
 | **11-2** | **녹음 UX + WAV 16kHz** | **✅ 완료** | `RecordingUI` |
 | **11-3** | **Zustand + Axios interceptors** | **✅ 완료** | `useAppStore` |
-| 11-4 | 오프라인 캐시 | 🔲 | |
+| **11-4** | **오프라인 캐시 (WatermelonDB)** | **✅ 완료** | sync + local DB |
 | 11-5 | FCM 푸시 | 🔲 | |
 | 11-6 | 스토어 배포 | 🔲 | |
 
@@ -329,8 +341,8 @@
 
 ## 마지막 업데이트
 - **날짜:** 2026-07-29
-- **상태:** Phase 11 Part 11-3 **✅ 완료** | Part 11-4 다음
-- **현재 작업:** 오프라인 캐시 (WatermelonDB)
+- **상태:** Phase 11 Part 11-4 **✅ 완료** | Part 11-5 다음
+- **현재 작업:** FCM 푸시 알림
 - **Handover 커밋:** `ed89ca5` (Phase 11 Part 11-1)
 - **브랜치:** `main`
 - **Mobile:** `cd mobile && npx expo start`
