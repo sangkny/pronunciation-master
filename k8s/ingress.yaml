@@ -30,6 +30,16 @@ spec:
                 name: frontend
                 port:
                   number: 80
+    - host: grafana.pronunciation-master.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: grafana
+                port:
+                  number: 3000
   # 프로덕션 TLS 예시:
   # tls:
   #   - hosts:

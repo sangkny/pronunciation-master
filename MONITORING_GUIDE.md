@@ -1,4 +1,16 @@
-# Monitoring Guide — Sentry / Datadog
+# Monitoring Guide — Sentry / Datadog / Prometheus / Grafana
+
+## Prometheus + Grafana (Phase 10 Part 4)
+
+Backend exposes Prometheus metrics at `GET /metrics`. See `PROMETHEUS_GRAFANA_MONITORING.md`.
+
+```bash
+curl http://localhost:5000/metrics
+bash scripts/test-monitoring.sh
+```
+
+- **Prometheus:** http://localhost:9090
+- **Grafana:** http://localhost:3000 (admin / admin)
 
 ## 내장 모니터링
 

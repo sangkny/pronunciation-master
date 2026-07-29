@@ -32,6 +32,18 @@ spec:
                 name: frontend
                 port:
                   number: 80
+    {{- if .Values.monitoring.grafana.enabled }}
+    - host: {{ .Values.ingress.grafanaHost | quote }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: grafana
+                port:
+                  number: 3000
+    {{- end }}
   {{- if .Values.ingress.tls.enabled }}
   tls:
     - hosts:

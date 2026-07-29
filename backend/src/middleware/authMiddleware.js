@@ -11,6 +11,7 @@ const PUBLIC_PATHS = [
   '/api/sso',
   '/api/monitoring',
   '/health',
+  '/metrics',
 ];
 
 export async function verifyToken(req, res, next) {

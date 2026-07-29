@@ -10,6 +10,7 @@ const SKIP_PATHS = [
   '/health',
   '/api/health',
   '/api/stripe/webhook',
+  '/metrics',
 ];
 
 async function resolveTier(req) {

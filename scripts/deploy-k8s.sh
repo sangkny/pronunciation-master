@@ -81,6 +81,8 @@ else
   kubectl apply -f "$ROOT/k8s/frontend-deployment.yaml"
   kubectl apply -f "$ROOT/k8s/ingress.yaml"
   kubectl apply -f "$ROOT/k8s/hpa.yaml"
+  kubectl apply -f "$ROOT/k8s/prometheus-deployment.yaml"
+  kubectl apply -f "$ROOT/k8s/grafana-deployment.yaml"
 
   if [[ "$MEM_MB" -lt 4096 ]]; then
     echo "  Low-memory host: scaling to backend=2, frontend=1"
@@ -95,6 +97,8 @@ kubectl wait --for=condition=ready pod -l app=postgres -n "$NAMESPACE" --timeout
 kubectl wait --for=condition=ready pod -l app=redis -n "$NAMESPACE" --timeout=300s || true
 kubectl wait --for=condition=ready pod -l app=backend -n "$NAMESPACE" --timeout=300s || true
 kubectl wait --for=condition=ready pod -l app=frontend -n "$NAMESPACE" --timeout=300s || true
+kubectl wait --for=condition=ready pod -l app=prometheus -n "$NAMESPACE" --timeout=300s || true
+kubectl wait --for=condition=ready pod -l app=grafana -n "$NAMESPACE" --timeout=300s || true
 
 echo ""
 echo "8️⃣ Cluster status"
@@ -141,4 +145,6 @@ echo "Useful commands:"
 echo "  kubectl port-forward svc/backend 5000:5000 -n $NAMESPACE"
 echo "  kubectl port-forward svc/frontend 8080:80 -n $NAMESPACE"
 echo "  kubectl get hpa -n $NAMESPACE -w"
-echo "  USE_HELM=true bash scripts/deploy-k8s.sh  # Helm deploy"
+echo "  kubectl port-forward svc/grafana 3000:3000 -n $NAMESPACE"
+echo "  kubectl port-forward svc/prometheus 9090:9090 -n $NAMESPACE"
+echo "  bash scripts/test-monitoring.sh"

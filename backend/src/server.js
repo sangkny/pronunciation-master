@@ -8,6 +8,7 @@ import { verifyToken } from './middleware/authMiddleware.js';
 import { monitoringMiddleware } from './middleware/monitoringMiddleware.js';
 import { tierRateLimiter } from './middleware/tierRateLimiter.js';
 import { initRateLimitRedis } from './middleware/rateLimitMiddleware.js';
+import { metricsHandler, setDbConnected } from './services/prometheusMetrics.js';
 import ontologyRouter from './routes/ontology.js';
 import aomdRouter from './routes/aomd.js';
 import scoringRouter from './routes/scoring.js';
@@ -48,6 +49,8 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+app.get('/metrics', metricsHandler);
+
 app.use(verifyToken);
 app.use('/api', tierRateLimiter);
 
@@ -83,6 +86,7 @@ app.post('/api/mission/generate-by-scenario', async (req, res) => {
 async function startServer() {
   try {
     await dbManager.initializeDatabase();
+    setDbConnected(dbManager.isConnected);
     await initRateLimitRedis();
   } catch (error) {
     console.error('Database initialization failed:', error.message);

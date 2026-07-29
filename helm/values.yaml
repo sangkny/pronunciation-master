@@ -95,6 +95,17 @@ ingress:
   enabled: true
   className: nginx
   host: pronunciation-master.local
+  grafanaHost: grafana.pronunciation-master.local
   tls:
     enabled: false
     secretName: pronunciation-master-tls
+
+monitoring:
+  prometheus:
+    enabled: true
+    image: prom/prometheus:v2.48.0
+  grafana:
+    enabled: true
+    image: grafana/grafana:10.2.0
+    adminUser: admin
+    adminPassword: admin
