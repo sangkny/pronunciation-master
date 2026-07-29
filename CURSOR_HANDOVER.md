@@ -16,7 +16,7 @@
 | **현재 Phase** | **Phase 11 — 모바일 앱 (Expo)** |
 | **진행 Part** | **11-2: 녹음 UX + WAV 16kHz** ✅ |
 | **직전 완료** | Part 11-1 — Navigation + GemmaAudioScreen (`ed89ca5`) |
-| **Handover 커밋** | `58c915f` (Phase 11 Part 11-2) |
+| **Handover 커밋** | `e8690d1` (Phase 11-2 UI polish) |
 | **브랜치** | `origin/main` |
 | **다음 작업** | Part 11-3: Zustand + API interceptors — `PHASE11_CODE_LOOP_PROMPTS.md` |
 
